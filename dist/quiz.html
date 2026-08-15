@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en" data-palette="fresh" data-type="modern">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Fitness &amp; Nutrition Coaching Quiz | Holden Health</title>
+<meta name="description" content="Not sure which coaching plan fits? Take this quick quiz and get a personalized recommendation from Holden Health in under a minute." />
+<link rel="icon" href="assets/logo.png" />
+<link href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&amp;f[]=switzer@300,400,500,600,700&amp;display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+<style>
+.quiz-wrap{position:relative;overflow:hidden;min-height:70vh}
+.quiz-wrap .blob{position:absolute;border-radius:50%;filter:blur(80px);z-index:0}
+.quiz-wrap .blob.a{width:520px;height:520px;background:var(--aqua);top:-200px;right:-120px;opacity:.22}
+.quiz-wrap .blob.b{width:420px;height:420px;background:var(--primary);bottom:-220px;left:-140px;opacity:.16}
+.quiz-inner{position:relative;z-index:1;max-width:680px;margin:0 auto;padding:56px 32px 96px}
+.quiz-head{text-align:center;margin-bottom:30px}
+.quiz-head h1{font-size:clamp(32px,4.4vw,48px);margin-top:14px}
+.quiz-head p{color:var(--ink-soft);font-size:18px;margin-top:14px}
+
+.quiz-card{background:var(--card);border:1px solid var(--line);border-radius:26px;
+  box-shadow:0 30px 70px -40px rgba(20,12,38,.5);overflow:hidden}
+.quiz-prog{display:flex;gap:4px;padding:22px 28px 0}
+.quiz-prog .seg{flex:1;height:5px;border-radius:999px;background:var(--line);overflow:hidden}
+.quiz-prog .seg i{display:block;height:100%;width:0;background:var(--grad);transition:width .35s ease}
+.quiz-prog .seg.done i,.quiz-prog .seg.active i{width:100%}
+.quiz-body{padding:24px 28px 30px}
+.q-label{font-size:13px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--primary)}
+.quiz-body h2{font-size:25px;margin:10px 0 22px}
+
+.q-opts{display:flex;flex-direction:column;gap:11px}
+.q-opt{display:flex;align-items:center;gap:15px;padding:17px 18px;border:1.5px solid var(--line);
+  border-radius:15px;cursor:pointer;transition:border-color .15s,background .15s,transform .12s;background:var(--card)}
+.q-opt:hover{border-color:var(--ink-2);transform:translateY(-1px)}
+.q-opt .oic{width:46px;height:46px;border-radius:12px;flex:0 0 auto;display:grid;place-items:center;
+  background:color-mix(in srgb,var(--aqua) 20%,var(--paper));color:var(--primary)}
+.q-opt .oic svg{width:23px;height:23px}
+.q-opt b{font-family:var(--font-display);font-size:17px;font-weight:600}
+.q-back{margin-top:22px}
+.q-back button{appearance:none;border:0;background:none;color:var(--ink-soft);font:inherit;font-size:14px;
+  font-weight:600;cursor:pointer;padding:6px 0}
+.q-back button:hover{color:var(--ink)}
+
+/* result */
+.result{padding:8px 4px 6px;text-align:center}
+.result .badge{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:700;
+  letter-spacing:.08em;text-transform:uppercase;color:var(--primary);
+  background:color-mix(in srgb,var(--aqua) 22%,var(--paper));padding:8px 15px;border-radius:999px}
+.result h2{font-size:30px;margin:18px 0 4px}
+.result .price{font-family:var(--font-display);font-weight:600;font-size:40px;margin:6px 0 0}
+.result .price span{font-size:16px;font-weight:500;color:var(--ink-soft);font-family:var(--font-body)}
+.result .why{color:var(--ink-2);font-size:17px;margin:16px auto 0;max-width:46ch}
+.result ul{list-style:none;padding:0;margin:24px auto 8px;max-width:380px;text-align:left;
+  display:flex;flex-direction:column;gap:11px}
+.result li{display:flex;gap:11px;font-size:15.5px;align-items:flex-start}
+.result li svg{width:18px;height:18px;color:var(--secondary);flex:0 0 auto;margin-top:2px}
+.result .actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:28px}
+.result .restart{background:none;border:0;color:var(--ink-soft);font:inherit;font-weight:600;
+  font-size:14px;cursor:pointer;margin-top:18px}
+.result .restart:hover{color:var(--ink)}
+</style>
+<link rel="canonical" href="https://www.holden.health/quiz.html" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Holden Health" />
+<meta property="og:title" content="Fitness &amp; Nutrition Coaching Quiz | Holden Health" />
+<meta property="og:description" content="Not sure which coaching plan fits? Take this quick quiz and get a personalized recommendation in under a minute." />
+<meta property="og:url" content="https://www.holden.health/quiz.html" />
+<meta property="og:image" content="https://www.holden.health/assets/logo.png" />
+<meta name="twitter:card" content="summary" />
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="index.html">
+      <span class="mark"><img src="assets/logo.png" alt="Holden Health logo" /></span>
+      <span>Holden Health<small>Train · Nourish · Thrive</small></span>
+    </a>
+    <nav class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="coaching.html">Coaching</a>
+      <a href="about.html">Meet Kelsey</a>
+      <a href="resources.html">Resources</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+    <div class="nav-cta"><a class="btn btn-primary" href="book.html">Book a free call</a></div>
+  </div>
+</header>
+
+<section class="quiz-wrap">
+  <span class="blob a"></span><span class="blob b"></span>
+  <div class="quiz-inner">
+    <div class="quiz-head reveal">
+      <span class="eyebrow center">The Wednesday Plan · find your support</span>
+      <h1>Which program is <span class="grad-text">right for you?</span></h1>
+      <p>Four quick questions. No email required, just a clear recommendation.</p>
+    </div>
+
+    <div class="quiz-card reveal">
+      <div class="quiz-prog" id="quizProg"></div>
+      <div class="quiz-body" id="quizBody"></div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer-top">
+      <div class="footer-col">
+        <a class="brand" href="index.html">
+          <span class="mark"><img src="assets/logo.png" alt="Holden Health logo" /></span>
+          <span>Holden Health<small>Train · Nourish · Thrive</small></span>
+        </a>
+        <p style="margin-top:18px">Personal fitness and nutrition coaching built around small habits that stick. Online and in Metro Detroit.</p>
+        <a class="btn btn-primary" href="book.html">Book a free call</a>
+      </div>
+      <div class="footer-col"><h5>Explore</h5><ul>
+        <li><a href="index.html">Home</a></li><li><a href="coaching.html">Coaching</a></li>
+        <li><a href="about.html">Meet Kelsey</a></li><li><a href="resources.html">Resources</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul></div>
+      <div class="footer-col"><h5>Programs</h5><ul>
+        <li><a href="fitness-coaching.html">Online personal training</a></li><li><a href="nutrition-coaching.html">Online nutrition coaching</a></li>
+        <li><a href="coaching.html">Training + Nutrition</a></li><li><a href="coaching.html#bootcamp">Detroit bootcamp</a></li>
+      </ul></div>
+      <div class="footer-col"><h5>Stay connected</h5>
+        <p>Get free tips, recipes &amp; motivation.</p>
+        <div class="socials">
+          <a href="https://www.instagram.com/holdenhealthllc" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a>
+          <a href="https://www.facebook.com/holdenhealthllc/" target="_blank" rel="noopener" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 8h2V5h-2a3 3 0 0 0-3 3v2H9v3h2v6h3v-6h2l1-3h-3V8.5A.5.5 0 0 1 14 8Z" stroke-linejoin="round"/></svg></a>
+          <a href="mailto:HoldenHealth.Coaching@gmail.com" aria-label="Email"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Holden Health LLC. All rights reserved.</span>
+      <span>Made with care in Metro Detroit.</span><span class="legal-links"><a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a> · <a href="disclaimer.html">Health disclaimer</a></span>
+    </div>
+  </div>
+</footer>
+
+<script src="site.js"></script>
+<script>
+// ── Program-fit quiz ──
+(function () {
+  var ICONS = {
+    dumbbell: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 7v10M18 7v10M3 9v6M21 9v6M6 12h12" stroke-linecap="round"/></svg>',
+    apple: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 11V7a5 5 0 0 1 10 0v4M5 11h14l-1 9H6l-1-9Z" stroke-linejoin="round"/></svg>',
+    heart: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21C7 17.5 4 14 4 9.5A4.5 4.5 0 0 1 12 7a4.5 4.5 0 0 1 8 2.5C20 14 17 17.5 12 21Z" stroke-linejoin="round"/></svg>',
+    group: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 11a4 4 0 1 0-4-4M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2M22 21v-2a4 4 0 0 0-3-3.8"/></svg>',
+    clock: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    spark: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v4M12 17v4M3 12h4M17 12h4" stroke-linecap="round"/><circle cx="12" cy="12" r="3"/></svg>',
+    pin: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.4-7-10a7 7 0 0 1 14 0c0 5.6-7 10-7 10Z"/><circle cx="12" cy="11" r="2.5"/></svg>',
+    globe: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18A14 14 0 0 1 12 3Z"/></svg>',
+    check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+  };
+
+  // Each option adds weight toward: fitness, nutrition, combined, bootcamp
+  var QUESTIONS = [
+    { label: 'Goal', q: 'What are you most focused on right now?', opts: [
+      { t: 'Getting stronger and building a fitness habit', ic: 'dumbbell', w: { fitness: 2 } },
+      { t: 'Eating better without a restrictive diet', ic: 'apple', w: { nutrition: 2 } },
+      { t: 'A full transformation, training and nutrition', ic: 'heart', w: { combined: 2 } },
+      { t: 'Fun, in-person community and accountability', ic: 'group', w: { bootcamp: 2 } }
+    ]},
+    { label: 'Help', q: 'What would help you most?', opts: [
+      { t: 'A custom workout plan in an app', ic: 'dumbbell', w: { fitness: 2 } },
+      { t: 'Daily food coaching and small lessons', ic: 'apple', w: { nutrition: 2 } },
+      { t: 'Workouts and nutrition working together', ic: 'heart', w: { combined: 2 } },
+      { t: 'Group classes with a coach in the room', ic: 'group', w: { bootcamp: 2 } }
+    ]},
+    { label: 'Support', q: 'How do you like to be supported?', opts: [
+      { t: 'Weekly check-ins, mostly self-driven', ic: 'clock', w: { fitness: 1, nutrition: 1 } },
+      { t: 'Daily structure and accountability', ic: 'spark', w: { nutrition: 1, combined: 1 } },
+      { t: 'Close 1:1 attention on everything', ic: 'heart', w: { combined: 2 } },
+      { t: 'The energy of working out with people', ic: 'group', w: { bootcamp: 2 } }
+    ]},
+    { label: 'Where', q: 'Where are you based?', opts: [
+      { t: 'Online, coach me from anywhere', ic: 'globe', w: {}, online: true },
+      { t: 'Metro Detroit, open to in-person', ic: 'pin', w: { bootcamp: 1 } }
+    ]}
+  ];
+
+  var RESULTS = {
+    fitness:  { badge: 'Your match', name: 'Fitness Coaching', price: '$199', per: '/ month',
+      why: 'You want to move, get stronger, and build a habit that sticks. Custom training in your app is your lane.',
+      bullets: ['A 1:1 consultation to map your goals', 'Custom workouts in your app, updated weekly', 'Weekly check-ins and 24/7 coach access'],
+      primary: { t: 'Book a free intro call', href: 'book.html' }, secondary: { t: 'See the details', href: 'fitness-coaching.html' } },
+    nutrition: { badge: 'Your match', name: 'Nutrition Coaching', price: '$199', per: '/ month',
+      why: 'You are ready to fix how you eat without a rigid diet. Daily habit coaching is built for exactly that.',
+      bullets: ['A daily skill-building lesson in the app', 'Daily coach check-ins and weekly habit goals', 'Bi-weekly video chats, no rigid meal plans'],
+      primary: { t: 'Book a free intro call', href: 'book.html' }, secondary: { t: 'See the details', href: 'nutrition-coaching.html' } },
+    combined: { badge: 'Most popular', name: 'Training + Nutrition', price: '$299', per: '/ month',
+      why: 'You want training and food habits to support the same goal. The combined plan keeps both pieces connected.',
+      bullets: ['Everything in Fitness and Nutrition', 'Weekly training check-ins plus daily nutrition coaching', 'Bi-weekly video chats with Kelsey'],
+      primary: { t: 'Book a free intro call', href: 'book.html' }, secondary: { t: 'See the details', href: 'coaching.html' } },
+    bootcamp: { badge: 'Coming soon', name: 'Metro Detroit Bootcamp', price: 'Joining list', per: '',
+      why: 'You thrive on community and in-person energy. Kelsey is bringing her small-group bootcamp to Metro Detroit.',
+      bullets: ['Small-group, all levels welcome', 'A coach keeping you accountable in person', 'Get on the early list to hear first'],
+      primary: { t: 'Join the interest list', href: 'contact.html' }, secondary: { t: 'See coaching options', href: 'coaching.html' } }
+  };
+
+  var prog = document.getElementById('quizProg');
+  var body = document.getElementById('quizBody');
+  var step = 0;
+  var scores = { fitness: 0, nutrition: 0, combined: 0, bootcamp: 0 };
+  var online = false;
+  var history = [];
+
+  for (var i = 0; i < QUESTIONS.length; i++) {
+    var seg = document.createElement('div'); seg.className = 'seg'; seg.innerHTML = '<i></i>';
+    prog.appendChild(seg);
+  }
+  function setProg() {
+    [].forEach.call(prog.children, function (s, i) {
+      s.classList.toggle('done', i < step);
+      s.classList.toggle('active', i === step);
+    });
+  }
+
+  function renderQuestion() {
+    var Q = QUESTIONS[step];
+    setProg();
+    var html = '<div class="q-label">Question ' + (step + 1) + ' of ' + QUESTIONS.length + '</div>' +
+      '<h2>' + Q.q + '</h2><div class="q-opts">';
+    Q.opts.forEach(function (o, i) {
+      html += '<button class="q-opt" data-i="' + i + '"><span class="oic">' + ICONS[o.ic] + '</span><b>' + o.t + '</b></button>';
+    });
+    html += '</div>';
+    if (step > 0) html += '<div class="q-back"><button id="qback">← Back</button></div>';
+    body.innerHTML = html;
+    body.querySelectorAll('.q-opt').forEach(function (btn) {
+      btn.addEventListener('click', function () { choose(Q.opts[+btn.getAttribute('data-i')]); });
+    });
+    var back = document.getElementById('qback');
+    if (back) back.addEventListener('click', goBack);
+  }
+
+  function choose(opt) {
+    history.push({ w: opt.w, online: !!opt.online });
+    for (var k in opt.w) scores[k] += opt.w[k];
+    if (opt.online) online = true;
+    step++;
+    if (step < QUESTIONS.length) renderQuestion();
+    else renderResult();
+  }
+
+  function goBack() {
+    if (!history.length) return;
+    var last = history.pop();
+    for (var k in last.w) scores[k] -= last.w[k];
+    if (last.online) online = false;
+    step--;
+    renderQuestion();
+  }
+
+  function pick() {
+    var s = { fitness: scores.fitness, nutrition: scores.nutrition, combined: scores.combined, bootcamp: scores.bootcamp };
+    if (online) s.bootcamp = -1; // online-only never gets the in-person bootcamp
+    var best = 'combined', max = -Infinity;
+    // priority order on ties favors the combined upsell, then fitness/nutrition
+    ['combined', 'fitness', 'nutrition', 'bootcamp'].forEach(function (k) {
+      if (s[k] > max) { max = s[k]; best = k; }
+    });
+    return best;
+  }
+
+  function renderResult() {
+    setProg();
+    [].forEach.call(prog.children, function (s) { s.classList.add('done'); });
+    var r = RESULTS[pick()];
+    var html = '<div class="result"><span class="badge">' + ICONS.check + r.badge + '</span>' +
+      '<h2>' + r.name + '</h2>' +
+      '<div class="price">' + r.price + (r.per ? '<span>' + r.per + '</span>' : '') + '</div>' +
+      '<p class="why">' + r.why + '</p><ul>';
+    r.bullets.forEach(function (b) { html += '<li>' + ICONS.check + '<span>' + b + '</span></li>'; });
+    html += '</ul><div class="actions">' +
+      '<a class="btn btn-primary" href="' + r.primary.href + '">' + r.primary.t + ' <span class="arr">→</span></a>' +
+      '<a class="btn btn-ghost" href="' + r.secondary.href + '">' + r.secondary.t + '</a></div>' +
+      '<button class="restart" id="qrestart">Start over</button></div>';
+    body.innerHTML = html;
+    document.getElementById('qrestart').addEventListener('click', function () {
+      step = 0; scores = { fitness: 0, nutrition: 0, combined: 0, bootcamp: 0 }; online = false; history = [];
+      renderQuestion();
+    });
+  }
+
+  renderQuestion();
+})();
+</script>
+</body>
+</html>

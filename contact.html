@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en" data-palette="fresh" data-type="modern">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Contact a Metro Detroit Fitness Coach | Holden Health</title>
+<meta name="description" content="Contact Kelsey Holden about online fitness or nutrition coaching and the upcoming Metro Detroit bootcamp. Send a message or request a free call." />
+<link rel="icon" href="assets/logo.png" />
+<link href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&amp;f[]=switzer@300,400,500,600,700&amp;display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+<style>
+.contact-wrap{position:relative;overflow:hidden}
+.contact-wrap .blob{position:absolute;border-radius:50%;filter:blur(80px);z-index:0}
+.contact-wrap .blob.a{width:520px;height:520px;background:var(--aqua);top:-200px;right:-120px;opacity:.22}
+.contact-wrap .blob.b{width:420px;height:420px;background:var(--primary);bottom:-220px;left:-140px;opacity:.16}
+.contact-grid{position:relative;z-index:1;display:grid;grid-template-columns:.9fr 1.1fr;gap:48px;
+  align-items:start;padding:56px 0 96px}
+
+/* left rail */
+.contact-aside h1{font-size:clamp(38px,4.6vw,60px);margin-top:14px}
+.contact-aside .lead{font-size:19px;color:var(--ink-soft);margin:20px 0 32px;max-width:42ch}
+.contact-methods{display:flex;flex-direction:column;gap:14px}
+.cmethod{display:flex;gap:14px;align-items:center;background:var(--card);border:1px solid var(--line);
+  border-radius:16px;padding:16px 18px;transition:transform .18s,box-shadow .18s,border-color .18s}
+.cmethod:hover{transform:translateY(-2px);box-shadow:0 18px 40px -28px rgba(20,12,38,.45);border-color:var(--ink-2)}
+.cmethod .ic{width:46px;height:46px;border-radius:12px;flex:0 0 auto;display:grid;place-items:center;
+  background:color-mix(in srgb,var(--aqua) 20%,var(--paper));color:var(--primary)}
+.cmethod .ic svg{width:22px;height:22px}
+.cmethod b{display:block;font-family:var(--font-display);font-size:16px}
+.cmethod span{font-size:14.5px;color:var(--ink-soft)}
+.contact-social{display:flex;gap:10px;margin-top:26px}
+.contact-social a{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;
+  background:var(--paper-2);color:var(--primary);transition:transform .15s,background .15s}
+.contact-social a:hover{transform:translateY(-2px);background:color-mix(in srgb,var(--aqua) 28%,var(--paper))}
+.contact-social svg{width:20px;height:20px}
+
+/* form card */
+.contact-card{background:var(--card);border:1px solid var(--line);border-radius:26px;
+  box-shadow:0 30px 70px -40px rgba(20,12,38,.5);padding:34px 32px 36px}
+.contact-card h2{font-size:26px}
+.contact-card .sub{color:var(--ink-soft);font-size:15.5px;margin:8px 0 24px}
+.field{margin-bottom:16px}
+.field label{display:block;font-size:14px;font-weight:600;margin-bottom:7px}
+.field input,.field select,.field textarea{width:100%;border:1.5px solid var(--line);border-radius:12px;
+  padding:13px 15px;font:inherit;font-size:15.5px;background:var(--card);color:var(--ink);outline:none;
+  transition:border-color .15s}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--primary)}
+.field textarea{resize:vertical;min-height:130px}
+.field.err input,.field.err textarea{border-color:#e0443e}
+.field .msg{color:#e0443e;font-size:12.5px;margin-top:6px;display:none}
+.field.err .msg{display:block}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.contact-card .btn{width:100%;justify-content:center;margin-top:6px}
+.form-note{font-size:13px;color:var(--ink-soft);margin-top:14px;text-align:center}
+
+/* success state */
+.sent{text-align:center;padding:18px 8px}
+.sent .big-check{width:74px;height:74px;border-radius:50%;margin:0 auto 20px;display:grid;place-items:center;
+  background:var(--grad);color:#fff;animation:pop .5s cubic-bezier(.2,1.3,.5,1)}
+.sent .big-check svg{width:36px;height:36px}
+@keyframes pop{from{transform:scale(.4);opacity:0}to{transform:scale(1);opacity:1}}
+.sent h2{font-size:28px}
+.sent p{color:var(--ink-soft);font-size:16px;margin:12px auto 0;max-width:40ch}
+
+@media (max-width:920px){
+  .contact-grid{grid-template-columns:1fr;gap:36px;padding-bottom:64px}
+  .field-row{grid-template-columns:1fr}
+}
+</style>
+<link rel="canonical" href="https://www.holden.health/contact.html" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Holden Health" />
+<meta property="og:title" content="Contact a Metro Detroit Fitness Coach | Holden Health" />
+<meta property="og:description" content="Get in touch with Kelsey Holden. Questions about coaching, the Metro Detroit bootcamp, or anything else? Send a message or email HoldenHealth.Coaching@gmail.com." />
+<meta property="og:url" content="https://www.holden.health/contact.html" />
+<meta property="og:image" content="https://www.holden.health/assets/logo.png" />
+<meta name="twitter:card" content="summary" />
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="index.html">
+      <span class="mark"><img src="assets/logo.png" alt="Holden Health logo" /></span>
+      <span>Holden Health<small>Train · Nourish · Thrive</small></span>
+    </a>
+    <nav class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="coaching.html">Coaching</a>
+      <a href="about.html">Meet Kelsey</a>
+      <a href="resources.html">Resources</a>
+      <a href="contact.html" class="active">Contact</a>
+    </nav>
+    <div class="nav-cta"><a class="btn btn-primary" href="book.html">Book a free call</a></div>
+  </div>
+</header>
+
+<section class="contact-wrap">
+  <span class="blob a"></span><span class="blob b"></span>
+  <div class="wrap">
+    <div class="contact-grid">
+      <!-- LEFT -->
+      <aside class="contact-aside reveal">
+        <span class="eyebrow">Get in touch</span>
+        <h1>Let's <span class="grad-text">talk.</span></h1>
+        <p class="lead">Questions about coaching, the Metro Detroit bootcamp, or which plan fits you? Send a note and Kelsey will get back to you, usually within a day.</p>
+
+        <div class="contact-methods">
+          <a class="cmethod" href="mailto:HoldenHealth.Coaching@gmail.com">
+            <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <div><b>Email</b><span>HoldenHealth.Coaching@gmail.com</span></div>
+          </a>
+          <a class="cmethod" href="book.html">
+            <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 2v3M16 2v3M3 9h18M5 5h14a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Z"/></svg></span>
+            <div><b>Book a free call</b><span>Prefer to talk? Grab a 20-minute slot.</span></div>
+          </a>
+          <div class="cmethod" style="cursor:default">
+            <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.4-7-10a7 7 0 0 1 14 0c0 5.6-7 10-7 10Z"/><circle cx="12" cy="11" r="2.5"/></svg></span>
+            <div><b>Based in Metro Detroit</b><span>Online coaching available anywhere.</span></div>
+          </div>
+        </div>
+
+        <div class="contact-social">
+          <a href="https://www.instagram.com/holdenhealthllc" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a>
+          <a href="https://www.facebook.com/holdenhealthllc/" target="_blank" rel="noopener" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 8h2V5h-2a3 3 0 0 0-3 3v2H9v3h2v6h3v-6h2l1-3h-3V8.5A.5.5 0 0 1 14 8Z" stroke-linejoin="round"/></svg></a>
+          <a href="mailto:HoldenHealth.Coaching@gmail.com" aria-label="Email"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        </div>
+      </aside>
+
+      <!-- RIGHT: form -->
+      <div class="contact-card reveal">
+        <div id="contactFormWrap">
+          <h2>Send a message</h2>
+          <p class="sub">Tell Kelsey a little about your goals and what you're looking for.</p>
+          <form id="contactForm" name="contact" method="POST" data-netlify="true" netlify-honeypot="bot-field" novalidate>
+            <input type="hidden" name="form-name" value="contact" />
+            <p hidden><label>Don't fill this out: <input name="bot-field" /></label></p>
+            <div class="field-row">
+              <div class="field" id="c-name"><label for="contact-name">Full name</label><input id="contact-name" type="text" name="name" autocomplete="name" placeholder="Jamie Rivera" /><div class="msg">Please enter your name.</div></div>
+              <div class="field" id="c-email"><label for="contact-email">Email</label><input id="contact-email" type="email" name="email" autocomplete="email" placeholder="you@email.com" /><div class="msg">Please enter a valid email.</div></div>
+            </div>
+            <div class="field" id="c-topic"><label for="contact-topic">What's this about?</label>
+              <select id="contact-topic" name="topic">
+                <option>Fitness coaching</option>
+                <option>Nutrition coaching</option>
+                <option>Training + Nutrition</option>
+                <option>Metro Detroit bootcamp</option>
+                <option>Something else</option>
+              </select>
+            </div>
+            <div class="field" id="c-message"><label for="contact-message">Your message</label><textarea id="contact-message" name="message" placeholder="Hi Kelsey, I'm hoping to…"></textarea><div class="msg">Please add a short message.</div></div>
+            <button class="btn btn-primary" type="submit">Send message <span class="arr">→</span></button>
+            <div class="form-note">Prefer email? Reach Kelsey directly at <a href="mailto:HoldenHealth.Coaching@gmail.com" style="color:var(--primary);font-weight:600">HoldenHealth.Coaching@gmail.com</a>.</div>
+          </form>
+        </div>
+        <div id="contactSent" class="sent" style="display:none">
+          <div class="big-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <h2>Message sent! 🎉</h2>
+          <p id="sentLine">Thanks for reaching out. Kelsey will get back to you soon.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer-top">
+      <div class="footer-col">
+        <a class="brand" href="index.html">
+          <span class="mark"><img src="assets/logo.png" alt="Holden Health logo" /></span>
+          <span>Holden Health<small>Train · Nourish · Thrive</small></span>
+        </a>
+        <p style="margin-top:18px">Personal fitness and nutrition coaching built around small habits that stick. Online and in Metro Detroit.</p>
+        <a class="btn btn-primary" href="book.html">Book a free call</a>
+      </div>
+      <div class="footer-col"><h5>Explore</h5><ul>
+        <li><a href="index.html">Home</a></li><li><a href="coaching.html">Coaching</a></li>
+        <li><a href="about.html">Meet Kelsey</a></li><li><a href="resources.html">Resources</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul></div>
+      <div class="footer-col"><h5>Programs</h5><ul>
+        <li><a href="fitness-coaching.html">Online personal training</a></li><li><a href="nutrition-coaching.html">Online nutrition coaching</a></li>
+        <li><a href="coaching.html">Training + Nutrition</a></li><li><a href="coaching.html#bootcamp">Detroit bootcamp</a></li>
+      </ul></div>
+      <div class="footer-col"><h5>Stay connected</h5>
+        <p>Get free tips, recipes &amp; motivation.</p>
+        <div class="socials">
+          <a href="https://www.instagram.com/holdenhealthllc" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a>
+          <a href="https://www.facebook.com/holdenhealthllc/" target="_blank" rel="noopener" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 8h2V5h-2a3 3 0 0 0-3 3v2H9v3h2v6h3v-6h2l1-3h-3V8.5A.5.5 0 0 1 14 8Z" stroke-linejoin="round"/></svg></a>
+          <a href="mailto:HoldenHealth.Coaching@gmail.com" aria-label="Email"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Holden Health LLC. All rights reserved.</span>
+      <span>Made with care in Metro Detroit.</span><span class="legal-links"><a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a> · <a href="disclaimer.html">Health disclaimer</a></span>
+    </div>
+  </div>
+</footer>
+
+<script src="site.js"></script>
+<script>
+// ── Contact form ──
+(function () {
+  var form = document.getElementById('contactForm');
+  if (!form) return;
+  function valEmail(v){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var fn = document.getElementById('c-name');
+    var fe = document.getElementById('c-email');
+    var fm = document.getElementById('c-message');
+    var name = fn.querySelector('input').value.trim();
+    var email = fe.querySelector('input').value.trim();
+    var message = fm.querySelector('textarea').value.trim();
+    var ok = true;
+    if (!name) { fn.classList.add('err'); ok = false; } else fn.classList.remove('err');
+    if (!valEmail(email)) { fe.classList.add('err'); ok = false; } else fe.classList.remove('err');
+    if (!message) { fm.classList.add('err'); ok = false; } else fm.classList.remove('err');
+    if (!ok) return;
+
+    var button = form.querySelector('button[type="submit"]');
+    button.disabled = true;
+    button.textContent = 'Sending…';
+    fetch('/', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      body: new URLSearchParams(new FormData(form)).toString()
+    }).then(function (response) {
+      if (!response.ok) throw new Error('Submission failed');
+      document.getElementById('sentLine').textContent =
+        'Thanks, ' + name.split(' ')[0] + '! Your message is in. Kelsey will get back to you at ' + email + ' soon.';
+      document.getElementById('contactFormWrap').style.display = 'none';
+      document.getElementById('contactSent').style.display = 'block';
+    }).catch(function () {
+      button.disabled = false;
+      button.textContent = 'Try sending again';
+      fm.classList.add('err');
+      fm.querySelector('.msg').textContent = 'Could not send. Please try again or email Kelsey directly.';
+    });
+  });
+
+  form.querySelectorAll('input, textarea').forEach(function (i) {
+    i.addEventListener('input', function () { i.closest('.field').classList.remove('err'); });
+  });
+})();
+</script>
+</body>
+</html>

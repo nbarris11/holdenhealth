@@ -1,0 +1,56 @@
+# Netlify configuration for the Holden Health static site.
+# This site is plain HTML/CSS/JS — there is no build step.
+
+[build]
+  publish = "."
+
+# Keep one canonical host so links and ranking signals are not split.
+[[redirects]]
+  from = "https://holden.health/*"
+  to = "https://www.holden.health/:splat"
+  status = 301
+  force = true
+
+# Preserve links and search results from the previous Wix site.
+[[redirects]]
+  from = "/meet-kelsey"
+  to = "/about.html"
+  status = 301
+[[redirects]]
+  from = "/fitness-coaching"
+  to = "/fitness-coaching.html"
+  status = 301
+[[redirects]]
+  from = "/nutrition-coaching"
+  to = "/nutrition-coaching.html"
+  status = 301
+[[redirects]]
+  from = "/packages"
+  to = "/coaching.html"
+  status = 301
+[[redirects]]
+  from = "/wednesday-reset"
+  to = "/wednesday-reset.html"
+  status = 301
+[[redirects]]
+  from = "/wednesday-note"
+  to = "/wednesday-note.html"
+  status = 301
+[[redirects]]
+  from = "/contact-1"
+  to = "/contact.html"
+  status = 301
+
+# Sensible security headers for a static site
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "SAMEORIGIN"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+# Long cache for static assets (safe — filenames rarely change)
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"

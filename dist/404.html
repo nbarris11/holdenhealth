@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" data-palette="fresh" data-type="modern">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Page Not Found | Holden Health</title>
+<meta name="robots" content="noindex" />
+<meta name="robots" content="noindex" />
+<link rel="icon" href="assets/logo.png" />
+<link href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&amp;f[]=switzer@300,400,500,600,700&amp;display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+<style>
+.nf{position:relative;overflow:hidden;min-height:74vh;display:grid;place-items:center;text-align:center}
+.nf .blob{position:absolute;border-radius:50%;filter:blur(80px);z-index:0}
+.nf .blob.a{width:480px;height:480px;background:var(--aqua);top:-180px;right:-100px;opacity:.24}
+.nf .blob.b{width:380px;height:380px;background:var(--primary);bottom:-200px;left:-120px;opacity:.18}
+.nf-inner{position:relative;z-index:1;max-width:560px;padding:40px 32px}
+.nf .big{font-family:var(--font-display);font-weight:600;font-size:clamp(80px,16vw,140px);line-height:1;
+  background:var(--grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent}
+.nf h1{font-size:clamp(28px,4vw,40px);margin:8px 0 0}
+.nf p{font-size:18px;color:var(--ink-soft);margin:18px 0 30px}
+.nf .actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="index.html">
+      <span class="mark"><img src="assets/logo.png" alt="Holden Health logo" /></span>
+      <span>Holden Health<small>Train · Nourish · Thrive</small></span>
+    </a>
+    <nav class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="coaching.html">Coaching</a>
+      <a href="about.html">Meet Kelsey</a>
+      <a href="resources.html">Resources</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+    <div class="nav-cta"><a class="btn btn-primary" href="book.html">Book a free call</a></div>
+  </div>
+</header>
+
+<section class="nf">
+  <span class="blob a"></span><span class="blob b"></span>
+  <div class="nf-inner">
+    <div class="big">404</div>
+    <h1>This page took a rest day.</h1>
+    <p>The page you're looking for isn't here. Let's get you back to something useful.</p>
+    <div class="actions">
+      <a class="btn btn-primary" href="index.html">Back to home <span class="arr">→</span></a>
+      <a class="btn btn-ghost" href="coaching.html">See coaching options</a>
+    </div>
+  </div>
+</section>
+
+<script src="site.js"></script>
+</body>
+</html>

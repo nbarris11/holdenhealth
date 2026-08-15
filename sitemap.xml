@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://www.holden.health/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
+  <url><loc>https://www.holden.health/coaching.html</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://www.holden.health/fitness-coaching.html</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://www.holden.health/nutrition-coaching.html</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://www.holden.health/about.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.holden.health/book.html</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://www.holden.health/quiz.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.holden.health/wednesday-reset.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.holden.health/wednesday-note.html</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.holden.health/resources.html</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.holden.health/recipes.html</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://www.holden.health/blog-all-or-nothing.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://www.holden.health/contact.html</loc><changefreq>yearly</changefreq><priority>0.5</priority></url>
+</urlset>
