@@ -224,7 +224,7 @@
     var button = form.querySelector('button[type="submit"]');
     button.disabled = true;
     button.textContent = 'Sending…';
-    fetch('/', {
+    fetch('https://portal.holden.health/api/forms', {
       method: 'POST',
       headers: {'Content-Type': 'application/x-www-form-urlencoded'},
       body: new URLSearchParams(new FormData(form)).toString()

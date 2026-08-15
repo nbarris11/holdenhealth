@@ -131,7 +131,7 @@
         var note = form.parentElement.querySelector('.note');
         button.disabled = true;
         button.textContent = 'Sending…';
-        fetch('/', {
+        fetch('https://portal.holden.health/api/forms', {
           method: 'POST',
           headers: {'Content-Type': 'application/x-www-form-urlencoded'},
           body: encodeForm(new FormData(form))
@@ -158,7 +158,7 @@
         var originalText = button.textContent;
         button.disabled = true;
         button.textContent = 'Joining…';
-        fetch('/', {
+        fetch('https://portal.holden.health/api/forms', {
           method: 'POST',
           headers: {'Content-Type': 'application/x-www-form-urlencoded'},
           body: encodeForm(new FormData(form))

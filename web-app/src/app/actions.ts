@@ -174,7 +174,7 @@ export async function submitRegistrationRequest(formData: FormData) {
 
   await Promise.all([
     sendTransactionalEmail(
-      "keholde@gmail.com",
+      "holdenhealth.coaching@gmail.com",
       `New session request from ${fullName}`,
       `<h2>New Focus on You registration request</h2><p><strong>${fullName}</strong> (${email}, ${phone}) asked to join.</p><p>Weekly commitment: ${weeklyCommitment} days.</p><p>Preferred times: ${attendanceInterest.join(", ")}.</p><p><a href="https://portal.holden.health/admin#approvals">Review this request</a></p>`,
     ),
