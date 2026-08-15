@@ -66,14 +66,16 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
 
   return (
     <main className="app-shell admin-shell">
-      <header className="app-header"><div><span className="eyebrow">Holden Health admin</span><h1>Focus on You.</h1><p className="lede">Run the session without juggling texts, notes, and spreadsheets.</p></div><div className="header-actions"><a className="button secondary" href="/admin/set-password">Change password</a><form action={signOut}><button className="button secondary" type="submit">Sign out</button></form></div></header>
-      <nav className="section-nav" aria-label="Admin sections"><a href="#today">Today</a><a href="#approvals">Approvals</a><a href="#members">Members</a><a href="#check-ins">Check-ins</a><a href="#content">Content</a><a href="#session">Session setup</a><a href="#administrators">Administrators</a></nav>
+      <header className="app-header"><div><span className="eyebrow">Holden Health admin</span><h1>Focus on You.</h1><p className="lede">Run the session without juggling texts, notes, and spreadsheets.</p></div><div className="header-actions"><a className="button primary" href="/admin/communications">New communication</a><a className="button secondary" href="/admin/set-password">Change password</a><form action={signOut}><button className="button secondary" type="submit">Sign out</button></form></div></header>
+      <nav className="section-nav" aria-label="Admin sections"><a href="#today">Today</a><a href="#approvals">Approvals</a><a href="#members">Members</a><a href="#check-ins">Check-ins</a><a href="#content">Content</a><a href="/admin/communications">Communications</a><a href="#session">Session setup</a><a href="#administrators">Administrators</a></nav>
 
       <section id="today" className="stat-grid">
         <article className="panel stat-card"><span>Enrolled</span><strong>{typedEnrollments.filter((row) => ["invited", "active"].includes(row.status)).length}</strong><small>of {session.capacity} places</small></article>
         <article className="panel stat-card"><span>Paid</span><strong>{paidCount}</strong><small>{typedEnrollments.length - paidCount} to follow up</small></article>
         <article className="panel stat-card"><span>Needs attention</span><strong>{openCheckIns.length + pendingRequests.length}</strong><small>{pendingRequests.length} approval{pendingRequests.length === 1 ? "" : "s"} · {openCheckIns.length} check-in{openCheckIns.length === 1 ? "" : "s"}</small></article>
       </section>
+
+      <section className="admin-quick-actions" aria-label="Quick actions"><a className="panel" href="#approvals"><span className="eyebrow">Approve</span><h3>Review requests</h3><p>{pendingRequests.length} waiting</p></a><a className="panel" href="#members"><span className="eyebrow">Add</span><h3>New member</h3><p>Create portal access</p></a><a className="panel featured" href="/admin/communications"><span className="eyebrow">Connect</span><h3>Message members</h3><p>Newsletter, update, or reminder →</p></a></section>
 
       <section className="section-block">
         <div className="section-heading"><div><span className="eyebrow">Attendance outlook</span><h2>Know who plans to show up.</h2></div><p>Member selections help with room and equipment setup. They are flexible, not strict reservations.</p></div>

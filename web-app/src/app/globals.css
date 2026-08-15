@@ -121,6 +121,10 @@ p { line-height: 1.65; }
 .mini-meeting span { display: block; margin-bottom: 7px; color: var(--muted); font-size: .8rem; }
 .mini-meeting strong { margin: 0; font-size: 1rem; }
 .admin-split { align-items: start; }
+.admin-quick-actions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 18px 0 0; }
+.admin-quick-actions a { min-height: 155px; color: inherit; text-decoration: none; }
+.admin-quick-actions h3 { margin: 34px 0 7px; font-size: 1.4rem; }
+.admin-quick-actions .featured { background: linear-gradient(135deg, #e3f6f1, #eee8fa); }
 .admin-notice { margin-top: 20px; text-transform: capitalize; }
 .admin-access-list { display: grid; margin-top: 24px; }
 .admin-access-list > div { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 15px 0; border-top: 1px solid var(--line); }
@@ -146,6 +150,38 @@ p { line-height: 1.65; }
 .wide-form { max-width: 900px; }
 .approval-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
 .approval-card > p { margin: 18px 0 0; }
+.communications-shell { max-width: 1380px; }
+.communication-intro { display: flex; align-items: center; justify-content: space-between; gap: 24px; margin-bottom: 18px; background: linear-gradient(135deg, #e3f6f1, #eee8fa); }
+.communication-intro h2 { margin: 0; }
+.communication-counts { display: flex; flex-wrap: wrap; gap: 12px; }
+.communication-counts span { min-width: 100px; padding: 13px 16px; border-radius: 16px; background: rgba(255,255,255,.72); color: var(--muted); font-size: .78rem; text-align: center; }
+.communication-counts strong { margin: 0 0 2px; color: var(--ink); font-size: 1.55rem; }
+.communication-builder { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(360px, .95fr); gap: 18px; align-items: start; }
+.communication-form { margin: 0; }
+.communication-form h2 { margin-bottom: 0; }
+.form-divider { margin-top: 18px; padding-top: 26px; border-top: 1px solid var(--line); }
+.send-confirmation { padding: 16px; border: 1px solid rgba(93,74,145,.2); border-radius: 16px; background: #f7f4fd; }
+.send-confirmation p { margin: 7px 0 0; font-size: .82rem; }
+.communication-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.communication-preview-wrap { position: sticky; top: 20px; padding: 10px; }
+.email-subject-preview { display: grid; gap: 4px; margin-bottom: 14px; padding: 14px 16px; border: 1px solid var(--line); border-radius: 14px; background: white; }
+.email-subject-preview span { overflow: hidden; color: var(--muted); font-size: .84rem; text-overflow: ellipsis; white-space: nowrap; }
+.email-preview { overflow: hidden; border: 1px solid #e5e0ec; border-radius: 24px; background: white; box-shadow: var(--shadow); }
+.email-preview-head { padding: 32px; background: linear-gradient(135deg, #e3f6f1, #eee8fa); }
+.email-preview-head > span { color: var(--lavender-dark); font-size: .72rem; font-weight: 900; letter-spacing: .13em; text-transform: uppercase; }
+.email-preview-head h2 { margin: 18px 0 8px; font-size: clamp(1.9rem, 4vw, 2.8rem); }
+.email-preview-head p { margin: 0; }
+.email-preview-body { padding: 32px; color: #4e4a60; line-height: 1.7; white-space: pre-wrap; }
+.email-preview-body > strong { color: var(--ink); }
+.email-preview-body p { margin: 20px 0 0; }
+.email-preview-button { display: inline-block; margin-top: 26px; padding: 12px 20px; border-radius: 999px; background: var(--lavender-dark); color: white; font-weight: 800; }
+.email-preview-foot { padding: 22px 32px; border-top: 1px solid #ece8f0; background: #fbfaf6; color: var(--muted); font-size: .78rem; line-height: 1.6; }
+.campaign-history { display: grid; gap: 10px; }
+.campaign-history article { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 20px 24px; }
+.campaign-history h3 { margin: 0 0 7px; }
+.campaign-history p { font-size: .85rem; }
+.campaign-history article > div:last-child { text-align: right; }
+.unsubscribe-cancel { margin-top: 12px; }
 .register-card { width: min(780px, 100%); }
 .registration-session { margin: 28px 0; padding: 20px; border: 1px solid rgba(119,99,168,.2); border-radius: 18px; background: #f3effb; }
 .registration-session strong, .registration-session span { display: block; }
@@ -167,7 +203,10 @@ p { line-height: 1.65; }
   .section-nav { margin-inline: -6px; border-radius: 16px; }
   .section-heading { display: block; }
   .section-heading > p { margin-top: 12px; }
-  .member-hero, .split-layout, .field-grid, .field-grid.three, .resource-grid, .details-grid, .roster-grid, .checkin-admin-list, .admin-meeting-grid, .approval-grid { grid-template-columns: 1fr; }
+  .member-hero, .split-layout, .field-grid, .field-grid.three, .resource-grid, .details-grid, .roster-grid, .checkin-admin-list, .admin-meeting-grid, .approval-grid, .admin-quick-actions, .communication-builder { grid-template-columns: 1fr; }
+  .communication-preview-wrap { position: static; padding: 16px 0 0; }
+  .communication-intro, .campaign-history article { align-items: stretch; flex-direction: column; }
+  .campaign-history article > div:last-child { text-align: left; }
   .meeting-row { align-items: stretch; flex-direction: column; }
   .choice-button { width: 100%; }
   .answer-grid { grid-template-columns: 1fr; }
