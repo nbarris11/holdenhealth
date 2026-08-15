@@ -28,7 +28,11 @@ export async function requestMagicLink(formData: FormData) {
   });
 
   if (error) {
-    redirect(`/login?error=${encodeURIComponent("We could not send the sign-in email. Contact Kelsey if you need help.")}`);
+    const message = error.status === 429
+      ? "Too many sign-in emails were requested. Please wait a few minutes and try again."
+      : "We could not send the sign-in email. Contact Kelsey if you need help.";
+
+    redirect(`/login?error=${encodeURIComponent(message)}`);
   }
 
   redirect(`/login?sent=${encodeURIComponent(email)}`);

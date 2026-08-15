@@ -37,6 +37,18 @@
     });
   }
 
+  // ---------- Member login ----------
+  function initMemberLogin() {
+    var links = document.querySelector('.nav .nav-links');
+    if (!links || links.querySelector('.member-login')) return;
+
+    var memberLogin = document.createElement('a');
+    memberLogin.className = 'member-login';
+    memberLogin.href = 'https://holdenhealth-portal.vercel.app/login';
+    memberLogin.textContent = 'Member Login';
+    links.appendChild(memberLogin);
+  }
+
   // ---------- Mobile nav ----------
   // Builds a hamburger + slide-down menu from the existing .nav-links so every
   // page gets a working mobile menu without per-page markup.
@@ -164,7 +176,7 @@
     });
   }
 
-  function init() { initPageA11y(); initReveal(); initFaq(); initMobileNav(); initGuideForms(); initNoteForms(); }
+  function init() { initPageA11y(); initReveal(); initFaq(); initMemberLogin(); initMobileNav(); initGuideForms(); initNoteForms(); }
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
