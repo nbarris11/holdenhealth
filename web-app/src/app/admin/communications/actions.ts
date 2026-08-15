@@ -75,7 +75,7 @@ export async function sendMemberCommunication(formData: FormData) {
   const enrollments = (enrollmentData ?? []) as unknown as EnrollmentRow[];
   const memberIds = enrollments.map((row) => row.member_id);
   if (!memberIds.length) redirect("/admin/communications?message=no-recipients");
-  const { data: contactData, error: contactError } = await supabase.from("member_contacts").select("user_id,email,unsubscribe_token").in("user_id", memberIds).eq("email_opt_in", true);
+  const { data: contactData, error: contactError } = await supabase.from("member_contacts").select("user_id,email,unsubscribe_token").in("user_id", memberIds).eq("email_opt_in", true).eq("is_test", false);
   if (contactError) redirect("/admin/communications?message=recipient-error");
 
   const contacts = new Map(((contactData ?? []) as ContactRow[]).map((contact) => [contact.user_id, contact]));

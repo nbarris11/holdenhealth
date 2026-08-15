@@ -30,7 +30,7 @@ export default async function CommunicationsPage({ searchParams }: Communication
   ]);
   const enrollments = (enrollmentData ?? []) as Enrollment[];
   const memberIds = enrollments.map((row) => row.member_id);
-  const { data: contacts } = memberIds.length ? await supabase.from("member_contacts").select("user_id").in("user_id", memberIds).eq("email_opt_in", true) : { data: [] };
+  const { data: contacts } = memberIds.length ? await supabase.from("member_contacts").select("user_id").in("user_id", memberIds).eq("email_opt_in", true).eq("is_test", false) : { data: [] };
   const eligibleIds = new Set((contacts ?? []).map((contact) => contact.user_id));
   const eligible = enrollments.filter((row) => eligibleIds.has(row.member_id));
 
