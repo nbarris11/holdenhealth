@@ -31,7 +31,8 @@ export async function updateSession(request: NextRequest) {
   const { data } = await supabase.auth.getClaims();
   const isAuthenticated = Boolean(data?.claims?.sub);
   const path = request.nextUrl.pathname;
-  const isProtected = path.startsWith("/portal") || path.startsWith("/admin");
+  const isPublicAdminLogin = path === "/admin/login";
+  const isProtected = path.startsWith("/portal") || (path.startsWith("/admin") && !isPublicAdminLogin);
 
   if (isProtected && !isAuthenticated) {
     const loginUrl = request.nextUrl.clone();
