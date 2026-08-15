@@ -26,7 +26,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
           <input id="email" name="email" type="email" autoComplete="email" required />
           <button className="button primary" type="submit">Email me a sign-in link</button>
         </form>
-        <p className="fine-print">Don’t have an invitation? <a href="mailto:HoldenHealth.Coaching@gmail.com">Contact Kelsey</a>.</p>
+        <p className="fine-print">Interested in a session? <Link href="/register">Request a place</Link>. Already spoke with Kelsey? <a href="mailto:HoldenHealth.Coaching@gmail.com">Contact Holden Health</a>.</p>
       </section>
     </main>
   );
