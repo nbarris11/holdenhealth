@@ -3,6 +3,7 @@ import {
   respondToCheckIn, signOut, updateEnrollmentAndPayment, updateSessionDetails,
 } from "@/app/actions";
 import { startMemberPreview } from "@/app/admin/preview-actions";
+import { inviteAdministrator, removeAdministrator } from "@/app/admin/admin-actions";
 import { verifyAdmin } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 
@@ -13,15 +14,27 @@ type Meeting = { id: string; starts_at: string; title: string; cancelled: boolea
 type CheckIn = { id: string; enrollment_id: string; week_number: number; went_well: string; did_not_go_well: string; upcoming_goal: string; support_needed: string; submitted_at: string; reviewed_at: string | null; coach_response: string | null };
 
 const dateTimeFormatter = new Intl.DateTimeFormat("en-US", { weekday: "short", month: "short", day: "numeric", hour: "numeric", minute: "2-digit", timeZone: "America/Detroit" });
+const adminMessageLabels: Record<string, string> = {
+  "already-admin": "That person already has administrator access.",
+  "already-invited": "That email already has a pending invitation.",
+  "cannot-remove-yourself": "You cannot remove your own administrator access.",
+  "cannot-remove-last-admin": "The final administrator cannot be removed.",
+  "admin-removed": "Administrator access removed.",
+};
 
-export default async function AdminPage() {
-  await verifyAdmin();
+type AdminPageProps = { searchParams: Promise<Record<string, string | string[] | undefined>> };
+type AdminAccount = { user_id: string; email: string; full_name: string | null; created_at: string };
+
+export default async function AdminPage({ searchParams }: AdminPageProps) {
+  const activeAdmin = await verifyAdmin();
+  const params = await searchParams;
+  const adminMessage = typeof params.adminMessage === "string" ? params.adminMessage : "";
   const supabase = await createClient();
   const { data: session } = await supabase.from("sessions").select("*").in("status", ["enrolling", "active"]).order("starts_on").limit(1).maybeSingle();
 
   if (!session) return <main className="app-shell"><section className="panel"><h1>No session found.</h1></section></main>;
 
-  const [{ data: enrollments }, { data: meetings }, { data: attendance }, { data: announcements }, { data: resources }, { data: checkIns }, { data: invitations }, { data: registrationRequests }] = await Promise.all([
+  const [{ data: enrollments }, { data: meetings }, { data: attendance }, { data: announcements }, { data: resources }, { data: checkIns }, { data: invitations }, { data: registrationRequests }, { data: adminAccounts }, { data: adminInvitations }] = await Promise.all([
     supabase.from("enrollments").select("id,member_id,status,returning_member,weekly_commitment,created_at").eq("session_id", session.id).order("created_at"),
     supabase.from("class_meetings").select("id,starts_at,title,cancelled").eq("session_id", session.id).order("starts_at"),
     supabase.from("attendance_selections").select("meeting_id,attended"),
@@ -30,6 +43,8 @@ export default async function AdminPage() {
     supabase.from("check_ins").select("id,enrollment_id,week_number,went_well,did_not_go_well,upcoming_goal,support_needed,submitted_at,reviewed_at,coach_response").order("submitted_at", { ascending: false }),
     supabase.from("member_invitations").select("id,email,full_name,claimed_at,created_at").eq("session_id", session.id).order("created_at", { ascending: false }),
     supabase.from("registration_requests").select("id,full_name,email,phone,returning_member,weekly_commitment,attendance_interest,note,status,created_at").eq("session_id", session.id).order("created_at", { ascending: false }),
+    supabase.rpc("list_admin_accounts"),
+    supabase.from("admin_invitations").select("id,email,accepted_at,revoked_at,created_at").is("accepted_at", null).is("revoked_at", null).order("created_at", { ascending: false }),
   ]);
 
   const typedEnrollments = (enrollments ?? []) as Enrollment[];
@@ -51,8 +66,8 @@ export default async function AdminPage() {
 
   return (
     <main className="app-shell admin-shell">
-      <header className="app-header"><div><span className="eyebrow">Holden Health admin</span><h1>Focus on You.</h1><p className="lede">Run the session without juggling texts, notes, and spreadsheets.</p></div><form action={signOut}><button className="button secondary" type="submit">Sign out</button></form></header>
-      <nav className="section-nav" aria-label="Admin sections"><a href="#today">Today</a><a href="#approvals">Approvals</a><a href="#members">Members</a><a href="#check-ins">Check-ins</a><a href="#content">Content</a><a href="#session">Session setup</a></nav>
+      <header className="app-header"><div><span className="eyebrow">Holden Health admin</span><h1>Focus on You.</h1><p className="lede">Run the session without juggling texts, notes, and spreadsheets.</p></div><div className="header-actions"><a className="button secondary" href="/admin/set-password">Change password</a><form action={signOut}><button className="button secondary" type="submit">Sign out</button></form></div></header>
+      <nav className="section-nav" aria-label="Admin sections"><a href="#today">Today</a><a href="#approvals">Approvals</a><a href="#members">Members</a><a href="#check-ins">Check-ins</a><a href="#content">Content</a><a href="#session">Session setup</a><a href="#administrators">Administrators</a></nav>
 
       <section id="today" className="stat-grid">
         <article className="panel stat-card"><span>Enrolled</span><strong>{typedEnrollments.filter((row) => ["invited", "active"].includes(row.status)).length}</strong><small>of {session.capacity} places</small></article>
@@ -102,6 +117,24 @@ export default async function AdminPage() {
 
       <section id="session" className="section-block panel">
         <span className="eyebrow">Session setup</span><h2>Update the member-facing details.</h2><form className="stack-form wide-form" action={updateSessionDetails}><input type="hidden" name="sessionId" value={session.id} /><label>Session name<input name="name" defaultValue={session.name} required /></label><label>Description<textarea name="description" defaultValue={session.description ?? ""} required /></label><div className="field-grid three"><label>Status<select name="status" defaultValue={session.status}><option value="draft">Draft</option><option value="enrolling">Enrolling</option><option value="full">Full</option><option value="active">Active</option><option value="completed">Completed</option><option value="cancelled">Cancelled</option></select></label><label>Capacity<input name="capacity" type="number" min="1" max="100" defaultValue={session.capacity} /></label><label className="check-label"><input name="published" type="checkbox" defaultChecked={session.published} /> Published</label></div><div className="field-grid"><label>2 days/week price<input name="twoDayPrice" type="number" min="0" step="0.01" defaultValue={((session.two_day_price_cents ?? session.new_member_price_cents) / 100).toFixed(2)} /></label><label>3 days/week price<input name="threeDayPrice" type="number" min="0" step="0.01" defaultValue={((session.three_day_price_cents ?? session.returning_member_price_cents ?? 0) / 100).toFixed(2)} /></label></div><button className="button primary" type="submit">Save session details</button></form>
+      </section>
+
+      <section id="administrators" className="section-block split-layout admin-split">
+        <div className="panel">
+          <span className="eyebrow">Administrator access</span><h2>Invite someone you trust.</h2><p>Administrators can view members, payments, check-ins, and change portal content. Only grant this access when it is truly needed.</p>
+          {adminMessage ? <p className="notice success admin-notice">{adminMessageLabels[adminMessage] ?? adminMessage}</p> : null}
+          <form className="stack-form" action={inviteAdministrator}>
+            <label>Email address<input name="email" type="email" placeholder="name@example.com" required /></label>
+            <button className="button primary" type="submit">Invite administrator</button>
+          </form>
+        </div>
+        <div className="panel">
+          <span className="eyebrow">Who has access</span><h2>Current administrators.</h2>
+          <div className="admin-access-list">
+            {((adminAccounts ?? []) as AdminAccount[]).map((account) => <div key={account.user_id}><div><strong>{account.full_name || account.email}</strong><span>{account.email}{account.user_id === activeAdmin.userId ? " · You" : ""}</span></div>{account.user_id !== activeAdmin.userId ? <form action={removeAdministrator}><input type="hidden" name="userId" value={account.user_id} /><button className="text-button danger" type="submit">Remove access</button></form> : <span className="status-pill success">Active</span>}</div>)}
+          </div>
+          {(adminInvitations ?? []).length ? <><span className="eyebrow pending-admin-heading">Pending invitations</span><div className="simple-list">{(adminInvitations ?? []).map((invitation) => <div key={invitation.id}><strong>{invitation.email}</strong><em className="muted-text">Waiting for setup</em></div>)}</div></> : null}
+        </div>
       </section>
     </main>
   );

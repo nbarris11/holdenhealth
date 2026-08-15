@@ -54,7 +54,7 @@ export default async function PortalPage() {
     return (
       <main className="app-shell">
         <header className="app-header"><div><span className="eyebrow">Holden Health member portal</span><h1>Hi, {firstName}.</h1></div><form action={signOut}><button className="button secondary" type="submit">Sign out</button></form></header>
-        <section className="panel empty-state"><span className="eyebrow">Account ready</span><h2>Your session will appear after your registration is approved.</h2><p>If you have already paid or spoken with Kelsey, she may still be finishing the setup.</p><a className="button primary" href="mailto:HoldenHealth.Coaching@gmail.com">Contact Holden Health</a></section>
+        {adminRole ? <section className="panel empty-state admin-redirect-card"><span className="eyebrow">Administrator account</span><h2>You’re signed in with admin access.</h2><p>The member portal is empty because this account belongs to an administrator.</p><div className="button-row"><a className="button primary" href="/admin">Open admin dashboard</a><a className="button secondary" href="/admin/set-password">Set or change password</a></div></section> : <section className="panel empty-state"><span className="eyebrow">Account ready</span><h2>Your session will appear after your registration is approved.</h2><p>If you have already paid or spoken with Kelsey, she may still be finishing the setup.</p><a className="button primary" href="mailto:HoldenHealth.Coaching@gmail.com">Contact Holden Health</a></section>}
       </main>
     );
   }

@@ -16,12 +16,18 @@ export async function GET(request: NextRequest) {
   // Supporting both keeps existing and newly generated links compatible.
   if (code) {
     const { error } = await supabase.auth.exchangeCodeForSession(code);
-    if (!error) return NextResponse.redirect(new URL(next, request.url));
+    if (!error) {
+      await supabase.rpc("claim_admin_invitation");
+      return NextResponse.redirect(new URL(next, request.url));
+    }
   }
 
   if (tokenHash && type) {
     const { error } = await supabase.auth.verifyOtp({ type, token_hash: tokenHash });
-    if (!error) return NextResponse.redirect(new URL(next, request.url));
+    if (!error) {
+      await supabase.rpc("claim_admin_invitation");
+      return NextResponse.redirect(new URL(next, request.url));
+    }
   }
 
   return NextResponse.redirect(new URL("/auth/error", request.url));
