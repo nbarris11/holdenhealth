@@ -44,7 +44,7 @@
 
     var memberLogin = document.createElement('a');
     memberLogin.className = 'member-login';
-    memberLogin.href = 'https://holdenhealth-portal.vercel.app/login';
+    memberLogin.href = 'https://portal.holden.health/login';
     memberLogin.textContent = 'Member Login';
     links.appendChild(memberLogin);
   }

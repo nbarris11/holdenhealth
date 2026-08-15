@@ -3,7 +3,7 @@
 Holden Health has two production pieces:
 
 - A static public website in the repository root, live at <https://holdenhealth-tau.vercel.app/>.
-- A secure Next.js member/admin portal in `web-app/`, live at <https://holdenhealth-portal.vercel.app/>.
+- A secure Next.js member/admin portal in `web-app/`, live at <https://portal.holden.health/>.
 
 Supabase provides authentication and the protected application data. Vercel deploys the public site and portal as separate projects so portal work cannot replace the marketing site.
 

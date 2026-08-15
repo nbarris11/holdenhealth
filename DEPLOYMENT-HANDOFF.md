@@ -3,7 +3,7 @@
 ## Live projects
 
 - Public website: <https://holdenhealth-tau.vercel.app/> (`holdenhealth`)
-- Secure portal: <https://holdenhealth-portal.vercel.app/> (`holdenhealth-portal`)
+- Secure portal: <https://portal.holden.health/> (`holdenhealth-portal`)
 - GitHub repository: <https://github.com/nbarris11/holdenhealth>
 - Portal Git root directory: `web-app`
 
@@ -42,7 +42,7 @@ Additional protected server variables will be added only if a later feature requ
 
 ## Authentication configuration
 
-Supabase Auth currently uses `https://holdenhealth-portal.vercel.app/` as its Site URL and allows `https://holdenhealth-portal.vercel.app/**` as a redirect. Kelsey and Neil are verified and have database-backed administrator roles.
+Supabase Auth uses `https://portal.holden.health/` as its Site URL and allows `https://portal.holden.health/**` as a redirect. Kelsey and Neil are verified and have database-backed administrator roles.
 
 Remaining work:
 
