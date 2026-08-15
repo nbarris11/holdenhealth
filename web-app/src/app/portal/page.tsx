@@ -1,6 +1,8 @@
 import { setAttendanceSelection, signOut, submitWeeklyCheckIn } from "@/app/actions";
+import { stopMemberPreview } from "@/app/admin/preview-actions";
 import { verifySession } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
+import { cookies } from "next/headers";
 
 type SessionSummary = {
   id: string;
@@ -35,9 +37,13 @@ function currentWeek(startsOn: string, endsOn: string) {
 export default async function PortalPage() {
   const auth = await verifySession();
   const supabase = await createClient();
+  const { data: adminRole } = await supabase.from("staff_roles").select("role").eq("user_id", auth.userId).eq("role", "admin").maybeSingle();
+  const requestedMemberId = adminRole ? (await cookies()).get("holden_admin_member_preview")?.value : null;
+  const effectiveUserId = requestedMemberId ?? auth.userId;
+  const isMemberPreview = Boolean(adminRole && requestedMemberId);
   const [{ data: profile }, { data: enrollmentRows }] = await Promise.all([
-    supabase.from("profiles").select("full_name,phone").eq("id", auth.userId).maybeSingle(),
-    supabase.from("enrollments").select("id,status,session_id,returning_member,sessions(id,name,description,starts_on,ends_on,address_line,city,state)").eq("member_id", auth.userId).in("status", ["invited", "active", "completed"]).order("created_at", { ascending: false }).limit(1),
+    supabase.from("profiles").select("full_name,phone").eq("id", effectiveUserId).maybeSingle(),
+    supabase.from("enrollments").select("id,status,session_id,returning_member,weekly_commitment,sessions(id,name,description,starts_on,ends_on,address_line,city,state)").eq("member_id", effectiveUserId).in("status", ["invited", "active", "completed"]).order("created_at", { ascending: false }).limit(1),
   ]);
 
   const enrollment = enrollmentRows?.[0];
@@ -74,8 +80,10 @@ export default async function PortalPage() {
     <main className="app-shell">
       <header className="app-header">
         <div><span className="eyebrow">Holden Health member portal</span><h1>Hi, {firstName}.</h1></div>
-        <form action={signOut}><button className="button secondary" type="submit">Sign out</button></form>
+        {isMemberPreview ? <form action={stopMemberPreview}><button className="button secondary" type="submit">Return to admin</button></form> : <form action={signOut}><button className="button secondary" type="submit">Sign out</button></form>}
       </header>
+
+      {isMemberPreview ? <aside className="preview-banner"><strong>Admin preview: viewing the portal as {profile?.full_name || "this member"}.</strong><span>This view is read-only.</span></aside> : null}
 
       <nav className="section-nav" aria-label="Member sections">
         <a href="#overview">Overview</a><a href="#schedule">Schedule</a><a href="#check-in">Check-in</a><a href="#resources">Resources</a><a href="#details">Session details</a>
@@ -83,7 +91,7 @@ export default async function PortalPage() {
 
       <section id="overview" className="member-hero panel">
         <div><span className="eyebrow">Your current session · Week {weekNumber}</span><h2>{program.name}</h2><p>{program.description}</p><div className="meta-row"><span>{dateFormatter.format(new Date(`${program.starts_on}T12:00:00Z`))}–{dateFormatter.format(new Date(`${program.ends_on}T12:00:00Z`))}</span><span>{program.address_line}, {program.city}, {program.state}</span></div></div>
-        <aside><span className={`status-pill ${payment?.status === "paid" ? "success" : "warning"}`}>{paymentLabel}</span><strong>{enrollment.status === "active" ? "You’re enrolled" : "Invitation accepted"}</strong><p>{payment?.amount_cents ? `$${(payment.amount_cents / 100).toFixed(0)} recorded${payment.method ? ` via ${payment.method}` : ""}.` : "Kelsey will update your payment status here."}</p></aside>
+        <aside><span className={`status-pill ${payment?.status === "paid" ? "success" : "warning"}`}>{paymentLabel}</span><strong>{enrollment.status === "active" ? "You’re enrolled" : "Invitation accepted"}</strong>{enrollment.weekly_commitment ? <p>{enrollment.weekly_commitment} coached days each week.</p> : null}<p>{payment?.amount_cents ? `$${(payment.amount_cents / 100).toFixed(0)} recorded${payment.method ? ` via ${payment.method}` : ""}.` : "Kelsey will update your payment status here."}</p></aside>
       </section>
 
       <div className="dashboard-grid summary-grid">
@@ -99,7 +107,7 @@ export default async function PortalPage() {
             const selected = selectedMeetingIds.has(meeting.id);
             return <article className={`meeting-row ${selected ? "selected" : ""} ${meeting.cancelled ? "cancelled" : ""}`} key={meeting.id}>
               <div><strong>{dateTimeFormatter.format(new Date(meeting.starts_at))}</strong><span>{meeting.cancelled ? "Cancelled" : meeting.title}</span></div>
-              {!meeting.cancelled && enrollment.status === "active" ? <form action={setAttendanceSelection}><input type="hidden" name="enrollmentId" value={enrollment.id} /><input type="hidden" name="meetingId" value={meeting.id} /><input type="hidden" name="selected" value={selected ? "false" : "true"} /><button className={`choice-button ${selected ? "chosen" : ""}`} type="submit">{selected ? "✓ Planning to attend" : "+ Add to my week"}</button></form> : null}
+              {!meeting.cancelled && enrollment.status === "active" && !isMemberPreview ? <form action={setAttendanceSelection}><input type="hidden" name="enrollmentId" value={enrollment.id} /><input type="hidden" name="meetingId" value={meeting.id} /><input type="hidden" name="selected" value={selected ? "false" : "true"} /><button className={`choice-button ${selected ? "chosen" : ""}`} type="submit">{selected ? "✓ Planning to attend" : "+ Add to my week"}</button></form> : isMemberPreview && selected ? <span className="status-pill success">Planning to attend</span> : null}
             </article>;
           })}
         </div>
@@ -108,7 +116,7 @@ export default async function PortalPage() {
       <section id="check-in" className="section-block split-layout">
         <div className="panel">
           <span className="eyebrow">Week {weekNumber} check-in</span>
-          {currentCheckIn ? <><h2>Submitted—thank you.</h2><p>Kelsey {currentCheckIn.reviewed_at ? "has reviewed" : "will review"} your answers.</p>{currentCheckIn.coach_response ? <div className="coach-note"><strong>A note back</strong><p>{currentCheckIn.coach_response}</p></div> : <div className="soft-note">Kelsey’s response will appear here.</div>}</> : enrollment.status === "active" ? <><h2>Take five honest minutes.</h2><form className="stack-form" action={submitWeeklyCheckIn}><input type="hidden" name="enrollmentId" value={enrollment.id} /><input type="hidden" name="weekNumber" value={weekNumber} /><label>What went well for you this week?<textarea name="wentWell" required /></label><label>What did not go well?<textarea name="didNotGoWell" required /></label><label>What is your main goal for the upcoming week?<textarea name="upcomingGoal" required /></label><label>What do you need more from me to be successful this week?<textarea name="supportNeeded" required /></label><button className="button primary" type="submit">Send my check-in</button></form></> : <><h2>Your check-in opens when enrollment is active.</h2><p>Kelsey will activate it after registration is complete.</p></>}
+          {currentCheckIn ? <><h2>Submitted—thank you.</h2><p>Kelsey {currentCheckIn.reviewed_at ? "has reviewed" : "will review"} your answers.</p>{currentCheckIn.coach_response ? <div className="coach-note"><strong>A note back</strong><p>{currentCheckIn.coach_response}</p></div> : <div className="soft-note">Kelsey’s response will appear here.</div>}</> : enrollment.status === "active" && !isMemberPreview ? <><h2>Take five honest minutes.</h2><form className="stack-form" action={submitWeeklyCheckIn}><input type="hidden" name="enrollmentId" value={enrollment.id} /><input type="hidden" name="weekNumber" value={weekNumber} /><label>What went well for you this week?<textarea name="wentWell" required /></label><label>What did not go well?<textarea name="didNotGoWell" required /></label><label>What is your main goal for the upcoming week?<textarea name="upcomingGoal" required /></label><label>What do you need more from me to be successful this week?<textarea name="supportNeeded" required /></label><button className="button primary" type="submit">Send my check-in</button></form></> : isMemberPreview ? <><h2>No check-in for this week yet.</h2><p>The member will see the four-question form here.</p></> : <><h2>Your check-in opens when enrollment is active.</h2><p>Kelsey will activate it after registration is complete.</p></>}
         </div>
         <aside className="panel compact-history"><span className="eyebrow">Check-in history</span><h2>Your coaching thread.</h2>{typedCheckIns.length ? typedCheckIns.map((checkIn) => <details key={checkIn.id}><summary>Week {checkIn.week_number} · {checkIn.reviewed_at ? "Reviewed" : "Awaiting response"}</summary><p><strong>What worked:</strong> {checkIn.went_well}</p><p><strong>Next goal:</strong> {checkIn.upcoming_goal}</p>{checkIn.coach_response ? <p><strong>Kelsey:</strong> {checkIn.coach_response}</p> : null}</details>) : <p>Your submitted check-ins will stay here so you can look back at what changed.</p>}</aside>
       </section>

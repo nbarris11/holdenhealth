@@ -20,12 +20,18 @@ export const verifySession = cache(async () => {
 });
 
 export const verifyAdmin = cache(async () => {
-  const session = await verifySession();
   const supabase = await createClient();
+  const { data: claimsData, error } = await supabase.auth.getClaims();
+  const userId = claimsData?.claims?.sub;
+
+  if (error || !userId) {
+    redirect("/admin/login");
+  }
+
   const { data } = await supabase
     .from("staff_roles")
     .select("role")
-    .eq("user_id", session.userId)
+    .eq("user_id", userId)
     .eq("role", "admin")
     .maybeSingle();
 
@@ -33,5 +39,8 @@ export const verifyAdmin = cache(async () => {
     redirect("/portal");
   }
 
-  return session;
+  return {
+    userId,
+    email: typeof claimsData.claims.email === "string" ? claimsData.claims.email : "",
+  };
 });

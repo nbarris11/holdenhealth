@@ -1,7 +1,7 @@
 import { next, rewrite } from "@vercel/functions";
 
-const ACCESS_COOKIE = "holden_preview_access";
-const ACCESS_DURATION_SECONDS = 60 * 60 * 24 * 7;
+const ACCESS_COOKIE = "holden_preview_access_v2";
+const ACCESS_DURATION_SECONDS = 60 * 60 * 24;
 
 async function digest(value: string) {
   const bytes = new TextEncoder().encode(value);
@@ -29,12 +29,20 @@ function previewPage(request: Request, hasError = false) {
     return Response.redirect(url, 303);
   }
 
-  return rewrite(url);
+  const response = rewrite(url);
+  response.headers.set("Cache-Control", "private, no-store, no-cache, max-age=0, must-revalidate");
+  response.headers.set("Pragma", "no-cache");
+  response.headers.set("Expires", "0");
+  return response;
 }
 
 export default async function previewGate(request: Request) {
   const url = new URL(request.url);
   const password = process.env.PREVIEW_PASSWORD;
+
+  if (url.pathname === "/admin" || url.pathname === "/admin/") {
+    return Response.redirect("https://portal.holden.health/admin/login", 307);
+  }
 
   if (url.pathname === "/preview.html" || url.pathname === "/assets/logo.png" || url.pathname === "/favicon.ico") {
     return next();

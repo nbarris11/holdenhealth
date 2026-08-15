@@ -35,6 +35,13 @@ function dollarsToCents(value: string) {
   return Math.round(amount * 100);
 }
 
+function weeklyCommitmentField(formData: FormData, required = false) {
+  const value = Number(formData.get("weeklyCommitment"));
+  if (value === 2 || value === 3) return value;
+  if (required) throw new Error("Choose a two-day or three-day weekly commitment.");
+  return null;
+}
+
 function revalidateHub() {
   revalidatePath("/portal");
   revalidatePath("/admin");
@@ -128,6 +135,7 @@ export async function inviteMember(formData: FormData) {
     phone: textField(formData, "phone", 40) || null,
     session_id: sessionId,
     enrollment_status: enrollmentStatus,
+    weekly_commitment: weeklyCommitmentField(formData),
     returning_member: formData.get("returningMember") === "on",
     payment_status: paymentStatus,
     payment_method: paymentMethod || null,
@@ -146,6 +154,7 @@ export async function submitRegistrationRequest(formData: FormData) {
   const email = requiredText(formData, "email", 254).toLowerCase();
   const phone = requiredText(formData, "phone", 40);
   const sessionId = uuidField(formData, "sessionId");
+  const weeklyCommitment = weeklyCommitmentField(formData, true);
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) throw new Error("Enter a valid email address.");
   const allowedDays = new Set(["Tuesday 6:00 AM", "Wednesday 7:00 PM", "Saturday 9:00 AM"]);
   const attendanceInterest = formData.getAll("attendance").map(String).filter((day) => allowedDays.has(day));
@@ -156,6 +165,7 @@ export async function submitRegistrationRequest(formData: FormData) {
     full_name: fullName,
     email,
     phone,
+    weekly_commitment: weeklyCommitment,
     returning_member: formData.get("returningMember") === "on",
     attendance_interest: attendanceInterest,
     note: textField(formData, "note", 1000) || null,
@@ -166,7 +176,7 @@ export async function submitRegistrationRequest(formData: FormData) {
     sendTransactionalEmail(
       "keholde@gmail.com",
       `New session request from ${fullName}`,
-      `<h2>New Focus on You registration request</h2><p><strong>${fullName}</strong> (${email}, ${phone}) asked to join.</p><p>Preferred times: ${attendanceInterest.join(", ")}.</p><p><a href="https://portal.holden.health/admin#approvals">Review this request</a></p>`,
+      `<h2>New Focus on You registration request</h2><p><strong>${fullName}</strong> (${email}, ${phone}) asked to join.</p><p>Weekly commitment: ${weeklyCommitment} days.</p><p>Preferred times: ${attendanceInterest.join(", ")}.</p><p><a href="https://portal.holden.health/admin#approvals">Review this request</a></p>`,
     ),
     sendTransactionalEmail(
       email,
@@ -181,16 +191,21 @@ export async function approveRegistrationRequest(formData: FormData) {
   const admin = await verifyAdmin();
   const requestId = uuidField(formData, "requestId");
   const supabase = await createClient();
-  const { data: request } = await supabase.from("registration_requests").select("id,session_id,full_name,email,phone,returning_member,status,sessions(new_member_price_cents,returning_member_price_cents)").eq("id", requestId).eq("status", "pending").maybeSingle();
+  const { data: request } = await supabase.from("registration_requests").select("id,session_id,full_name,email,phone,returning_member,weekly_commitment,status,sessions(new_member_price_cents,returning_member_price_cents,two_day_price_cents,three_day_price_cents)").eq("id", requestId).eq("status", "pending").maybeSingle();
   if (!request) throw new Error("This registration request is no longer pending.");
-  const prices = request.sessions as unknown as { new_member_price_cents: number; returning_member_price_cents: number | null };
-  const amountCents = request.returning_member ? (prices.returning_member_price_cents ?? prices.new_member_price_cents) : prices.new_member_price_cents;
+  const prices = request.sessions as unknown as { new_member_price_cents: number; returning_member_price_cents: number | null; two_day_price_cents: number | null; three_day_price_cents: number | null };
+  const amountCents = request.weekly_commitment === 3
+    ? (prices.three_day_price_cents ?? prices.returning_member_price_cents ?? prices.new_member_price_cents)
+    : request.weekly_commitment === 2
+      ? (prices.two_day_price_cents ?? prices.new_member_price_cents)
+      : request.returning_member ? (prices.returning_member_price_cents ?? prices.new_member_price_cents) : prices.new_member_price_cents;
   const { error: invitationError } = await supabase.from("member_invitations").upsert({
     email: request.email,
     full_name: request.full_name,
     phone: request.phone,
     session_id: request.session_id,
     enrollment_status: "active",
+    weekly_commitment: request.weekly_commitment,
     returning_member: request.returning_member,
     payment_status: "pending",
     payment_method: null,
@@ -225,8 +240,10 @@ export async function updateSessionDetails(formData: FormData) {
     description: requiredText(formData, "description", 1200),
     capacity,
     status,
-    new_member_price_cents: dollarsToCents(requiredText(formData, "newMemberPrice", 12)),
-    returning_member_price_cents: dollarsToCents(requiredText(formData, "returningMemberPrice", 12)),
+    new_member_price_cents: dollarsToCents(requiredText(formData, "twoDayPrice", 12)),
+    returning_member_price_cents: dollarsToCents(requiredText(formData, "threeDayPrice", 12)),
+    two_day_price_cents: dollarsToCents(requiredText(formData, "twoDayPrice", 12)),
+    three_day_price_cents: dollarsToCents(requiredText(formData, "threeDayPrice", 12)),
     published: formData.get("published") === "on",
   }).eq("id", sessionId);
   if (error) throw new Error("We could not update the session.");
@@ -292,7 +309,7 @@ export async function updateEnrollmentAndPayment(formData: FormData) {
   if (!ENROLLMENT_STATUSES.has(enrollmentStatus) || !PAYMENT_STATUSES.has(paymentStatus)) throw new Error("Invalid member status.");
   if (paymentMethod && !PAYMENT_METHODS.has(paymentMethod)) throw new Error("Invalid payment method.");
   const supabase = await createClient();
-  const { error: enrollmentError } = await supabase.from("enrollments").update({ status: enrollmentStatus, returning_member: formData.get("returningMember") === "on" }).eq("id", enrollmentId);
+  const { error: enrollmentError } = await supabase.from("enrollments").update({ status: enrollmentStatus, weekly_commitment: weeklyCommitmentField(formData), returning_member: formData.get("returningMember") === "on" }).eq("id", enrollmentId);
   if (enrollmentError) throw new Error("We could not update this member.");
   const { error: paymentError } = await supabase.from("payment_records").upsert({
     enrollment_id: enrollmentId,
