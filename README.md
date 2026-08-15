@@ -1,23 +1,24 @@
 # Holden Health
 
-Holden Health currently has two connected pieces:
+Holden Health has two production pieces:
 
-- A static public website in the repository root.
-- A clickable member/admin portal prototype in `portal/`.
+- A static public website in the repository root, live at <https://holdenhealth-tau.vercel.app/>.
+- A secure Next.js member/admin portal in `web-app/`, live at <https://holdenhealth-portal.vercel.app/>.
 
-The production application backend is being built with Supabase. The future authenticated application will use Next.js and deploy through Vercel after the GitHub repository and Vercel project are connected.
+Supabase provides authentication and the protected application data. Vercel deploys the public site and portal as separate projects so portal work cannot replace the marketing site.
 
 ## Current project status
 
 - Public marketing pages: working locally; some pages still need to be aligned with the confirmed Focus on You group-session offer before the next production upload.
-- Portal prototype: working locally at `/portal/index.html` and `/portal/admin.html`.
-- Production application: scaffolded and build-tested in `/web-app` with Next.js, TypeScript, Supabase SSR, protected member/admin routes, and magic-link authentication.
+- Portal prototype: retained locally at `/portal/index.html` and `/portal/admin.html` for reference only.
+- Production application: deployed from `/web-app` with Next.js, TypeScript, Supabase SSR, protected member/admin routes, and magic-link authentication.
 - Supabase project: connected and healthy.
 - Database: core tables, row-level security, administrator/member policies, and indexes are applied.
 - December 2026 mini session: seeded with all nine confirmed one-hour meetings.
-- Authentication foundation: implemented; production callback URLs, Kelsey's administrator account, and end-to-end email testing remain.
+- Authentication: production callback URLs are configured. Kelsey and Neil are verified administrators. A final live magic-link sign-in test and administrator MFA enrollment remain.
 - GitHub: connected at `nbarris11/holdenhealth`.
-- Vercel: connected to the Holden Health team and currently serving the static site from the repository root.
+- Vercel public project: `holdenhealth`, serving the static repository root.
+- Vercel portal project: `holdenhealth-portal`, Git-connected with `web-app` as its root directory.
 
 ## Important folders
 
@@ -60,10 +61,9 @@ Then open [http://127.0.0.1:4173/](http://127.0.0.1:4173/).
 
 ## Next implementation steps
 
-1. Add the Supabase project URL and publishable key to the Vercel project environments.
-2. Configure Supabase local, preview, and production Auth redirect URLs.
-3. Invite Kelsey's administrator account and require MFA.
-4. Test sign-in, sign-out, invitation, and recovery with separate member/admin accounts.
-5. Finish the member check-in and attendance workflows.
-6. Build Kelsey's roster, payments, announcements, and content controls.
-7. Migrate the public site into `/web-app` before switching Vercel's root directory.
+1. Test live magic-link sign-in and sign-out with both administrator accounts.
+2. Require MFA for administrator access before member data is added.
+3. Test a separate non-admin member account and confirm it cannot open `/admin`.
+4. Finish the member check-in and attendance workflows.
+5. Build Kelsey's roster, payments, announcements, and content controls.
+6. Add a branded portal domain and custom SMTP before inviting paying members.

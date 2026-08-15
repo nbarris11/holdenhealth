@@ -1,4 +1,13 @@
-# GitHub and Vercel handoff
+# GitHub and Vercel deployment state
+
+## Live projects
+
+- Public website: <https://holdenhealth-tau.vercel.app/> (`holdenhealth`)
+- Secure portal: <https://holdenhealth-portal.vercel.app/> (`holdenhealth-portal`)
+- GitHub repository: <https://github.com/nbarris11/holdenhealth>
+- Portal Git root directory: `web-app`
+
+The projects are intentionally separate. Do not change the public project's root directory to `web-app`.
 
 ## What to send next
 
@@ -31,15 +40,15 @@ NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
 
 Additional protected server variables will be added only if a later feature requires them. No Supabase secret key is needed in the browser.
 
-## Authentication configuration after the first Vercel preview
+## Authentication configuration
 
-Once Vercel gives us a preview and production URL:
+Supabase Auth currently uses `https://holdenhealth-portal.vercel.app/` as its Site URL and allows `https://holdenhealth-portal.vercel.app/**` as a redirect. Kelsey and Neil are verified and have database-backed administrator roles.
 
-1. Add the local, preview, and production callback URLs to Supabase Auth.
-2. Configure the branded invitation and password-recovery emails.
-3. Invite Kelsey's administrator account.
-4. Assign the `admin` role server-side.
-5. Enroll MFA before granting production admin access.
+Remaining work:
+
+1. Complete live magic-link sign-in and sign-out testing.
+2. Enroll administrator MFA before member data is added.
+3. Configure branded authentication email delivery with custom SMTP before launch.
 
 ## Launch rule
 
