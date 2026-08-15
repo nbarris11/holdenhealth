@@ -11,11 +11,13 @@ The production application backend is being built with Supabase. The future auth
 
 - Public marketing pages: working locally; some pages still need to be aligned with the confirmed Focus on You group-session offer before the next production upload.
 - Portal prototype: working locally at `/portal/index.html` and `/portal/admin.html`.
+- Production application: scaffolded and build-tested in `/web-app` with Next.js, TypeScript, Supabase SSR, protected member/admin routes, and magic-link authentication.
 - Supabase project: connected and healthy.
 - Database: core tables, row-level security, administrator/member policies, and indexes are applied.
 - December 2026 mini session: seeded with all nine confirmed one-hour meetings.
-- Authentication UI and live portal data: next implementation stage.
-- GitHub and Vercel: not connected yet.
+- Authentication foundation: implemented; production callback URLs, Kelsey's administrator account, and end-to-end email testing remain.
+- GitHub: connected at `nbarris11/holdenhealth`.
+- Vercel: connected to the Holden Health team and currently serving the static site from the repository root.
 
 ## Important folders
 
@@ -24,6 +26,7 @@ The production application backend is being built with Supabase. The future auth
 | `/index.html` and other root HTML files | Current public website source |
 | `/assets/` | Logo and approved Kelsey/community photography |
 | `/portal/` | Clickable member and admin prototype; not the secure production portal |
+| `/web-app/` | Secure Next.js member/admin application under active development |
 | `/supabase/migrations/` | Versioned production database schema and seed data |
 | `/dist/` | Static Netlify upload build; update only after the public pages are internally consistent |
 
@@ -57,10 +60,10 @@ Then open [http://127.0.0.1:4173/](http://127.0.0.1:4173/).
 
 ## Next implementation steps
 
-1. Connect this folder to the correct private GitHub repository.
-2. Scaffold the authenticated Next.js application and add Supabase SSR clients.
-3. Configure local, preview, and production environment variables.
-4. Build sign-in, invitation, and password-recovery flows.
-5. Build the member dashboard from real Supabase session data.
-6. Build Kelsey's roster, payments, check-in, announcements, and content controls.
-7. Test member/admin boundaries with separate accounts before deployment.
+1. Add the Supabase project URL and publishable key to the Vercel project environments.
+2. Configure Supabase local, preview, and production Auth redirect URLs.
+3. Invite Kelsey's administrator account and require MFA.
+4. Test sign-in, sign-out, invitation, and recovery with separate member/admin accounts.
+5. Finish the member check-in and attendance workflows.
+6. Build Kelsey's roster, payments, announcements, and content controls.
+7. Migrate the public site into `/web-app` before switching Vercel's root directory.
