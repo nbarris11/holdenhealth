@@ -164,6 +164,7 @@ p { line-height: 1.65; }
 .send-confirmation p { margin: 7px 0 0; font-size: .82rem; }
 .communication-actions { display: flex; flex-wrap: wrap; gap: 10px; }
 .communication-preview-wrap { position: sticky; top: 20px; padding: 10px; }
+.personalization-note { margin: -4px 0 14px; color: var(--muted); font-size: .85rem; }
 .email-subject-preview { display: grid; gap: 4px; margin-bottom: 14px; padding: 14px 16px; border: 1px solid var(--line); border-radius: 14px; background: white; }
 .email-subject-preview span { overflow: hidden; color: var(--muted); font-size: .84rem; text-overflow: ellipsis; white-space: nowrap; }
 .email-preview { overflow: hidden; border: 1px solid #e5e0ec; border-radius: 24px; background: white; box-shadow: var(--shadow); }
