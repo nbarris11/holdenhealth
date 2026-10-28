@@ -10,8 +10,9 @@ export type HabitComment = {
   created_at: string;
 };
 
-export function threadKey(c: { week_id: string; day: string; habit_index: number }) {
-  return `${c.week_id}|${c.day}|${c.habit_index}`;
+// Habit text is part of the key: after a member edits a habit, new comments start a new thread.
+export function threadKey(c: { week_id: string; day: string; habit_index: number; habit_text: string }) {
+  return `${c.week_id}|${c.day}|${c.habit_index}|${c.habit_text}`;
 }
 
 export function groupThreads(comments: HabitComment[]) {
@@ -31,4 +32,18 @@ export function cleanCommentBody(raw: FormDataEntryValue | null) {
   if (typeof raw !== "string") return null;
   const body = raw.trim();
   return body.length >= 1 && body.length <= 1000 ? body : null;
+}
+
+// Threads the day-by-day tracker can't show: other weeks, edited-away habits and removed slots.
+export function otherThreads(comments: HabitComment[], current?: { id: string; habits: string[] }) {
+  const shown = (c: HabitComment) => c.week_id === current?.id && current.habits[c.habit_index] === c.habit_text;
+  const latest = (thread: HabitComment[]) => thread[thread.length - 1].created_at;
+  return [...groupThreads(comments.filter(c => !shown(c))).values()].sort((a, b) => latest(b).localeCompare(latest(a)));
+}
+
+// Until the habit_comments migration is applied, read as "no comments" instead of breaking Habits.
+export function commentRows(result: { data: unknown; error: { code?: string } | null }) {
+  if (result.error && ["42P01", "PGRST205"].includes(result.error.code ?? "")) return [];
+  if (result.error) throw new Error("Habit comments could not be loaded.");
+  return (result.data ?? []) as HabitComment[];
 }

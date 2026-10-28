@@ -3,7 +3,7 @@ import {after} from "next/server";
 import {createAdminClient} from "@/lib/supabase/admin";
 import {sendTransactionalEmail} from "@/lib/email";
 
-export const activityLabel = (kind: string) => kind === "workout_completed" ? "Completed a workout" : kind === "habits_edited" ? "Updated weekly habits" : "Chose weekly habits";
+export const activityLabel = (kind: string) => kind === "workout_completed" ? "Completed a workout" : kind === "habits_edited" ? "Updated weekly habits" : kind === "habit_comment_reply" ? "Replied to your habit comment" : "Chose weekly habits";
 
 // Event + recipient is unique in the database. A compare-and-set lease and provider
 // idempotency key protect concurrent workers and uncertain network responses.

@@ -5,8 +5,10 @@ import { createClient } from "@/lib/supabase/server";
 import { dateLabel, detroitToday, isUuid } from "@/lib/challenge";
 import { currentHabitWeek, habitCounts, weekDates, type HabitWeek, type HabitMark } from "@/lib/class-habits";
 import { startMemberPreview } from "@/app/admin/preview-actions";
+import { commentRows } from "@/lib/habit-comments";
+import { EarlierHabitComments } from "@/app/portal/habits/habit-comments";
 
-type Enrollment = { id: string; profiles: { full_name: string | null } | null };
+type Enrollment = { id: string; member_id: string; profiles: { full_name: string | null } | null };
 
 export default async function ProgramHabits({ params }: { params: Promise<{ programId: string }> }) {
   await verifyAdmin();
@@ -15,7 +17,7 @@ export default async function ProgramHabits({ params }: { params: Promise<{ prog
   const db = await createClient();
   const [programResult, enrollmentResult] = await Promise.all([
     db.from("sessions").select("id,name,starts_on,ends_on").eq("id", programId).maybeSingle(),
-    db.from("enrollments").select("id,profiles(full_name)").eq("session_id", programId).in("status", ["invited", "active", "completed"]),
+    db.from("enrollments").select("id,member_id,profiles(full_name)").eq("session_id", programId).in("status", ["invited", "active", "completed"]),
   ]);
   if (programResult.error || enrollmentResult.error) throw new Error("Program habits could not be loaded. Please try again.");
   const program = programResult.data;
@@ -31,6 +33,11 @@ export default async function ProgramHabits({ params }: { params: Promise<{ prog
   const marksResult = weeks.length ? await db.from("class_habit_marks").select("week_id,day,habit_index").in("week_id", weeks.map(w => w.id)) : { data: [], error: null };
   if (marksResult.error) throw new Error("Members’ habit progress could not be loaded.");
   const marks = (marksResult.data ?? []) as HabitMark[];
+  // Every week's comment threads, so a member's reply is always visible here.
+  const allWeeks = enrollments.length ? await db.from("class_habit_weeks").select("id,enrollment_id").in("enrollment_id", enrollments.map(e => e.id)) : { data: [], error: null };
+  if (allWeeks.error) throw new Error("Members’ habit comments could not be loaded.");
+  const weekOwner = new Map((allWeeks.data ?? []).map(w => [w.id, w.enrollment_id as string]));
+  const comments = commentRows(weekOwner.size ? await db.from("habit_comments").select("*").in("week_id", [...weekOwner.keys()]).order("created_at") : { data: [], error: null });
   const through = today < dates.end ? today : dates.end;
 
   return <main className="app-shell admin-shell workspace-page">
@@ -44,7 +51,7 @@ export default async function ProgramHabits({ params }: { params: Promise<{ prog
       <h2>Keep small promises.</h2>
       <p>Members choose three habits in their class portal, check them off each day, and review their progress each week. Use View habit tracker below to see a member’s screen.</p>
       <p>{today < program.starts_on ? `Members can choose their habits now. Daily checkoffs open ${dateLabel(program.starts_on)}.` : today > program.ends_on ? "This program has finished. Members’ saved progress remains available." : "Daily checkoffs are open for active members."}</p>
-      <p>Tracker previews are read-only. Members save their own habits and checkmarks.</p>
+      <p>Members save their own habits and checkmarks. Open a member’s habit tracker to comment on a day’s habit; their replies appear under their name below.</p>
     </section>
     <section className="workspace-section">
       <div className="section-heading"><div><span className="eyebrow">{today > program.ends_on ? "Final week" : `Week ${weekNumber}`} · {dateLabel(dates.start)}–{dateLabel(dates.end)}</span><h2>Member habits · {enrollments.length}</h2></div></div>
@@ -59,6 +66,7 @@ export default async function ProgramHabits({ params }: { params: Promise<{ prog
             <input type="hidden" name="view" value="habits" />
             <button className="button primary" type="submit">View habit tracker</button>
           </form>
+          <EarlierHabitComments comments={comments.filter(c => weekOwner.get(c.week_id) === enrollment.id)} ownerId={enrollment.member_id} commenter="coach" heading="Comments" />
         </article>;
       })}</div>
       {!enrollments.length && <div className="panel calm-empty"><h3>No members enrolled yet.</h3><p>Members will appear here once they’re enrolled in this program.</p><Link className="button secondary" href={`/admin/people?program=${programId}`}>View program people</Link></div>}

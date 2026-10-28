@@ -17,10 +17,11 @@ function setup({ denied = false, empty = false } = {}) {
     ],
     class_habit_weeks: [{ id: 'week', enrollment_id: 'own', week_number: 1, habits: ['Walk', 'Water', 'Sleep'] }, { id: 'other-week', enrollment_id: 'other', week_number: 1, habits: ['Private'] }],
     class_habit_marks: [],
+    habit_comments: [],
   };
   const db = { from(table) {
     assert.equal(authorized, true); calls.push(table); let result = rows[table];
-    return { select() { return this; }, eq(k,v) { result = result.filter(r => r[k] === v); return this; }, in(k,v) { result = result.filter(r => v.includes(r[k])); return this; },
+    return { select() { return this; }, eq(k,v) { result = result.filter(r => r[k] === v); return this; }, in(k,v) { result = result.filter(r => v.includes(r[k])); return this; }, order() { return this; },
       maybeSingle: async () => ({ data: result[0], error: null }), then: resolve => Promise.resolve({ data: result, error: null }).then(resolve) };
   } };
   const imports = {
@@ -30,6 +31,8 @@ function setup({ denied = false, empty = false } = {}) {
     '@/lib/challenge': { isUuid: () => true, dateLabel: d => d, detroitToday: () => '2026-10-08' },
     '@/lib/class-habits': { currentHabitWeek: () => 1, weekDates: () => ({ start: '2026-10-13', end: '2026-10-18' }), habitCounts: () => ({ days: 0, fullDays: 0, perHabit: [0,0,0] }) },
     '@/app/admin/preview-actions': { startMemberPreview() {} },
+    '@/lib/habit-comments': { commentRows: r => r.data ?? [] },
+    '@/app/portal/habits/habit-comments': { EarlierHabitComments: 'EarlierHabitComments' },
   };
   const exports = {};
   vm.runInNewContext(ts.transpileModule(fs.readFileSync(new URL('../src/app/admin/programs/[programId]/habits/page.tsx', import.meta.url), 'utf8'), { compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.ReactJSX } }).outputText, { exports, require: k => imports[k] });

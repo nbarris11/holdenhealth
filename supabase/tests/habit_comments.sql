@@ -52,6 +52,14 @@ update public.class_habit_weeks set habits=array['Walk daily','Eat vegetables','
 do $$ begin
  if (select habit_text from public.habit_comments where id='73700000-0000-4000-8000-000000000001')<>'Drink water' then raise exception 'habit_text changed after habit edit'; end if;
 end $$;
+-- Replying to the thread about the old habit keeps it in that thread.
+insert into public.habit_comments(id,week_id,day,habit_index,habit_text,body) values
+ ('73700000-0000-4000-8000-000000000005','73600000-0000-4000-8000-000000000001',(now() at time zone 'America/Detroit')::date,1,'Drink water','Still drinking water too!');
+do $$ begin
+ if (select habit_text from public.habit_comments where id='73700000-0000-4000-8000-000000000005')<>'Drink water' then raise exception 'Reply moved to the edited habit'; end if;
+ -- The edited habit has no thread yet, so the member cannot start one there.
+ begin insert into public.habit_comments(week_id,day,habit_index,habit_text,body) values('73600000-0000-4000-8000-000000000001',(now() at time zone 'America/Detroit')::date,1,'Eat vegetables','New thread'); raise exception 'Member started a thread on edited habit'; exception when insufficient_privilege then null; end;
+end $$;
 
 -- Another member sees nothing, cannot reply, and cannot mark read.
 select set_config('request.jwt.claim.sub','73100000-0000-4000-8000-000000000002',true);
@@ -63,7 +71,7 @@ end $$;
 reset role;
 do $$ begin
  if (select member_read_at from public.habit_comments where id='73700000-0000-4000-8000-000000000002') is not null then raise exception 'Non-owner marked comments read'; end if;
- if (select count(*) from public.coach_activity where kind='habit_comment_reply' and member_id='73100000-0000-4000-8000-000000000001' and href='/admin/training/73100000-0000-4000-8000-000000000001/habits')<>1 then raise exception 'Reply activity missing'; end if;
+ if (select count(*) from public.coach_activity where kind='habit_comment_reply' and member_id='73100000-0000-4000-8000-000000000001' and href='/admin/training/73100000-0000-4000-8000-000000000001/habits')<>2 then raise exception 'Reply activity missing'; end if;
  if exists(select 1 from public.coach_activity_deliveries d join public.coach_activity a on a.id=d.activity_id where a.kind='habit_comment_reply') then raise exception 'Reply created an email delivery'; end if;
 end $$;
 

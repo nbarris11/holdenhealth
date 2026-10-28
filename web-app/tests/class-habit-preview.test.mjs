@@ -28,6 +28,7 @@ function load({ admin = false, cookie, missing = false, roleError = false } = {}
     '@/lib/class-habits': { currentHabitWeek: () => 1 },
     './class-tracker': { default: 'class-tracker' }, '@/app/challenge/tracker': { default: 'challenge-tracker' },
     '@/app/admin/preview-actions': { stopMemberPreview() {} }, '@/app/challenge/style.css': {},
+    '@/lib/habit-comments': { commentRows: r => r.data ?? [] }, '@/components/personal-habits': { default: 'personal-habits' },
   };
   const exports = {};
   vm.runInNewContext(ts.transpileModule(fs.readFileSync(new URL('../src/app/portal/habits/page.tsx', import.meta.url), 'utf8'), {
@@ -70,7 +71,7 @@ test('saved habit checkboxes are disabled in preview and enabled for an active m
     react: { useState: value => [value, () => {}], useTransition: () => [false, () => {}] },
     '@/lib/challenge': { dateLabel: value => value, addDays: (value, n) => new Date(Date.parse(value) + n * 86400000).toISOString().slice(0, 10) },
     '@/lib/class-habits': { weekDates: () => ({ start: '2026-10-13', end: '2026-10-18' }), habitCounts: () => ({ fullDays: 0, days: 1, perHabit: [0, 0, 0] }) },
-    './actions': {}, '@/lib/check-in': { SIX_WEEK_CHECK_IN_URL: 'https://example.invalid' },
+    './actions': {}, './habit-comments': { default: 'habit-comments', EarlierHabitComments: 'earlier-habit-comments' },
   };
   vm.runInNewContext(ts.transpileModule(fs.readFileSync(new URL('../src/app/portal/habits/class-tracker.tsx', import.meta.url), 'utf8'), {
     compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.ReactJSX },

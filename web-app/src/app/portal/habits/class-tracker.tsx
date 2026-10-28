@@ -5,7 +5,7 @@ import { addDays, dateLabel } from "@/lib/challenge";
 import { habitCounts, weekDates, type HabitMark, type HabitWeek } from "@/lib/class-habits";
 import { saveHabitWeek, setHabitMark } from "./actions";
 import type { HabitComment } from "@/lib/habit-comments";
-import HabitComments from "./habit-comments";
+import HabitComments, { EarlierHabitComments } from "./habit-comments";
 
 export default function ClassTracker({ enrollmentId, sessionName, startsOn, endsOn, today, weekNumber, weeks, marks, readOnly = false, relationshipId, revisions = [], comments = [], commenter = null, ownerId = "" }: {
   enrollmentId: string; sessionName: string; startsOn: string; endsOn: string; today: string;
@@ -61,7 +61,7 @@ export default function ClassTracker({ enrollmentId, sessionName, startsOn, ends
               } catch { setLocalMarks(prior); setMessage("Connection interrupted. Reload to check your progress, then try again."); }
             });
           }} /><span>{habit}{(() => {
-            const thread = comments.filter(c => c.week_id === current.id && c.day === selectedDay && c.habit_index === index);
+            const thread = comments.filter(c => c.week_id === current.id && c.day === selectedDay && c.habit_index === index && c.habit_text === habit);
             return thread.length ? <span className={`habit-comment-marker${commenter === "member" && thread.some(c => c.author_id !== ownerId && !c.member_read_at) ? " unread" : ""}`} aria-label="Has comments">💬</span> : null;
           })()}</span><small>{counts?.perHabit[index] ?? 0}/{counts?.days ?? 0} days</small></label>;
         })}</div>
@@ -84,6 +84,7 @@ export default function ClassTracker({ enrollmentId, sessionName, startsOn, ends
       </form>}
       <p role="status" aria-live="polite">{message}</p>
     </section>
+    {commenter && ownerId && <EarlierHabitComments comments={comments} current={current} ownerId={ownerId} commenter={commenter} />}
     {revisions.length > 0 && <section className="member-card"><h2>Previous habit versions</h2><p>These saved records show your habits and checkmarks before an edit.</p>{revisions.map(revision => <details key={revision.id}><summary>Week {weeks.find(w => w.id === revision.week_id)?.week_number} · version {revision.version}</summary><ul>{revision.habits.map((habit, index) => <li key={index}>{habit}: {revision.marks.filter(m => m.habit_index === index).length} checkmarks</li>)}</ul></details>)}</section>}
     {weeks.length > 1 && <section className="member-card class-habit-history"><h2>Earlier weeks</h2>{weeks.filter(week => week.week_number < weekNumber - 1).reverse().map(week => {
       const dates = weekDates(startsOn, endsOn, week.week_number)!;

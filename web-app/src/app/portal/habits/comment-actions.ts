@@ -13,10 +13,11 @@ export async function addHabitComment(form: FormData): Promise<FormResult> {
   const day = String(form.get("day") ?? "");
   const habitIndex = Number(form.get("habitIndex"));
   const body = cleanCommentBody(form.get("body"));
+  const habitText = String(form.get("habitText") ?? "").slice(0, 100);
   if (!body) return { error: "Write a comment up to 1,000 characters." };
   if (!isUuid(weekId) || !validDate(day) || !Number.isInteger(habitIndex) || habitIndex < 0 || habitIndex > 5)
     return { error: "That habit could not be found. Reload and try again." };
-  const { error } = await (await createClient()).from("habit_comments").insert({ week_id: weekId, day, habit_index: habitIndex, body });
+  const { error } = await (await createClient()).from("habit_comments").insert({ week_id: weekId, day, habit_index: habitIndex, habit_text: habitText, body });
   if (error) return { error: "Your comment could not be saved. Please try again." };
   for (const path of ["/portal/habits", "/portal/training/habits", "/admin/training"]) revalidatePath(path, "layout");
   return { success: "Comment saved." };
