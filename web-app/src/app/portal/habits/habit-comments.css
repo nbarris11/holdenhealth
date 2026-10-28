@@ -1,0 +1,13 @@
+.habit-comments { margin: 20px 0 8px; display: grid; gap: 12px; }
+.habit-comments h3 { margin: 0; }
+.habit-comment-thread { border: 1px solid var(--m-line, #e4e0ea); border-radius: 12px; padding: 12px; display: grid; gap: 8px; background: white; }
+.habit-comment-habit { font-size: 0.95rem; }
+.habit-comment { margin: 0; padding: 8px 10px; border-radius: 10px; background: #f6f4f9; white-space: pre-wrap; overflow-wrap: anywhere; }
+.habit-comment.from-coach { background: #f3effb; }
+.habit-comment span { display: block; font-size: 0.78rem; font-weight: 600; opacity: 0.75; margin-bottom: 2px; }
+.habit-comment-form { display: grid; gap: 8px; }
+.habit-comment-form textarea { width: 100%; box-sizing: border-box; border: 1px solid var(--m-line, #e4e0ea); border-radius: 10px; padding: 8px 10px; font: inherit; resize: vertical; }
+.habit-comment-start { justify-self: start; border: 0; background: none; padding: 0; color: var(--m-purple, #6b4fa3); font: inherit; text-decoration: underline; cursor: pointer; }
+.habit-comment-marker { margin-left: 6px; font-size: 0.8rem; }
+.habit-comment-marker.unread::after, .class-habit-days button.has-comment::after { content: ""; display: inline-block; width: 7px; height: 7px; margin-left: 4px; border-radius: 50%; background: var(--m-purple, #6b4fa3); vertical-align: middle; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }

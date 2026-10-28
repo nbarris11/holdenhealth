@@ -5,9 +5,12 @@ import { addDays, dateLabel } from "@/lib/challenge";
 import { habitCounts, weekDates, type HabitMark, type HabitWeek } from "@/lib/class-habits";
 import { saveHabitWeek, setHabitMark } from "./actions";
 import { SIX_WEEK_CHECK_IN_URL } from "@/lib/check-in";
+import type { HabitComment } from "@/lib/habit-comments";
+import HabitComments from "./habit-comments";
 
-export default function ClassTracker({ enrollmentId, sessionName, startsOn, endsOn, today, weekNumber, weeks, marks, readOnly = false, relationshipId, revisions = [] }: {
+export default function ClassTracker({ enrollmentId, sessionName, startsOn, endsOn, today, weekNumber, weeks, marks, readOnly = false, relationshipId, revisions = [], comments = [], commenter = null, ownerId = "" }: {
   enrollmentId: string; sessionName: string; startsOn: string; endsOn: string; today: string;
+  comments?: HabitComment[]; commenter?: "member" | "coach" | null; ownerId?: string;
   relationshipId?: string; revisions?: {id: string; week_id: string; habits: string[]; marks: {day: string; habit_index: number}[]; version: number; created_at: string}[];
   weekNumber: number; weeks: HabitWeek[]; marks: HabitMark[]; readOnly?: boolean;
 }) {
@@ -39,7 +42,7 @@ export default function ClassTracker({ enrollmentId, sessionName, startsOn, ends
       {current && !editing ? <>
         <p><strong>{counts?.fullDays ?? 0} of {counts?.days ?? 0} days</strong> with every habit checked so far this week.</p>
         <div className="class-habit-days" aria-label="Choose a day to track">
-          {days.map(day => <button key={day} type="button" className={selectedDay === day ? "selected" : ""} aria-pressed={selectedDay === day} onClick={() => { setSelectedDay(day); setMessage(""); }}>
+          {days.map(day => <button key={day} type="button" className={`${selectedDay === day ? "selected" : ""}${comments.some(c => c.week_id === current.id && c.day === day) ? " has-comment" : ""}`} aria-pressed={selectedDay === day} onClick={() => { setSelectedDay(day); setMessage(""); }}>
             <span>{new Date(`${day}T12:00:00Z`).toLocaleDateString("en-US", { weekday: "short", timeZone: "UTC" })}</span><strong>{Number(day.slice(-2))}</strong>
           </button>)}
         </div>
@@ -58,8 +61,12 @@ export default function ClassTracker({ enrollmentId, sessionName, startsOn, ends
                 else setMessage("Saved.");
               } catch { setLocalMarks(prior); setMessage("Connection interrupted. Reload to check your progress, then try again."); }
             });
-          }} /><span>{habit}</span><small>{counts?.perHabit[index] ?? 0}/{counts?.days ?? 0} days</small></label>;
+          }} /><span>{habit}{(() => {
+            const thread = comments.filter(c => c.week_id === current.id && c.day === selectedDay && c.habit_index === index);
+            return thread.length ? <span className={`habit-comment-marker${commenter === "member" && thread.some(c => c.author_id !== ownerId && !c.member_read_at) ? " unread" : ""}`} aria-label="Has comments">💬</span> : null;
+          })()}</span><small>{counts?.perHabit[index] ?? 0}/{counts?.days ?? 0} days</small></label>;
         })}</div>
+        {commenter && ownerId && <HabitComments weekId={current.id} ownerId={ownerId} day={selectedDay} today={today} habits={current.habits} comments={comments} commenter={commenter} />}
         <p className="member-muted">{today < start ? `Tracking opens ${dateLabel(start)}.` : today > endsOn ? "This session has finished. Your progress is saved." : selectedDay > today ? "That day has not started yet." : "You can update today or an earlier day in this week."}</p>
         {!readOnly && today <= end && <button type="button" className="member-button secondary" onClick={() => setEditing(true)}>Edit this week’s habits</button>}
       </> : <form action={form => { if (readOnly) return; setMessage(""); startTransition(async () => {
