@@ -65,10 +65,8 @@ export const websitePages: WebsitePageConfig[] = [
   {
     key: "homepage", label: "Home", pathname: "/", description: "The main welcome page customers see first.",
     sections: [
-      { label: "Top of homepage", fields: [text("hero_eyebrow", "Small line above the headline"), area("hero_heading", "Main headline", 220), area("hero_body", "Intro paragraph", 600), text("primary_cta_label", "Main button text", 80), link("primary_cta_url", "Main button destination"), text("secondary_cta_label", "Second button text", 80), link("secondary_cta_url", "Second button destination")] },
-      { label: "The Holden Health app", fields: [area("app_eyebrow", "Eyebrow", 700), area("app_heading", "Heading", 700), area("app_body", "Body", 700), area("app_benefit_1_title", "Benefit 1 title", 700), area("app_benefit_1_body", "Benefit 1 body", 700), area("app_benefit_2_title", "Benefit 2 title", 700), area("app_benefit_2_body", "Benefit 2 body", 700), area("app_benefit_3_title", "Benefit 3 title", 700), area("app_benefit_3_body", "Benefit 3 body", 700), area("app_access", "Access", 700), area("app_cta_label", "Cta label", 700), area("app_login_label", "Login label", 700), area("app_preview_heading", "Preview heading", 700), area("app_preview_workout", "Preview workout", 700), area("app_preview_dose", "Preview dose", 700), area("app_preview_note", "Preview note", 700), link("app_cta_url", "Cta url"), link("app_login_url", "Login url")] },
-      { label: "Current program", fields: [text("offer_eyebrow", "Small program line"), area("offer_heading", "Program headline", 220), area("offer_body", "Program description"), text("offer_cta_label", "Program button text", 80), link("offer_cta_url", "Program button destination")] },
-      { label: "Bottom invitation", fields: [area("final_heading", "Final headline", 220), area("final_body", "Final description"), text("final_cta_label", "Final button text", 80), link("final_cta_url", "Final button destination")] },
+      { label: "Top of homepage", fields: [text("hero_eyebrow", "Small line above the headline"), area("hero_heading", "Main headline", 220)] },
+      { label: "Bottom invitation", fields: [area("final_heading", "Final headline", 220)] },
     ],
     defaults: {
       "app_eyebrow": "The Holden Health app", "app_heading": "Your next workout. Your daily habits. One place.", "app_body": "The Holden Health app keeps your workouts, habit check-ins, and progress together—with guidance from Kelsey along the way.", "app_benefit_1_title": "Know what’s next.", "app_benefit_1_body": "Open your workout and follow the instructions at your own pace.", "app_benefit_2_title": "Keep small promises.", "app_benefit_2_body": "Check off the habits you’re working on, one day at a time.", "app_benefit_3_title": "See your consistency.", "app_benefit_3_body": "Look back at completed workouts and the progress you’re making.", "app_access": "Works in your phone’s browser. No app-store download needed. Available features depend on your program.", "app_cta_label": "Find your program", "app_login_label": "Open the app", "app_preview_heading": "Make a little room for you.", "app_preview_workout": "Workouts for your program", "app_preview_dose": "Follow your plan, one workout at a time", "app_preview_note": "Your workouts, habits, and progress in one place.", "app_cta_url": "https://www.holden.health/coaching.html", "app_login_url": "https://portal.holden.health/login",
@@ -79,9 +77,9 @@ export const websitePages: WebsitePageConfig[] = [
   {
     key: "coaching", label: "Coaching", pathname: "/coaching.html", description: "The Focus on You program details and enrollment page.",
     sections: [
-      { label: "Top of page", fields: [text("hero_eyebrow", "Small line above the headline"), text("hero_heading", "Highlighted headline words", 140), area("hero_body", "Intro paragraph"), text("primary_cta_label", "Join button text", 80), link("primary_cta_url", "Join button destination"), text("secondary_cta_label", "Late enrollment button text", 80), link("secondary_cta_url", "Late enrollment destination")] },
-      { label: "What customers can expect", fields: [text("room_eyebrow", "Room section label"), area("room_heading", "Room section headline", 220), area("room_body", "Room section description"), text("schedule_eyebrow", "Schedule section label"), area("schedule_heading", "Schedule section headline", 220), area("schedule_body", "Schedule section description")] },
-      { label: "Bottom invitation", fields: [area("final_heading", "Final headline", 220), area("final_body", "Final description"), text("final_cta_label", "Final button text", 80), link("final_cta_url", "Final button destination")] },
+      { label: "Top of page", fields: [text("hero_eyebrow", "Small line above the headline"), text("hero_heading", "Highlighted headline words", 140)] },
+      { label: "What customers can expect", fields: [text("room_eyebrow", "Room section label"), area("room_heading", "Room section headline", 220), area("room_body", "Room section description")] },
+      { label: "Bottom invitation", fields: [area("final_heading", "Final headline", 220)] },
     ],
     defaults: {
       hero_eyebrow: "Focus on You · Group fitness in Plymouth", hero_heading: "stronger and steadier.", hero_body: "Welcoming total-body classes, practical nutrition habits, and Kelsey in your corner. Choose the session that fits your schedule.", primary_cta_label: "Join the session", primary_cta_url: "https://portal.holden.health/register", secondary_cta_label: "Ask about joining late", secondary_cta_url: "https://holden.health/contact.html", room_eyebrow: "What happens in the room", room_heading: "You won't be left guessing.", room_body: "Each class is coached total-body conditioning. Kelsey demonstrates, adjusts, and helps you choose the version that works for your body that day.", schedule_eyebrow: "Your class choices", schedule_heading: "Pick the days that fit this week.", schedule_body: "Your days can change. If you miss one, come to another class during the same session.", final_heading: "Want one of the 25 spots?", final_body: "See the upcoming group program and build a routine with Kelsey in your corner.", final_cta_label: "Join the session", final_cta_url: "https://portal.holden.health/register",
@@ -91,9 +89,9 @@ export const websitePages: WebsitePageConfig[] = [
   {
     key: "training", label: "Online Training", pathname: "/fitness-coaching.html", description: "The four-week online personal training offer.",
     sections: [
-      { label: "Top of page", fields: [text("hero_eyebrow", "Small line above the headline"), area("hero_heading", "Supporting headline", 220), area("hero_body", "Intro paragraph"), text("hero_cta_label", "Main button text", 80), link("hero_cta_url", "Main button destination")] },
+      { label: "Top of page", fields: [text("hero_eyebrow", "Small line above the headline"), area("hero_heading", "Supporting headline", 220), area("hero_body", "Intro paragraph")] },
       { label: "Coaching package", fields: [area("offer_heading", "Package headline", 220), area("offer_body", "Package description")] },
-      { label: "Bottom invitation", fields: [area("final_heading", "Final headline", 220), area("final_body", "Final description"), text("final_cta_label", "Final button text", 80), link("final_cta_url", "Final button destination")] },
+      { label: "Bottom invitation", fields: [area("final_heading", "Final headline", 220), area("final_body", "Final description")] },
     ],
     defaults: {
       hero_eyebrow: "Online personal training · Wherever you train", hero_heading: "Your workouts. Your goals. Your plan.", hero_body: "This is not a workout plan you download and forget about. Kelsey builds your four-week plan around your goals, schedule, equipment, and fitness level, then coaches you through it.", hero_cta_label: "Book a free consultation", hero_cta_url: "https://holden.health/book.html", offer_heading: "A complete four-week plan with a real coach behind it.", offer_body: "You get the workouts, guidance, accountability, and adjustments you need to keep moving forward without arranging your week around in-person appointments.", final_heading: "Let's build a stronger, healthier you.", final_body: "Start with a free consultation. Kelsey will help you understand the plan and arrange payment when you are ready.", final_cta_label: "Book a free consultation", final_cta_url: "https://holden.health/book.html",
@@ -123,7 +121,6 @@ export const websitePages: WebsitePageConfig[] = [
   simplePage("not-found", "Page Not Found", "/404.html", "The page visitors see for a missing link."),
   simplePage("personal-training", "Personal Training", "/personal-training.html", "One-to-one training in Plymouth; consultation first."),
   simplePage("backup-plan", "The Backup Plan Still Works", "/backup-plan.html", "A welcome note from Kelsey."),
-  simplePage("nutrition", "Nutrition Coaching", "/nutrition-coaching.html", "Online nutrition coaching information."),
   simplePage("booking", "Book a Call", "/book.html", "The consultation booking page."),
   simplePage("wednesday-reset", "Wednesday Reset", "/wednesday-reset.html", "The free Wednesday Reset signup page."),
   simplePage("quiz", "Find Your Next Step Quiz", "/quiz.html", "The website coaching quiz."),
@@ -144,10 +141,6 @@ export const websitePages: WebsitePageConfig[] = [
 
 
 const seoDefaults: Record<string, {seo_title:string;seo_description:string}> = {
-  "/nutrition-coaching.html": {
-    "seo_title": "Online Nutrition Coaching in Metro Detroit | Holden Health",
-    "seo_description": "Habit-based online nutrition coaching with Kelsey Holden for busy adults in Metro Detroit and beyond. Practical guidance without rigid meal plans or guilt."
-  },
   "/wednesday-reset.html": {
     "seo_title": "Free Wednesday Reset | Get Back on Track",
     "seo_description": "Build a free 60-second fitness and nutrition reset from Holden Health. Get a small, realistic plan for a week that went sideways. No email required."

@@ -22,7 +22,7 @@ export default async function ContentPage() {
   return <main className="app-shell admin-shell workspace-page content-page">
     <header className="workspace-page-header"><div><span className="eyebrow">What customers and members see</span><h1>Content</h1><p>Update your public homepage or the information waiting inside the member portal.</p></div></header>
     <section className="content-destination-grid">
-      <Link className="panel content-destination featured" href="/admin/website"><span className="content-icon">◇</span><span className="eyebrow">Public website</span><h2>Edit your website</h2><p>Update navigation, Join now and Free call buttons, the app section, page content, and search descriptions.</p><b>Open visual editor →</b></Link>
+      <Link className="panel content-destination featured" href="/admin/website"><span className="content-icon">◇</span><span className="eyebrow">Public website</span><h2>Edit your website</h2><p>Update page wording, photos, the header menu and Free call button, and search descriptions.</p><b>Open visual editor →</b></Link>
       <a className="panel content-destination" href="#announcements"><span className="content-icon">↗</span><span className="eyebrow">Signed-in members</span><h2>Portal announcements</h2><p>Post updates on Today for all signed-in members or a specific class program.</p><b>Manage announcements →</b></a>
       <a className="panel content-destination" href="#resources"><span className="content-icon">＋</span><span className="eyebrow">Helpful links</span><h2>Member resources</h2><p>Keep useful guides, videos, and approved links in one place.</p><b>Manage resources →</b></a>
     </section>

@@ -40,7 +40,8 @@ test('stored-content defaults no longer show Resources, The App or the join butt
  const load=file=>{const exports={};vm.runInNewContext(ts.transpileModule(fs.readFileSync(file,'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022}}).outputText,{exports,URL,require:()=>({})});return exports;};
  const {normalizeHeader}=load('web-app/src/lib/website-header.ts');
  const h=normalizeHeader(null);
- assert.equal(h.join_visible,false);
- assert.equal(h.app_visible,false);
+ for(const key of ['join_label','join_url','join_visible','app_label','app_url','app_visible','resources_label','resources_url','resources_all_label','consult_label','consult_url'])assert.equal(key in h,false,key);
+ assert.equal(h.group_label,'Group Fitness');
+ assert.equal(h.about_label,'About Me');
  assert.match(fs.readFileSync('web-app/src/lib/website-pages.ts','utf8'),/const defaultNavigationKeys = \["homepage", "coaching", "training", "about", "contact"\];/);
 });

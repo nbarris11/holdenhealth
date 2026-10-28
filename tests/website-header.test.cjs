@@ -6,21 +6,19 @@ const ts=require('typescript');
 const exportsForTest={};
 vm.runInNewContext(ts.transpileModule(fs.readFileSync('web-app/src/lib/website-header.ts','utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022}}).outputText,{exports:exportsForTest,URL});
 const {normalizeHeader,validHeaderLink}=exportsForTest;
-test('missing header settings hide the join button and The App link',()=>{
+test('missing header settings fall back to the current menu and buttons',()=>{
  const h=normalizeHeader(null);
- assert.equal(h.join_label,'Join group classes');
- assert.equal(h.join_url,'https://portal.holden.health/register');
- assert.equal(h.join_visible,false);
- assert.equal(h.app_visible,false);
+ assert.equal(h.group_label,'Group Fitness');
+ assert.equal(h.about_label,'About Me');
  assert.equal(h.call_visible,true);
 });
 test('published labels and visibility survive normalization',()=>{
- const h=normalizeHeader({join_label:'Join the session',join_visible:false});
- assert.equal(h.join_label,'Join the session');
- assert.equal(h.join_visible,false);
+ const h=normalizeHeader({call_label:'Book a call',call_visible:false});
+ assert.equal(h.call_label,'Book a call');
+ assert.equal(h.call_visible,false);
 });
 test('header links reject executable and cross-host shorthand URLs',()=>{
  for(const url of ['javascript:alert(1)','//example.com','/\\example.com','https://name:password@example.com'])assert.equal(validHeaderLink(url),false);
- for(const url of ['/index.html#the-app','/book.html','https://portal.holden.health/register'])assert.equal(validHeaderLink(url),true);
- assert.equal(normalizeHeader({join_url:'javascript:alert(1)'}).join_url,'https://portal.holden.health/register');
+ for(const url of ['/index.html#top','/book.html','https://portal.holden.health/login'])assert.equal(validHeaderLink(url),true);
+ assert.equal(normalizeHeader({call_url:'javascript:alert(1)'}).call_url,'/book.html');
 });

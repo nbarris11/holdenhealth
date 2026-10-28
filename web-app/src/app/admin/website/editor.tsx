@@ -26,6 +26,15 @@ function parseArray<T>(value: string | undefined): T[] {
   } catch { return []; }
 }
 
+// The website no longer shows a featured promotion, so an old promotion draft
+// would only block publishing with a program error.
+function withoutPromotion(draft: WebsiteDraft | null): WebsiteDraft {
+  if (!draft?.promotion) return draft ?? emptyWebsiteDraft();
+  const next = { ...draft, bases: { ...draft.bases } };
+  delete next.promotion; delete next.bases["website:settings"];
+  return next;
+}
+
 function newSectionId() {
   return `section-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
 }
@@ -95,7 +104,7 @@ export default function WebsiteEditor({ pages, content, initialPage, header, pro
   const [published, setPublished] = useState(content);
   const [publishedHeader, setPublishedHeader] = useState(header);
   const [publishedFeature, setPublishedFeature] = useState(featuredCopy);
-  const [workspace, setWorkspace] = useState<WebsiteDraft>(savedDraft ?? emptyWebsiteDraft());
+  const [workspace, setWorkspace] = useState<WebsiteDraft>(()=>withoutPromotion(savedDraft));
   const [recordBases, setRecordBases] = useState(bases);
   const revisionRef = useRef(draftRevision);
   const savedRef = useRef(JSON.stringify(savedDraft ?? emptyWebsiteDraft()));
@@ -336,12 +345,12 @@ export default function WebsiteEditor({ pages, content, initialPage, header, pro
     </div>
     {error?<p className="notice error" role="alert">{error} <button type="button" onClick={()=>void saveWorkspace()}>Retry draft save</button></p>:null}
     {publishedNotice?<p className="notice success" role="status">{publishedNotice} <a href={`https://www.holden.health${page.pathname}`} target="_blank" rel="noreferrer">View live page ↗</a></p>:null}
-    {review?<div className="website-review-notice"><strong>Unpublished preview</strong><p>{isDirty?`Publish will update: ${scope.join("; ")}. Other page drafts stay private.`:"This page has no unpublished changes."}</p><button className="button secondary" type="button" disabled={publishing} onClick={()=>setReview(false)}>← Back to editing</button></div>:<p className="website-edit-hint">Click text, a button, a photo, the header, or a promotion to edit it. Your live website stays unchanged until you publish.</p>}
+    {review?<div className="website-review-notice"><strong>Unpublished preview</strong><p>{isDirty?`Publish will update: ${scope.join("; ")}. Other page drafts stay private.`:"This page has no unpublished changes."}</p><button className="button secondary" type="button" disabled={publishing} onClick={()=>setReview(false)}>← Back to editing</button></div>:<p className="website-edit-hint">Click text, a button, a photo, or the header to edit it. Your live website stays unchanged until you publish.</p>}
     {!previewReady?<p role="status" className="website-preview-loading">{previewSlow?"The preview is taking longer than expected. Your draft is safe.":"Loading your page preview…"} <button type="button" onClick={()=>{setPreviewReady(false);setPreviewSlow(false);setPreviewAttempt(value=>value+1);}}>Reload preview</button></p>:null}
     <div className="exact-editor-layout">
       <aside hidden={review} className="website-fields-panel" aria-label={`${page.label} page editor`}>
-        <div className="website-panel-tabs"><button type="button" onClick={()=>setPanel("page")}>Page content</button><button type="button" onClick={()=>setPanel("header")}>Header</button>{programs.length?<button type="button" onClick={()=>setPanel("promotion")}>Promotion</button>:null}</div>
-        {panel==="header"?<section className="website-shared-editor"><span className="eyebrow">All pages</span><h2>Website header</h2><p>Changes appear in the desktop and phone menus.</p>{headerFields.map(field=><label className="website-editor-field" key={field.key}><span>{field.label}</span><input value={String(currentHeader[field.key]??"")} maxLength={"link" in field?700:30} onChange={event=>editHeader(field.key,event.target.value)} /></label>)}{[["join_visible","Show Join button"],["call_visible","Show Free call button"],["app_visible","Show The App link"]].map(([key,label])=><label className="check-label" key={key}><input type="checkbox" checked={currentHeader[key]===true} onChange={event=>editHeader(key,event.target.checked)} />{label}</label>)}</section>:panel==="promotion"?<section className="website-shared-editor"><span className="eyebrow">Home and Coaching</span><h2>Featured promotion</h2><p>Publishing these words updates both pages.</p><label className="website-editor-field"><span>Program</span><select value={promotion.sessionId} onChange={event=>editPromotion({sessionId:event.target.value})}>{programs.map(program=><option key={program.id} value={program.id}>{program.name}</option>)}</select></label>{([["headline","Headline",240],["body","Short invitation",1600],["button","Button text",100]] as const).map(([key,label,max])=><label className="website-editor-field" key={key}><span>{label}</span><textarea rows={key==='body'?5:2} value={promotion[key]} maxLength={max} onChange={event=>editPromotion({[key]:event.target.value})} /></label>)}<p>Dates, prices, and class times come from the program.</p><a href={`/admin/settings?program=${encodeURIComponent(promotion.sessionId)}`} target="_blank" rel="noreferrer">Edit program details ↗</a></section>:<>
+        <div className="website-panel-tabs"><button type="button" onClick={()=>setPanel("page")}>Page content</button><button type="button" onClick={()=>setPanel("header")}>Header</button></div>
+        {panel==="header"?<section className="website-shared-editor"><span className="eyebrow">All pages</span><h2>Website header</h2><p>Changes appear in the desktop and phone menus.</p>{headerFields.map(field=><label className="website-editor-field" key={field.key}><span>{field.label}</span><input value={String(currentHeader[field.key]??"")} maxLength={"link" in field?700:30} onChange={event=>editHeader(field.key,event.target.value)} /></label>)}{[["call_visible","Show Free call button"]].map(([key,label])=><label className="check-label" key={key}><input type="checkbox" checked={currentHeader[key]===true} onChange={event=>editHeader(key,event.target.checked)} />{label}</label>)}</section>:panel==="promotion"?<section className="website-shared-editor"><span className="eyebrow">Home and Coaching</span><h2>Featured promotion</h2><p>Publishing these words updates both pages.</p><label className="website-editor-field"><span>Program</span><select value={promotion.sessionId} onChange={event=>editPromotion({sessionId:event.target.value})}>{programs.map(program=><option key={program.id} value={program.id}>{program.name}</option>)}</select></label>{([["headline","Headline",240],["body","Short invitation",1600],["button","Button text",100]] as const).map(([key,label,max])=><label className="website-editor-field" key={key}><span>{label}</span><textarea rows={key==='body'?5:2} value={promotion[key]} maxLength={max} onChange={event=>editPromotion({[key]:event.target.value})} /></label>)}<p>Dates, prices, and class times come from the program.</p><a href={`/admin/settings?program=${encodeURIComponent(promotion.sessionId)}`} target="_blank" rel="noreferrer">Edit program details ↗</a></section>:<>
         <details className="panel"><summary><strong>Edit page text and search appearance</strong></summary><p>These fields work even if the preview asks for the website password. Preview your changes before publishing.</p>{page.sections.map(section=><fieldset key={section.label}><legend>{section.label}</legend>{section.fields.map(field=><label className="website-editor-field" key={field.key}><span>{field.label}</span><textarea rows={field.kind === "textarea" ? 3 : 2} value={values[field.key] || ""} maxLength={field.maxLength} onChange={event=>{
           saveDraftValue(selectedPage,field.key,event.target.value);
           const contentSelector = `[data-site-content="${field.key}"]`;
