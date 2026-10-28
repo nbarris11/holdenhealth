@@ -13,7 +13,7 @@ export default function HomePage() {
           <div className="landing-intro">
             <span className="eyebrow">Focus on you</span>
             <h1>Your session, all in one place.</h1>
-            <p className="lede">See your schedule, check in each week, and find Kelsey’s notes and resources whenever you need them.</p>
+            <p className="lede">Find your workouts, track your habits, and message Kelsey whenever you need her.</p>
             <div className="landing-actions">
               <Link className="button secondary" href="/challenge">Join the free 14-day habit challenge</Link>
               <Link className="button primary" href="/login">Sign in to your portal</Link>
@@ -25,7 +25,7 @@ export default function HomePage() {
             <h2>Simple support between classes.</h2>
             <ul>
               <li><span aria-hidden="true">01</span> Your class schedule</li>
-              <li><span aria-hidden="true">02</span> Weekly check-ins</li>
+              <li><span aria-hidden="true">02</span> Weekly habits</li>
               <li><span aria-hidden="true">03</span> Notes and resources</li>
             </ul>
             <Link className="landing-drop-in" href="/drop-in">Session already started? Ask about joining late <span aria-hidden="true">→</span></Link>

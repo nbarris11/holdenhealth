@@ -111,17 +111,6 @@ export const websitePages: WebsitePageConfig[] = [
     },
   },
   {
-    key: "resources", label: "Resources", pathname: "/resources.html", description: "Free guides, practical tools, and articles.",
-    sections: [
-      { label: "Top of page", fields: [text("hero_eyebrow", "Small line above the headline"), text("hero_heading", "Highlighted headline words", 120), area("hero_body", "Intro paragraph")] },
-      { label: "Free guide", fields: [text("guide_eyebrow", "Guide label"), area("guide_heading", "Guide headline", 180), area("guide_body", "Guide description"), text("guide_cta_label", "Guide button text", 80)] },
-      { label: "Start here and invitation", fields: [area("start_heading", "Start-here headline", 220), area("start_body", "Start-here description"), area("final_heading", "Final headline", 220), area("final_body", "Final description"), text("final_cta_label", "Final button text", 80), link("final_cta_url", "Final button destination")] },
-    ],
-    defaults: {
-      hero_eyebrow: "Free resources & tips", hero_heading: "actually use.", hero_body: "No fluff, no fads. Practical tips on training, nutrition, and building habits that fit your real life, plus a free guide to get you started.", guide_eyebrow: "Free download", guide_heading: "5 habits that change everything", guide_body: "The five simple, no-diet habits Kelsey starts every client with. They make the biggest difference with the least overwhelm.", guide_cta_label: "Send me the guide", start_heading: "What do you need help with today?", start_body: "Skip the endless scrolling. Pick the situation that sounds most like your week and leave with one clear next step.", final_heading: "Want this tailored to you?", final_body: "Free tips are great, but a coach in your corner is better. Book a free intro call and let's build your plan.", final_cta_label: "Book a free intro call", final_cta_url: "book.html",
-    },
-  },
-  {
     key: "contact", label: "Contact", pathname: "/contact.html", description: "How customers reach Kelsey and what the form says.",
     sections: [
       { label: "Contact introduction", fields: [text("hero_eyebrow", "Small line above the headline"), text("hero_heading", "Highlighted headline word", 80), area("hero_body", "Intro paragraph")] },
@@ -214,10 +203,6 @@ const seoDefaults: Record<string, {seo_title:string;seo_description:string}> = {
   "/eating-out-with-your-goals.html": {
     "seo_title": "Eating Out Without Derailing Your Goals | Holden Health",
     "seo_description": "Enjoy restaurants while supporting your nutrition goals with a flexible plate guide, ordering tips, and a no-guilt approach to special meals."
-  },
-  "/resources.html": {
-    "seo_title": "Fitness & Nutrition Resources | Holden Health",
-    "seo_description": "Free fitness and nutrition resources from Holden Health. Practical tips on training, nutrition, and building lasting habits, plus a free 5-habits guide."
   },
   "/beginners-guide-to-lifting.html": {
     "seo_title": "Beginner's Guide to Lifting Without Fear | Holden Health",

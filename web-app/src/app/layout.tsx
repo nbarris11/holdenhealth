@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   applicationName: "Holden Health",
   appleWebApp: { title: "Holden Health", capable: true },
   description:
-    "Private session schedules, check-ins, resources, and coaching support for Holden Health members.",
+    "Workouts, habits, and messages with Kelsey for Holden Health members.",
   robots: { index: false, follow: false },
 };
 

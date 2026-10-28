@@ -17,11 +17,6 @@
       "permanent": true
     },
     {
-      "source": "/nutrition-coaching",
-      "destination": "/nutrition-coaching.html",
-      "permanent": true
-    },
-    {
       "source": "/packages",
       "destination": "/coaching.html",
       "permanent": true
@@ -39,6 +34,26 @@
     {
       "source": "/contact-1",
       "destination": "/contact.html",
+      "permanent": true
+    },
+    {
+      "source": "/resources.html",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/resources",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/nutrition-coaching.html",
+      "destination": "/coaching.html",
+      "permanent": true
+    },
+    {
+      "source": "/nutrition-coaching",
+      "destination": "/coaching.html",
       "permanent": true
     }
   ],
