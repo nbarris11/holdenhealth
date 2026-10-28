@@ -1,0 +1,9 @@
+# The portal deploys from web-app/. Without this file Vercel falls back to the
+# repository-root .vercelignore, which is written for the public site and
+# strips the whole web-app folder from portal builds.
+node_modules
+.next
+.env*
+!.env.example
+*.tsbuildinfo
+* 2.*
