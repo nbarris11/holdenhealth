@@ -23,7 +23,7 @@ execFileSync(
   { cwd: new URL("..", import.meta.url) },
 );
 after(() => rmSync(output, { recursive: true, force: true }));
-const { cleanLibraryContent } = require(join(output, "workout-library.js"));
+const { cleanLibraryContent, repeatTemplate } = require(join(output, "workout-library.js"));
 const step = {
   section: "Warm-up",
   title: "March",
@@ -113,4 +113,22 @@ test("templates retain demonstration links and valid timer settings", () => {
   assert.ok(saved);
   assert.equal(saved.steps[0].demo, "https://example.com/march");
   assert.deepEqual(saved.template.timer_config, timer);
+});
+
+test("repeating a workout copies the plan but never its id, date or publish state", () => {
+  const original = {
+    id: "w1", challenge_id: null, relationship_id: "r1", title: "Leg day", minutes: 30, equipment: "Bands",
+    plan: "Squats", exercises: [{ label: "Squat", url: "https://example.com/squat" }], level: "All levels",
+    focus: "Legs", timer_config: null, steps: [step], publish_on: "2026-10-20", published: true, revision: 3,
+  };
+  const copy = repeatTemplate(original);
+  for (const key of ["id", "publish_on", "published", "revision", "relationship_id", "challenge_id"]) assert.equal(key in copy, false, key);
+  assert.equal(copy.title, "Leg day");
+  assert.deepEqual(copy.exercises, original.exercises);
+  assert.deepEqual(copy.steps, [step]);
+  copy.exercises[0].label = "Changed";
+  copy.steps[0].title = "Changed";
+  assert.equal(original.exercises[0].label, "Squat");
+  assert.equal(original.steps[0].title, "March");
+  assert.deepEqual(repeatTemplate({ ...original, steps: undefined }).steps, []);
 });

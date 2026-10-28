@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { verifyAdmin } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { dateLabel, detroitToday, isUuid, type Workout } from "@/lib/challenge";
-import { cleanLibraryContent } from "@/lib/workout-library";
+import { cleanLibraryContent, repeatTemplate } from "@/lib/workout-library";
 import WorkoutBuilder from "@/app/admin/challenges/workout-builder";
 import { ArchiveForm } from "@/app/admin/challenges/forms";
 import { LibraryPicker } from "@/app/admin/challenges/library-controls";
@@ -11,11 +11,11 @@ import "@/app/challenge/style.css";
 
 export default async function ProgramWorkouts({ params, searchParams }: {
   params: Promise<{ programId: string }>;
-  searchParams: Promise<{ template?: string; saved?: string }>;
+  searchParams: Promise<{ template?: string; saved?: string; repeat?: string }>;
 }) {
   await verifyAdmin();
   const { programId } = await params;
-  const { template: templateId, saved } = await searchParams;
+  const { template: templateId, saved, repeat: repeatId } = await searchParams;
   if (!isUuid(programId)) notFound();
   const db = await createClient();
   const [programResult, workoutResult, logResult, enrollmentResult, templateResult] = await Promise.all([
@@ -30,7 +30,8 @@ export default async function ProgramWorkouts({ params, searchParams }: {
   if (!program) notFound();
   const scope = { ...program, title: program.name };
   const workouts = (workoutResult.data ?? []) as Workout[];
-  const template = templateResult.data ? cleanLibraryContent("workout", templateResult.data.content)?.template : undefined;
+  const repeatSource = repeatId && isUuid(repeatId) ? workouts.find(w => w.id === repeatId) : undefined;
+  const template = repeatSource ? repeatTemplate(repeatSource) : templateResult.data ? cleanLibraryContent("workout", templateResult.data.content)?.template : undefined;
   const names = new Map((enrollmentResult.data ?? []).map(e => [e.id, (e.profiles as unknown as { full_name: string } | null)?.full_name || "Member"]));
   return <main className="app-shell workspace-page challenge-shell">
     <header className="workspace-page-header">
@@ -50,13 +51,13 @@ export default async function ProgramWorkouts({ params, searchParams }: {
       {workouts.map(w => <details className="challenge-editor" key={w.id} id={`workout-${w.id}`} open={saved === w.id}>
         <summary>{w.title} · {dateLabel(w.publish_on)} · {w.archived ? "Archived" : !w.published ? "Draft" : w.publish_on > detroitToday() ? "Scheduled" : "Published"}</summary>
         <WorkoutBuilder key={`${w.id}-${Boolean(w.archived)}`} challenge={scope} workout={w} classProgram />
-        <div className="button-row"><Link className="button secondary" href={`/portal/workouts/${w.id}?preview=1`}>Preview workout &amp; session</Link></div>
+        <div className="button-row"><Link className="button secondary" href={`/portal/workouts/${w.id}?preview=1`}>Preview workout &amp; session</Link><Link className="button secondary" href={`?repeat=${w.id}#new-workout`}>Repeat on a new date</Link></div>
         <ArchiveForm id={w.id} kind="workout" archived={Boolean(w.archived)} />
       </details>)}
       {templateId && !template && <p role="alert">That template could not be loaded. Choose another from the library.</p>}
       <details className="challenge-editor" id="new-workout" open={!workouts.length || Boolean(template)}>
-        <summary>{template ? `New draft from ${template.title}` : "+ Add a workout"}</summary>
-        <WorkoutBuilder key={`${programId}-${templateId || "new"}`} challenge={scope} template={template} classProgram />
+        <summary>{repeatSource ? `Repeat of ${repeatSource.title}: choose a new date` : template ? `New draft from ${template.title}` : "+ Add a workout"}</summary>
+        <WorkoutBuilder key={`${programId}-${repeatSource?.id || templateId || "new"}`} challenge={scope} template={template} defaultPublished={repeatSource?.published ?? false} classProgram />
       </details>
     </section>
     <section className="panel">

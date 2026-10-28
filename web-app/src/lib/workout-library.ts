@@ -89,3 +89,19 @@ export function cleanLibraryContent(
     },
   };
 }
+
+// A fresh copy of a saved workout's content for "Repeat on a new date".
+// Leaves out id, release date and publish state so the copy is a new workout.
+export function repeatTemplate(workout: Workout): Template {
+  return structuredClone({
+    title: workout.title,
+    minutes: workout.minutes,
+    equipment: workout.equipment,
+    plan: workout.plan,
+    exercises: workout.exercises,
+    level: workout.level,
+    focus: workout.focus,
+    timer_config: workout.timer_config,
+    steps: workout.steps ?? [],
+  });
+}

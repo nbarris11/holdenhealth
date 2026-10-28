@@ -18,12 +18,14 @@ export default function WorkoutBuilder({
   template,
   classProgram = false,
   personalProgram = false,
+  defaultPublished = false,
 }: {
   challenge: WorkoutProgram;
   workout?: Workout;
   template?: Template;
   classProgram?: boolean;
   personalProgram?: boolean;
+  defaultPublished?: boolean;
 }) {
   const content = workout || template;
   const formRef = useRef<HTMLFormElement>(null);
@@ -232,7 +234,7 @@ export default function WorkoutBuilder({
           <input
             type="checkbox"
             name="published"
-            defaultChecked={workout?.published || false}
+            defaultChecked={workout?.published ?? defaultPublished}
           />
           Make available to members on the release date
         </label>

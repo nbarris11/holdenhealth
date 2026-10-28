@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { verifyAdmin } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { dateLabel, detroitToday, isUuid, type Workout } from "@/lib/challenge";
-import { cleanLibraryContent } from "@/lib/workout-library";
+import { cleanLibraryContent, repeatTemplate } from "@/lib/workout-library";
 import WorkoutBuilder from "@/app/admin/challenges/workout-builder";
 import { LibraryPicker } from "@/app/admin/challenges/library-controls";
 import { ArchiveForm } from "@/app/admin/challenges/forms";
@@ -13,11 +13,11 @@ import "@/app/challenge/style.css";
 
 export default async function PersonalWorkouts({ params, searchParams }: {
   params: Promise<{ relationshipId: string }>;
-  searchParams: Promise<{ template?: string; saved?: string }>;
+  searchParams: Promise<{ template?: string; saved?: string; repeat?: string }>;
 }) {
   await verifyAdmin();
   const { relationshipId } = await params;
-  const { template: templateId, saved } = await searchParams;
+  const { template: templateId, saved, repeat: repeatId } = await searchParams;
   if (!isUuid(relationshipId)) notFound();
   const db = await createClient();
   const [programResult, workoutResult, logResult, enrollmentResult, templateResult] = await Promise.all([
@@ -33,7 +33,8 @@ export default async function PersonalWorkouts({ params, searchParams }: {
   const name = (program.profiles as unknown as { full_name: string } | null)?.full_name || "Personal training";
   const scope = { id: program.id, starts_on: program.starts_on, ends_on: "9999-12-31", title: name };
   const workouts = (workoutResult.data ?? []) as Workout[];
-  const template = templateResult.data ? cleanLibraryContent("workout", templateResult.data.content)?.template : undefined;
+  const repeatSource = repeatId && isUuid(repeatId) ? workouts.find(w => w.id === repeatId) : undefined;
+  const template = repeatSource ? repeatTemplate(repeatSource) : templateResult.data ? cleanLibraryContent("workout", templateResult.data.content)?.template : undefined;
   const progression = new Map<string, { title: string; entries: { date: string; load: ExerciseLoad }[] }>();
   for (const log of [...(logResult.data ?? [])].reverse()) {
     if (!Array.isArray(log.exercise_loads)) continue;
@@ -63,13 +64,13 @@ export default async function PersonalWorkouts({ params, searchParams }: {
       {workouts.map(w => <details className="challenge-editor" key={w.id} id={`workout-${w.id}`} open={saved === w.id}>
         <summary>{w.title} · {dateLabel(w.publish_on)} · {w.archived ? "Archived" : !w.published ? "Draft" : w.publish_on > detroitToday() ? "Scheduled" : "Published"}</summary>
         {program.status !== "withdrawn" && <WorkoutBuilder key={`${w.id}-${Boolean(w.archived)}`} challenge={scope} workout={w} personalProgram />}
-        <div className="button-row"><Link className="button secondary" href={`/portal/workouts/${w.id}?preview=1`}>Preview workout &amp; session</Link></div>
+        <div className="button-row"><Link className="button secondary" href={`/portal/workouts/${w.id}?preview=1`}>Preview workout &amp; session</Link>{program.status !== "withdrawn" && <Link className="button secondary" href={`?repeat=${w.id}#new-workout`}>Repeat on a new date</Link>}</div>
         {program.status !== "withdrawn" && <ArchiveForm id={w.id} kind="workout" archived={Boolean(w.archived)} />}
       </details>)}
       {templateId && !template && <p role="alert">That template could not be loaded. Choose another from the library.</p>}
       {program.status !== "withdrawn" && <details className="challenge-editor" id="new-workout" open={!workouts.length || Boolean(template)}>
-        <summary>{template ? `New draft from ${template.title}` : "+ Add a workout"}</summary>
-        <WorkoutBuilder key={`${relationshipId}-${templateId || "new"}`} challenge={scope} template={template} personalProgram />
+        <summary>{repeatSource ? `Repeat of ${repeatSource.title}: choose a new date` : template ? `New draft from ${template.title}` : "+ Add a workout"}</summary>
+        <WorkoutBuilder key={`${relationshipId}-${repeatSource?.id || templateId || "new"}`} challenge={scope} template={template} defaultPublished={repeatSource?.published ?? false} personalProgram />
       </details>}
     </section>
     <section className="panel" id="check-ins">
