@@ -3,7 +3,6 @@ import webPush from "web-push";
 import { createAdminClient } from "./supabase/admin";
 import { validPushSubscription } from "./chat";
 import { sendTransactionalEmail } from "./email";
-import { shouldEmailHabitNote } from "./habit-comments";
 
 // Tells a member that Kelsey left a note on their habits: a phone notification on every
 // device they enabled in Messages, plus one email per 12 hours. Content stays generic so
@@ -35,26 +34,14 @@ export async function notifyMemberOfHabitNote(commentId: string) {
     }
   }));
 
-  // Notes on any of this member's weeks count toward the 12-hour email limit.
-  const [contact, profile, enrollments, relationships] = await Promise.all([
-    db.from("member_contacts").select("email,email_opt_in,unsubscribed_at,is_test").eq("user_id", memberId).maybeSingle(),
+  // At most one email per 12 hours, claimed atomically; any error means no email.
+  const [claim, profile] = await Promise.all([
+    db.rpc("claim_habit_note_email", { p_member: memberId }),
     db.from("profiles").select("full_name").eq("id", memberId).maybeSingle(),
-    db.from("enrollments").select("id").eq("member_id", memberId),
-    db.from("coaching_relationships").select("id").eq("member_id", memberId),
   ]);
-  const owners = [...(enrollments.data ?? []).map(e => `enrollment_id.eq.${e.id}`), ...(relationships.data ?? []).map(r => `relationship_id.eq.${r.id}`)];
-  const { data: weeks } = owners.length ? await db.from("class_habit_weeks").select("id").or(owners.join(",")) : { data: [] };
-  const memberWeeks = (weeks ?? []).map(w => w.id);
-  const { data: earlier } = memberWeeks.length ? await db.from("habit_comments").select("created_at").in("week_id", memberWeeks)
-    .neq("author_id", memberId).neq("id", comment.id).lt("created_at", comment.created_at).order("created_at", { ascending: false }).limit(1) : { data: [] };
-  if (!contact.data?.email || !shouldEmailHabitNote({
-    authorIsMember: false,
-    optedIn: contact.data.email_opt_in !== false && !contact.data.unsubscribed_at,
-    isTest: Boolean(contact.data.is_test),
-    previousNoteAt: earlier?.[0]?.created_at ?? null,
-    now: Date.parse(comment.created_at),
-  })) return;
-  await sendTransactionalEmail(contact.data.email, "Kelsey left you a note", {
+  const email = typeof claim.data === "string" ? claim.data : null;
+  if (claim.error || !email) return;
+  await sendTransactionalEmail(email, "Kelsey left you a note", {
     firstName: (profile.data?.full_name ?? "").split(" ")[0] || "there",
     preheader: "Open your Holden Health portal to read it and reply.",
     heading: "Kelsey left you a note",

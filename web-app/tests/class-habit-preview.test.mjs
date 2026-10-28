@@ -106,4 +106,9 @@ test("members see today's checkboxes before last week's recap, and no record-kee
   assert.equal(order.includes('Previous habit versions'), false);
   assert.equal(order.includes('Earlier weeks'), false, 'empty Earlier weeks box');
   assert.ok(render('coach').some(n => n.type === 'h2' && n.props.children === 'Previous habit versions'));
+  // Choosing a new week's habits: last week's recap is the starting point, so it sits above the form.
+  const choosing = nodes(exports.default({ enrollmentId: 'own', sessionName: 'Class program', startsOn: '2026-10-13', endsOn: '2026-11-21', today: '2026-10-20', weekNumber: 2, weeks: [weeks[0]], marks: [], commenter: 'member', ownerId: 'member' }));
+  const firstHabitField = choosing.findIndex(n => n.type === 'input' && n.props.name === 'habit');
+  const recap = choosing.findIndex(n => n.type === 'h3' && n.props.children === 'Last week');
+  assert.ok(recap >= 0 && recap < firstHabitField, `recap ${recap} field ${firstHabitField}`);
 });

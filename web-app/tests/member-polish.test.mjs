@@ -1,7 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { nextClass } from '../src/lib/member-session.ts';
-import { shouldEmailHabitNote } from '../src/lib/habit-comments.ts';
 
 const meeting = (id, starts_at, extra = {}) => ({ id, starts_at, ends_at: new Date(Date.parse(starts_at) + 3600000).toISOString(), is_zoom: false, ...extra });
 const now = Date.parse('2026-10-28T16:00:00Z');
@@ -22,12 +21,3 @@ test('finished classes are skipped, a class in progress still counts, and none l
   assert.equal(nextClass([meeting('old', '2026-10-27T10:00:00Z')], ['old'], now), null);
 });
 
-test('a coach note emails the member at most once every 12 hours, never for replies, opt-outs or test accounts', () => {
-  const base = { authorIsMember: false, optedIn: true, isTest: false, previousNoteAt: null, now };
-  assert.equal(shouldEmailHabitNote(base), true);
-  assert.equal(shouldEmailHabitNote({ ...base, authorIsMember: true }), false);
-  assert.equal(shouldEmailHabitNote({ ...base, optedIn: false }), false);
-  assert.equal(shouldEmailHabitNote({ ...base, isTest: true }), false);
-  assert.equal(shouldEmailHabitNote({ ...base, previousNoteAt: '2026-10-28T06:00:00Z' }), false);
-  assert.equal(shouldEmailHabitNote({ ...base, previousNoteAt: '2026-10-28T03:00:00Z' }), true);
-});
