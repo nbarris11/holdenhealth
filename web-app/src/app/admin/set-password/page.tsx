@@ -1,4 +1,4 @@
-import Link from "next/link";
+import BrandLogo from "@/components/brand-logo";
 import { updateAdminPassword } from "../login/actions";
 import { verifyAdmin } from "@/lib/auth";
 
@@ -12,7 +12,7 @@ export default async function SetAdminPasswordPage({ searchParams }: SetPassword
   return (
     <main className="auth-shell">
       <section className="auth-card">
-        <Link className="wordmark" href="https://holden.health">Holden Health</Link>
+        <BrandLogo className="wordmark" href="https://holden.health" />
         <span className="eyebrow">Admin security</span>
         <h1>Choose your admin password.</h1>
         <p className="lede">Use at least 12 characters and a password you do not use anywhere else.</p>

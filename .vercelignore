@@ -1,0 +1,20 @@
+# The public website deploy is separate from the secure portal.
+web-app
+supabase
+portal
+prototypes
+dist
+docs
+scripts
+tests
+.seo-cache
+.agents
+.codex
+.openai
+node_modules
+*.md
+*.ses
+.env*
+**/.env*
+**/*.tsbuildinfo
+netlify.toml

@@ -1,0 +1,174 @@
+.workout-timer-dialog {
+  border: 0;
+  border-radius: 20px;
+  background: #21172e;
+  color: #fff;
+  width: min(540px, calc(100% - 24px));
+  max-height: 92dvh;
+  padding: 26px;
+  box-shadow: 0 30px 100px #0006;
+}
+.workout-timer-dialog::backdrop {
+  background: #170c23aa;
+}
+.timer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  gap: 15px;
+  border-bottom: 1px solid #ffffff30;
+  padding-bottom: 18px;
+  margin-bottom: 22px;
+}
+.timer-header h2 {
+  font-size: 22px;
+  margin: 8px 0;
+  color: white;
+}
+.timer-header .eyebrow {
+  color: #b4efe3;
+}
+.timer-close {
+  border: 1px solid #ffffff40;
+  background: #ffffff10;
+  color: white;
+  font-size: 26px;
+  min-width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+.timer-fields {
+  border: 0;
+  margin: 20px 0;
+  padding: 0;
+}
+.timer-fields legend {
+  font-weight: 650;
+  margin-bottom: 12px;
+}
+.timer-fields label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 12px 0;
+  font-size: 16px;
+}
+.timer-fields input,
+.timer-fields select {
+  font: inherit;
+  width: 100%;
+  border: 1px solid #cbbdd5;
+  border-radius: 8px;
+  padding: 12px;
+  background: white;
+  color: #261936;
+}
+.timer-fields-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+.workout-timer-dialog .fine-print {
+  color: #d1c6dc;
+  font-size: 14px;
+}
+.timer-face {
+  text-align: center;
+  padding: 20px 0;
+  color: #b4efe3;
+}
+.timer-face.rest {
+  color: #e5c5ff;
+}
+.timer-phase {
+  font-size: 22px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+.timer-digits {
+  font-size: clamp(55px, 15vw, 100px);
+  font-variant-numeric: tabular-nums;
+  font-weight: 750;
+  letter-spacing: -0.04em;
+  line-height: 1.25;
+}
+.timer-face p {
+  color: inherit;
+}
+.timer-face progress {
+  width: 100%;
+  accent-color: #a5ecde;
+  height: 8px;
+}
+.timer-sound {
+  border-top: 1px solid #ffffff30;
+  margin-top: 20px;
+  padding-top: 15px;
+}
+.timer-sound label {
+  font-size: 14px;
+}
+.timer-sound input[type="range"] {
+  display: block;
+  width: 100%;
+  accent-color: #a5ecde;
+  margin: 12px 0 20px;
+}
+.timer-check {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin: 13px 0;
+}
+.timer-check input {
+  width: 20px;
+  height: 20px;
+  accent-color: #a5ecde;
+}
+.timer-controls {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+  position: sticky;
+  bottom: 0;
+  background: #21172e;
+  padding-top: 10px;
+  flex-wrap: wrap;
+}
+.timer-controls .button {
+  flex: 1;
+  min-height: 48px;
+}
+.workout-timer-dialog .button.primary {
+  background: #b4efe3;
+  color: #21172e;
+}
+.workout-timer-dialog .button.secondary {
+  background: #ffffff15;
+  border: 1px solid #ffffff40;
+  color: white;
+}
+.workout-timer-dialog button:focus-visible {
+  outline: 3px solid #b4efe3;
+  outline-offset: 3px;
+}
+.workout-timer-dialog button:disabled {
+  opacity: 0.5;
+}
+.timer-preset-editor {
+  border-top: 1px solid #ded7e6;
+  padding-top: 16px;
+}
+@media (max-width: 480px) {
+  .workout-timer-dialog {
+    padding: 20px 16px;
+  }
+  .timer-fields-grid {
+    gap: 8px;
+  }
+  .timer-fields-grid label {
+    font-size: 14px;
+  }
+}

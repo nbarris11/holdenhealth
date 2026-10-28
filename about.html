@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Kelsey Holden, Metro Detroit Personal Trainer | Holden Health</title>
+<title>Kelsey Holden | Metro Detroit Personal Trainer</title>
 <meta name="description" content="Meet Kelsey Holden, a Metro Detroit personal trainer and nutrition coach with experience dating to 2011. Learn her story, credentials, and approach." />
-<link rel="icon" href="assets/logo.png" />
+<link rel="icon" href="assets/logo.png?v=20260909-repair" />
 <link href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&amp;f[]=switzer@300,400,500,600,700&amp;display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="styles.css" />
+<link rel="stylesheet" href="styles.css?v=20260911-audit" />
 <style>
 .intro{position:relative;overflow:hidden;padding:60px 0 0}
 .intro .blob{position:absolute;border-radius:50%;filter:blur(70px);z-index:0}
@@ -79,22 +79,37 @@
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "Person",
-  "name": "Kelsey Holden",
-  "jobTitle": "Personal Trainer and Nutrition Coach",
-  "image": "https://www.holden.health/assets/photos/kelsey-holden-portrait.jpg",
-  "worksFor": { "@type": "Organization", "name": "Holden Health", "@id": "https://www.holden.health/#business" },
-  "alumniOf": { "@type": "CollegeOrUniversity", "name": "Eastern Michigan University" },
-  "knowsAbout": ["Personal training", "Nutrition coaching", "Habit change", "Strength training", "Group fitness"],
-  "hasCredential": [
-    { "@type": "EducationalOccupationalCredential", "credentialCategory": "certification", "name": "NPTI Certified Personal Trainer" },
-    { "@type": "EducationalOccupationalCredential", "credentialCategory": "certification", "name": "Precision Nutrition Level 1 Certified" },
-    { "@type": "EducationalOccupationalCredential", "credentialCategory": "certification", "name": "AFAA Certified Group Fitness Instructor" }
-  ],
-  "homeLocation": { "@type": "Place", "name": "Metro Detroit, Michigan" },
-  "sameAs": [
-    "https://www.instagram.com/holdenhealthllc",
-    "https://www.facebook.com/holdenhealthllc/"
+  "@graph": [
+    {
+      "@type": "ProfilePage",
+      "@id": "https://www.holden.health/about.html#profile",
+      "url": "https://www.holden.health/about.html",
+      "name": "About Kelsey Holden",
+      "description": "Kelsey Holden is a Metro Detroit personal trainer and nutrition coach who has coached since 2011.",
+      "mainEntity": { "@id": "https://www.holden.health/about.html#kelsey-holden" },
+      "isPartOf": { "@id": "https://www.holden.health/#website" }
+    },
+    {
+      "@type": "Person",
+      "@id": "https://www.holden.health/about.html#kelsey-holden",
+      "name": "Kelsey Holden",
+      "url": "https://www.holden.health/about.html",
+      "jobTitle": "Personal Trainer and Nutrition Coach",
+      "image": "https://www.holden.health/assets/photos/kelsey-holden-portrait.jpg",
+      "worksFor": { "@id": "https://www.holden.health/#business" },
+      "alumniOf": { "@type": "CollegeOrUniversity", "name": "Eastern Michigan University" },
+      "knowsAbout": ["Personal training", "Nutrition coaching", "Habit change", "Strength training", "Group fitness", "Beginner fitness"],
+      "hasCredential": [
+        { "@type": "EducationalOccupationalCredential", "credentialCategory": "certification", "name": "NPTI Certified Personal Trainer" },
+        { "@type": "EducationalOccupationalCredential", "credentialCategory": "certification", "name": "Precision Nutrition Level 1 Certified" },
+        { "@type": "EducationalOccupationalCredential", "credentialCategory": "certification", "name": "AFAA Certified Group Fitness Instructor" }
+      ],
+      "homeLocation": { "@type": "Place", "name": "Metro Detroit, Michigan" },
+      "sameAs": [
+        "https://www.instagram.com/holdenhealthllc",
+        "https://www.facebook.com/share/1GLhhhQx8F/?mibextid=wwXIfr"
+      ]
+    }
   ]
 }
 </script>
@@ -104,17 +119,26 @@
 <header class="nav">
   <div class="nav-inner">
     <a class="brand" href="index.html">
-      <span class="mark"><img src="assets/logo.png" alt="Holden Health logo" /></span>
+      <span class="mark"><img src="assets/logo.png?v=20260909-repair" alt="Holden Health logo" /></span>
       <span>Holden Health<small>Train · Nourish · Thrive</small></span>
     </a>
-    <nav class="nav-links">
-      <a href="index.html">Home</a>
-      <a href="coaching.html">Coaching</a>
-      <a href="about.html" class="active">Meet Kelsey</a>
-      <a href="resources.html">Resources</a>
-      <a href="contact.html">Contact</a>
+    <nav class="nav-links" aria-label="Main navigation">
+      <details class="nav-group">
+        <summary>Coaching</summary>
+        <div class="nav-dropdown">
+          <a href="/coaching.html">Group Classes</a>
+          <a href="/fitness-coaching.html">Online Training</a><a href="/personal-training.html">Personal Training</a>
+        <a href="https://portal.holden.health/challenge">Free 14-Day Challenge</a></div>
+      </details>
+      <a href="/about.html">About</a>
+      <a href="/resources.html">Resources</a>
+      <a href="/index.html#the-app">The App</a>
     </nav>
-    <div class="nav-cta"><a class="btn btn-primary" href="book.html">Book a free call</a></div>
+    <div class="nav-cta">
+      <a class="member-login" href="https://portal.holden.health/login">Log in</a>
+      <a class="btn btn-ghost" href="/book.html" aria-label="Book a free call with Kelsey">Free call</a>
+      <a class="btn btn-primary" href="https://portal.holden.health/register">Join group classes</a>
+    </div>
   </div>
 </header>
 
@@ -123,12 +147,12 @@
   <div class="wrap">
     <div class="intro-grid">
       <div class="reveal">
-        <img class="intro-photo" src="assets/photos/kelsey-holden-portrait.jpg" alt="Kelsey Holden smiling in workout attire" width="890" height="886" fetchpriority="high" />
+        <img class="intro-photo" src="assets/photos/kelsey-holden-portrait.jpg?v=20260909-repair" alt="Kelsey Holden smiling in workout attire" width="890" height="886" fetchpriority="high" />
       </div>
       <div class="reveal">
-        <span class="eyebrow">Meet your coach</span>
-        <h1>Hi, I'm <span class="grad-text">Kelsey.</span></h1>
-        <p class="lead">Certified personal trainer, nutrition coach, group fitness instructor, and a mom of two daughters who genuinely believes getting healthy shouldn't take over your life.</p>
+        <span class="eyebrow" data-site-content="hero_eyebrow">Meet your coach</span>
+        <h1>Hi, I'm <span class="grad-text" data-site-content="hero_heading">Kelsey.</span></h1>
+        <p class="lead" data-site-content="hero_body">Certified personal trainer, nutrition coach, group fitness instructor, and a mom of two daughters who genuinely believes getting healthy shouldn't take over your life.</p>
         <div class="chips">
           <span class="tag">NPTI Certified Trainer</span>
           <span class="tag">Precision Nutrition Level 1</span>
@@ -136,7 +160,7 @@
           <span class="tag">B.S. Exercise Science</span>
           <span class="tag">Metro Detroit</span>
         </div>
-        <div style="margin-top:30px"><a class="btn btn-dark" href="book.html">Book a free call <span class="arr">→</span></a></div>
+        <div style="margin-top:30px"><a class="btn btn-dark" href="book.html" data-site-link="hero_cta_url"><span data-site-content="hero_cta_label">Book a free call</span> <span class="arr">→</span></a></div>
       </div>
     </div>
   </div>
@@ -146,12 +170,12 @@
   <div class="wrap">
     <div class="story">
       <div class="sticky reveal">
-        <span class="eyebrow">My story</span>
-        <h2>Why I do this</h2>
+        <span class="eyebrow" data-site-content="story_eyebrow">My story</span>
+        <h2 data-site-content="story_heading">Why I do this</h2>
         <div class="pull">"I don't want to be your coach for 12 weeks. I want to help you build something that lasts a lifetime."</div>
       </div>
       <div class="body reveal">
-        <p>For years I watched people, including myself, jump from one extreme plan to the next. Lose some weight, burn out, gain it back, feel worse. The problem was never willpower. It was the all-or-nothing approach.</p>
+        <p data-site-content="story_intro">For years I watched people, including myself, jump from one extreme plan to the next. Lose some weight, burn out, gain it back, feel worse. The problem was never willpower. It was the all-or-nothing approach.</p>
         <p>So I built my coaching around the opposite idea: small, sustainable habits that fit into the life you actually have. As a mom of two daughters with a full schedule, I know there's no such thing as "perfect," and there doesn't need to be. Consistency beats perfection every single time.</p>
         <p>I'm a Michigan girl at heart. I studied Exercise Science at Eastern Michigan University, went on to earn a master's in Orthotics and Prosthetics there, and got my personal training (NPTI) and group fitness (AFAA) certifications back in 2011. That same year I opened my first studio, It's Fitness Time, in Ann Arbor.</p>
         <p>In 2018 I brought it to Ohio as Fitness Time Dayton, running one-on-one training and small-group boot camps. Over the years that grew into Holden Health, and I added my Precision Nutrition Level 1 certification along the way. These days I also coach at Orangetheory, which keeps me sharp on what actually motivates people. Now I'm back home, working with clients across Metro Detroit and online.</p>
@@ -164,11 +188,11 @@
 
 <section class="section dark">
   <div class="wrap">
-    <div class="community-head reveal"><div><span class="eyebrow on-dark">More community, less intimidation</span><h2>I've always coached people—not poses.</h2></div><p>Before Holden Health became an online coaching practice, it looked like early mornings, park workouts, crowded group photos, kids tagging along, and people at every starting point showing up together.</p></div>
+    <div class="community-head reveal"><div><span class="eyebrow on-dark" data-site-content="community_eyebrow">More community, less intimidation</span><h2 data-site-content="community_heading">I've always coached people, not poses.</h2></div><p data-site-content="community_body">Before Holden Health grew into in-person and online coaching, it looked like early mornings, park workouts, crowded group photos, kids tagging along, and people at every starting point showing up together.</p></div>
     <div class="community-grid">
-      <figure class="community-photo reveal"><img src="assets/photos/kelsey-fitness-time-community.jpg" alt="Kelsey Holden with a welcoming outdoor Fitness Time Dayton group" width="1440" height="1079" loading="lazy" /><figcaption>Fitness Time Dayton · community first</figcaption></figure>
-      <figure class="community-photo reveal"><img src="assets/photos/kelsey-group-fitness.jpg" alt="Members smiling together after a group fitness class" width="1080" height="1079" loading="lazy" /><figcaption>Real people. Real energy.</figcaption></figure>
-      <figure class="community-photo reveal"><img src="assets/photos/kelsey-outdoor-bootcamp.jpg" alt="Outdoor bootcamp members of different ages and fitness levels" width="1080" height="809" loading="lazy" /><figcaption>Every level belongs here.</figcaption></figure>
+      <figure class="community-photo reveal"><img src="assets/photos/kelsey-fitness-time-community.jpg?v=20260909-repair" alt="Kelsey Holden with a welcoming outdoor Fitness Time Dayton group" width="1440" height="1079" loading="lazy" /><figcaption>Fitness Time Dayton · community first</figcaption></figure>
+      <figure class="community-photo reveal"><img src="assets/photos/kelsey-group-fitness.jpg?v=20260909-repair" alt="Members smiling together after a group fitness class" width="1080" height="1079" loading="lazy" /><figcaption>Real people. Real energy.</figcaption></figure>
+      <figure class="community-photo reveal"><img src="assets/photos/kelsey-outdoor-bootcamp.jpg?v=20260909-repair" alt="Outdoor bootcamp members of different ages and fitness levels" width="1080" height="809" loading="lazy" /><figcaption>Every level belongs here.</figcaption></figure>
     </div>
   </div>
 </section>
@@ -177,7 +201,7 @@
   <div class="wrap">
     <div class="section-head center reveal">
       <span class="eyebrow center">Credentials</span>
-      <h2>Qualified—and still learning</h2>
+      <h2>Qualified and still learning</h2>
       <p class="credential-note">Kelsey's active Precision Nutrition and AFAA certifications have been verified through 2028. Her education and years in the room shape how she coaches, but you'll never be talked to like a textbook.</p>
     </div>
     <div class="certs">
@@ -221,9 +245,9 @@
 <section class="section alt">
   <div class="wrap">
     <div class="cta-band reveal">
-      <h2>Let's get to know each other</h2>
-      <p>Book a free intro call. We'll talk goals, life, and whether we're a good fit. No pressure at all.</p>
-      <a class="btn btn-light" href="book.html">Book a free intro call <span class="arr">→</span></a>
+      <h2 data-site-content="final_heading">Let's get to know each other</h2>
+      <p data-site-content="final_body">Book a free intro call. We'll talk goals, life, and whether we're a good fit. No pressure at all.</p>
+      <a class="btn btn-light" href="book.html" data-site-link="final_cta_url"><span data-site-content="final_cta_label">Book a free intro call</span> <span class="arr">→</span></a>
     </div>
   </div>
 </section>
@@ -233,7 +257,7 @@
     <div class="footer-top">
       <div class="footer-col">
         <a class="brand" href="index.html">
-          <span class="mark"><img src="assets/logo.png" alt="Holden Health logo" /></span>
+          <span class="mark"><img src="assets/logo.png?v=20260909-repair" alt="Holden Health logo" /></span>
           <span>Holden Health<small>Train · Nourish · Thrive</small></span>
         </a>
         <p style="margin-top:18px">Personal fitness and nutrition coaching built around small habits that stick. Online and in Metro Detroit.</p>
@@ -244,25 +268,26 @@
         <li><a href="about.html">Meet Kelsey</a></li><li><a href="resources.html">Resources</a></li><li><a href="contact.html">Contact</a></li>
       </ul></div>
       <div class="footer-col"><h5>Programs</h5><ul>
-        <li><a href="fitness-coaching.html">Online personal training</a></li><li><a href="nutrition-coaching.html">Online nutrition coaching</a></li>
-        <li><a href="coaching.html">Training + Nutrition</a></li><li><a href="coaching.html#bootcamp">Detroit bootcamp</a></li>
+        <li><a href="fitness-coaching.html">Online personal training</a></li><li><a href="nutrition-coaching.html">Nutrition habits</a></li>
+        <li><a href="personal-training.html">Personal training</a></li><li><a href="coaching.html#details">Group classes</a></li>
       </ul></div>
       <div class="footer-col"><h5>Stay connected</h5>
         <p>Get free tips, recipes &amp; motivation.</p>
         <div class="socials">
           <a href="https://www.instagram.com/holdenhealthllc" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a>
-          <a href="https://www.facebook.com/holdenhealthllc/" target="_blank" rel="noopener" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 8h2V5h-2a3 3 0 0 0-3 3v2H9v3h2v6h3v-6h2l1-3h-3V8.5A.5.5 0 0 1 14 8Z" stroke-linejoin="round"/></svg></a>
+          <a href="https://www.facebook.com/share/1GLhhhQx8F/?mibextid=wwXIfr" target="_blank" rel="noopener" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 8h2V5h-2a3 3 0 0 0-3 3v2H9v3h2v6h3v-6h2l1-3h-3V8.5A.5.5 0 0 1 14 8Z" stroke-linejoin="round"/></svg></a>
+          <a href="https://venmo.com/u/holdenhealthllc" target="_blank" rel="noopener" aria-label="Venmo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 5h4l1 8c1.8-2.5 3-5 3.2-8H18c-.2 5.2-4.2 11.8-7.5 14H7.8L6 5Z" stroke-linejoin="round"/></svg></a>
           <a href="mailto:HoldenHealth.Coaching@gmail.com" aria-label="Email"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
         </div>
       </div>
     </div>
-    <div class="footer-bottom">
+    <div class="footer-bottom"><span><a href="https://share.google/EOKYvkNJMEZN22Cta" target="_blank" rel="noopener noreferrer">Find us on Google</a></span>
       <span>© 2026 Holden Health LLC. All rights reserved.</span>
       <span>Made with care in Metro Detroit.</span><span class="legal-links"><a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a> · <a href="disclaimer.html">Health disclaimer</a></span>
     </div>
   </div>
 </footer>
 
-<script src="site.js"></script>
+<script src="site.js?v=20261027-draft-preview"></script>
 </body>
 </html>

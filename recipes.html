@@ -5,9 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>High-Protein Recipes | Holden Health</title>
 <meta name="description" content="Simple, high-protein recipes from coach Kelsey Holden. Real food, real fast, built for busy mornings and no-diet eating." />
-<link rel="icon" href="assets/logo.png" />
+<link rel="icon" href="assets/logo.png?v=20260909-repair" />
 <link href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&amp;f[]=switzer@300,400,500,600,700&amp;display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="styles.css" />
+<link rel="stylesheet" href="styles.css?v=20260911-audit" />
 <style>
 .pagehead{position:relative;overflow:hidden;padding:64px 0 8px}
 .pagehead .blob{position:absolute;border-radius:50%;filter:blur(70px);z-index:0}
@@ -57,17 +57,26 @@
 <header class="nav">
   <div class="nav-inner">
     <a class="brand" href="index.html">
-      <span class="mark"><img src="assets/logo.png" alt="Holden Health logo" /></span>
+      <span class="mark"><img src="assets/logo.png?v=20260909-repair" alt="Holden Health logo" /></span>
       <span>Holden Health<small>Train · Nourish · Thrive</small></span>
     </a>
-    <nav class="nav-links">
-      <a href="index.html">Home</a>
-      <a href="coaching.html">Coaching</a>
-      <a href="about.html">Meet Kelsey</a>
-      <a href="resources.html" class="active">Resources</a>
-      <a href="contact.html">Contact</a>
+    <nav class="nav-links" aria-label="Main navigation">
+      <details class="nav-group">
+        <summary>Coaching</summary>
+        <div class="nav-dropdown">
+          <a href="/coaching.html">Group Classes</a>
+          <a href="/fitness-coaching.html">Online Training</a><a href="/personal-training.html">Personal Training</a>
+        <a href="https://portal.holden.health/challenge">Free 14-Day Challenge</a></div>
+      </details>
+      <a href="/about.html">About</a>
+      <a href="/resources.html">Resources</a>
+      <a href="/index.html#the-app">The App</a>
     </nav>
-    <div class="nav-cta"><a class="btn btn-primary" href="book.html">Book a free call</a></div>
+    <div class="nav-cta">
+      <a class="member-login" href="https://portal.holden.health/login">Log in</a>
+      <a class="btn btn-ghost" href="/book.html" aria-label="Book a free call with Kelsey">Free call</a>
+      <a class="btn btn-primary" href="https://portal.holden.health/register">Join group classes</a>
+    </div>
   </div>
 </header>
 
@@ -91,7 +100,7 @@
           <h2>5-minute high-protein yogurt bowl</h2>
           <div class="stats">
             <span class="stat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2" stroke-linecap="round" stroke-linejoin="round"/></svg>5 min</span>
-            <span class="stat">~35g protein</span>
+            <span class="stat">Protein varies by ingredients</span>
             <span class="stat">Serves 1</span>
           </div>
           <h3>Ingredients</h3>
@@ -105,7 +114,7 @@
           <ol>
             <li>Stir the protein powder into the yogurt with a splash of water until smooth.</li>
             <li>Top with berries, a drizzle of nut butter, and a little granola for crunch.</li>
-            <li>That is it. Filling, ~35g of protein, and faster than a coffee run.</li>
+            <li>That is it. A simple breakfast with protein from yogurt and your chosen powder.</li>
           </ol>
         </div>
       </article>
@@ -117,7 +126,7 @@
           <h2>Make-ahead egg and veggie muffins</h2>
           <div class="stats">
             <span class="stat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2" stroke-linecap="round" stroke-linejoin="round"/></svg>30 min</span>
-            <span class="stat">~7g protein each</span>
+            <span class="stat">Protein varies by ingredients</span>
             <span class="stat">Makes 12</span>
           </div>
           <h3>Ingredients</h3>
@@ -144,7 +153,7 @@
           <h2>Cottage cheese toast, three ways</h2>
           <div class="stats">
             <span class="stat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2" stroke-linecap="round" stroke-linejoin="round"/></svg>5 min</span>
-            <span class="stat">~25g protein</span>
+            <span class="stat">Protein varies by ingredients</span>
             <span class="stat">Serves 1</span>
           </div>
           <h3>Ingredients</h3>
@@ -182,7 +191,7 @@
     <div class="footer-top">
       <div class="footer-col">
         <a class="brand" href="index.html">
-          <span class="mark"><img src="assets/logo.png" alt="Holden Health logo" /></span>
+          <span class="mark"><img src="assets/logo.png?v=20260909-repair" alt="Holden Health logo" /></span>
           <span>Holden Health<small>Train · Nourish · Thrive</small></span>
         </a>
         <p style="margin-top:18px">Personal fitness and nutrition coaching built around small habits that stick. Online and in Metro Detroit.</p>
@@ -194,25 +203,26 @@
         <li><a href="contact.html">Contact</a></li>
       </ul></div>
       <div class="footer-col"><h5>Programs</h5><ul>
-        <li><a href="fitness-coaching.html">Online personal training</a></li><li><a href="nutrition-coaching.html">Online nutrition coaching</a></li>
-        <li><a href="coaching.html">Training + Nutrition</a></li><li><a href="coaching.html#bootcamp">Detroit bootcamp</a></li>
+        <li><a href="fitness-coaching.html">Online personal training</a></li><li><a href="nutrition-coaching.html">Nutrition habits</a></li>
+        <li><a href="personal-training.html">Personal training</a></li><li><a href="coaching.html#details">Group classes</a></li>
       </ul></div>
       <div class="footer-col"><h5>Stay connected</h5>
         <p>Get free tips, recipes &amp; motivation.</p>
         <div class="socials">
           <a href="https://www.instagram.com/holdenhealthllc" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a>
-          <a href="https://www.facebook.com/holdenhealthllc/" target="_blank" rel="noopener" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 8h2V5h-2a3 3 0 0 0-3 3v2H9v3h2v6h3v-6h2l1-3h-3V8.5A.5.5 0 0 1 14 8Z" stroke-linejoin="round"/></svg></a>
+          <a href="https://www.facebook.com/share/1GLhhhQx8F/?mibextid=wwXIfr" target="_blank" rel="noopener" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 8h2V5h-2a3 3 0 0 0-3 3v2H9v3h2v6h3v-6h2l1-3h-3V8.5A.5.5 0 0 1 14 8Z" stroke-linejoin="round"/></svg></a>
+          <a href="https://venmo.com/u/holdenhealthllc" target="_blank" rel="noopener" aria-label="Venmo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 5h4l1 8c1.8-2.5 3-5 3.2-8H18c-.2 5.2-4.2 11.8-7.5 14H7.8L6 5Z" stroke-linejoin="round"/></svg></a>
           <a href="mailto:HoldenHealth.Coaching@gmail.com" aria-label="Email"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
         </div>
       </div>
     </div>
-    <div class="footer-bottom">
+    <div class="footer-bottom"><span><a href="https://share.google/EOKYvkNJMEZN22Cta" target="_blank" rel="noopener noreferrer">Find us on Google</a></span>
       <span>© 2026 Holden Health LLC. All rights reserved.</span>
       <span>Made with care in Metro Detroit.</span><span class="legal-links"><a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a> · <a href="disclaimer.html">Health disclaimer</a></span>
     </div>
   </div>
 </footer>
 
-<script src="site.js"></script>
+<script src="site.js?v=20261027-draft-preview"></script>
 </body>
 </html>

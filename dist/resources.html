@@ -34,6 +34,14 @@
 .magnet .note{font-size:13px;color:var(--on-dark-soft);margin-top:14px}
 .magnet-art{align-self:stretch;position:relative;min-height:460px}
 .magnet-art .img-slot{position:absolute;inset:0;border-radius:0}
+.magnet-art img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+
+/* start here */
+.start-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:30px}
+.start-card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:26px;display:flex;flex-direction:column;gap:10px;transition:transform .2s,box-shadow .2s}
+.start-card:hover{transform:translateY(-3px);box-shadow:0 18px 45px -28px rgba(20,12,38,.45)}
+.start-card .num{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:var(--paper-2);color:var(--primary);font-family:var(--font-display);font-weight:700}
+.start-card h3{font-size:21px}.start-card p{color:var(--ink-soft);font-size:15px;margin:0}.start-card span:last-child{color:var(--primary);font-weight:600;margin-top:auto;padding-top:8px}
 
 /* blog */
 .cat-bar{display:flex;gap:10px;flex-wrap:wrap;margin-top:36px}
@@ -59,6 +67,8 @@
 .post:not([href]){cursor:default}
 .post:not([href]) .arrow{color:var(--ink-soft);font-weight:600}
 .post .img-slot{width:100%;height:200px;border-radius:0}
+.resource-photo{width:100%;height:200px;object-fit:cover;display:block}
+.feat-post .resource-photo{height:100%;min-height:360px}
 .post .pc{padding:24px;display:flex;flex-direction:column;flex:1}
 .post .ptag{font-size:11.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;
   color:var(--primary);margin-bottom:10px}
@@ -77,6 +87,8 @@
   .magnet-art{min-height:300px;order:-1}
   .magnet-copy{padding:38px}
   .posts{grid-template-columns:1fr 1fr}
+  .start-grid{grid-template-columns:1fr}
+  .feat-post .resource-photo{height:300px;min-height:0}
 }
 @media (max-width:600px){ .posts{grid-template-columns:1fr} }
 </style>
@@ -88,6 +100,27 @@
 <meta property="og:url" content="https://www.holden.health/resources.html" />
 <meta property="og:image" content="https://www.holden.health/assets/logo.png" />
 <meta name="twitter:card" content="summary" />
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "@id": "https://www.holden.health/resources.html#resources",
+  "url": "https://www.holden.health/resources.html",
+  "name": "Fitness and Nutrition Resources from Kelsey Holden",
+  "description": "Practical strength training, nutrition, and habit-building resources for busy adults.",
+  "author": { "@id": "https://www.holden.health/about.html#kelsey-holden" },
+  "publisher": { "@id": "https://www.holden.health/#business" },
+  "isPartOf": { "@id": "https://www.holden.health/#website" },
+  "hasPart": [
+    { "@type": "BlogPosting", "url": "https://www.holden.health/beginners-guide-to-lifting.html", "name": "The beginner's guide to lifting without fear" },
+    { "@type": "BlogPosting", "url": "https://www.holden.health/20-minute-strength-workout.html", "name": "Strength training when you only have 20 minutes" },
+    { "@type": "BlogPosting", "url": "https://www.holden.health/protein-habit.html", "name": "The protein habit that quietly changes everything" },
+    { "@type": "BlogPosting", "url": "https://www.holden.health/eating-out-with-your-goals.html", "name": "Eating out without derailing your goals" },
+    { "@type": "BlogPosting", "url": "https://www.holden.health/get-back-on-track.html", "name": "How to get back on track without the guilt spiral" },
+    { "@type": "BlogPosting", "url": "https://www.holden.health/blog-all-or-nothing.html", "name": "Why all or nothing is sabotaging your progress" }
+  ]
+}
+</script>
 </head>
 <body>
 
@@ -111,9 +144,9 @@
 <section class="pagehead">
   <span class="blob a"></span><span class="blob b"></span>
   <div class="wrap"><div class="inner">
-    <span class="eyebrow">Free resources &amp; tips</span>
-    <h1>Real advice you can <span class="grad-text">actually use.</span></h1>
-    <p>No fluff, no fads. Practical tips on training, nutrition, and building habits that fit your real life, plus a free guide to get you started.</p>
+    <span class="eyebrow" data-site-content="hero_eyebrow">Free resources &amp; tips</span>
+    <h1>Real advice you can <span class="grad-text" data-site-content="hero_heading">actually use.</span></h1>
+    <p data-site-content="hero_body">No fluff, no fads. Practical tips on training, nutrition, and building habits that fit your real life, plus a free guide to get you started.</p>
   </div></div>
 </section>
 
@@ -122,9 +155,9 @@
   <div class="wrap">
     <div class="magnet reveal">
       <div class="magnet-copy">
-        <span class="eyebrow on-dark">Free download</span>
-        <h2>5 habits that change everything</h2>
-        <p>The five simple, no-diet habits Kelsey starts every client with. They make the biggest difference with the least overwhelm.</p>
+        <span class="eyebrow on-dark" data-site-content="guide_eyebrow">Free download</span>
+        <h2 data-site-content="guide_heading">5 habits that change everything</h2>
+        <p data-site-content="guide_body">The five simple, no-diet habits Kelsey starts every client with. They make the biggest difference with the least overwhelm.</p>
         <ul>
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5" stroke-linecap="round" stroke-linejoin="round"/></svg> What to focus on first (and what to ignore)</li>
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5" stroke-linecap="round" stroke-linejoin="round"/></svg> Simple swaps that don't feel like sacrifice</li>
@@ -134,13 +167,29 @@
           <input type="hidden" name="form-name" value="guide-request-resources" />
           <p hidden><label>Don't fill this out: <input name="bot-field" /></label></p>
           <input type="email" name="email" placeholder="Your email address" required aria-label="Email address" />
-          <button class="btn btn-light" type="submit">Send me the guide</button>
+          <button class="btn btn-light" type="submit" data-site-content="guide_cta_label">Send me the guide</button>
         </form>
         <div class="note">No spam, ever. Unsubscribe anytime.</div>
       </div>
       <div class="magnet-art">
-        <div class="img-slot" data-label="Guide cover / healthy food photo"></div>
+        <img src="assets/photos/kelsey-holden-portrait.jpg" alt="Coach Kelsey Holden" />
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- START HERE -->
+<section class="section tight">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">Start where you are</span>
+      <h2 data-site-content="start_heading">What do you need help with today?</h2>
+      <p data-site-content="start_body">Skip the endless scrolling. Pick the situation that sounds most like your week and leave with one clear next step.</p>
+    </div>
+    <div class="start-grid">
+      <a class="start-card reveal" href="20-minute-strength-workout.html"><span class="num">1</span><h3>I am short on time</h3><p>Use the complete 20-minute, full-body strength workout.</p><span>Get the workout →</span></a>
+      <a class="start-card reveal" href="protein-habit.html"><span class="num">2</span><h3>My meals do not keep me full</h3><p>Build a simple protein habit without tracking every gram.</p><span>Build the habit →</span></a>
+      <a class="start-card reveal" href="get-back-on-track.html"><span class="num">3</span><h3>I fell off my routine</h3><p>Use a calm 24-hour reset with no guilt or punishment.</p><span>Start again →</span></a>
     </div>
   </div>
 </section>
@@ -180,40 +229,40 @@
     </a>
 
     <a class="feat-post reveal" href="blog-all-or-nothing.html" data-cat="mindset" style="cursor:pointer">
-      <div class="img-slot" data-label="Featured post image"></div>
+      <img class="resource-photo" src="assets/photos/kelsey-outdoor-bootcamp.jpg" alt="Kelsey Holden coaching an outdoor workout" />
       <div class="fp-copy">
         <span class="ftag">Featured · Mindset</span>
         <h2>Why "all or nothing" is sabotaging your progress</h2>
         <p>The mindset shift that finally lets results stick, and how to practice it on the days everything falls apart.</p>
-        <div class="meta"><span>Kelsey Holden</span><span>·</span><span>6 min read</span><span class="arrow" style="color:var(--primary);font-weight:600;margin-left:auto">Read →</span></div>
+        <div class="meta"><span>By Kelsey Holden</span><span>·</span><span>6 min read</span><span class="arrow" style="color:var(--primary);font-weight:600;margin-left:auto">Read →</span></div>
       </div>
     </a>
 
     <div class="posts" id="postGrid">
-      <article class="post reveal" data-cat="nutrition">
-        <div class="img-slot" data-label="Post image"></div>
-        <div class="pc"><span class="ptag">Nutrition</span><h3>The protein habit that quietly changes everything</h3><p>One simple target that keeps you full, strong, and off the snack-spiral.</p><div class="meta"><span>5 min read</span><span class="arrow">Coming soon</span></div></div>
-      </article>
-      <article class="post reveal" data-cat="training">
-        <div class="img-slot" data-label="Post image"></div>
-        <div class="pc"><span class="ptag">Training</span><h3>Strength training when you only have 20 minutes</h3><p>A no-excuses framework for busy weeks that still moves the needle.</p><div class="meta"><span>4 min read</span><span class="arrow">Coming soon</span></div></div>
-      </article>
+      <a class="post reveal" href="protein-habit.html" data-cat="nutrition">
+        <img class="resource-photo" src="assets/photos/kelsey-holden-portrait.jpg" alt="Coach Kelsey Holden" />
+        <div class="pc"><span class="ptag">Nutrition</span><h3>The protein habit that quietly changes everything</h3><p>A practical, no-tracking way to build meals that keep you satisfied and support your strength.</p><div class="meta"><span>6 min read</span><span class="arrow">Read →</span></div></div>
+      </a>
+      <a class="post reveal" href="20-minute-strength-workout.html" data-cat="training">
+        <img class="resource-photo" src="assets/photos/kelsey-strength-training.jpg" alt="Kelsey coaching a strength training session" />
+        <div class="pc"><span class="ptag">Training</span><h3>Strength training when you only have 20 minutes</h3><p>A complete full-body workout with beginner-friendly swaps and a progression plan.</p><div class="meta"><span>6 min read</span><span class="arrow">Read →</span></div></div>
+      </a>
       <a class="post reveal" href="recipes.html" data-cat="recipes">
-        <div class="img-slot" data-label="Post image"></div>
+        <img class="resource-photo" src="assets/photos/kelsey-fitness-time-community.jpg" alt="Kelsey with members of the Holden Health community" />
         <div class="pc"><span class="ptag">Recipes</span><h3>5 high-protein breakfasts in under 10 minutes</h3><p>Real food, real fast, for mornings that don't slow down.</p><div class="meta"><span>3 min read</span><span class="arrow">Read →</span></div></div>
       </a>
-      <article class="post reveal" data-cat="mindset">
-        <div class="img-slot" data-label="Post image"></div>
-        <div class="pc"><span class="ptag">Mindset</span><h3>How to get back on track without the guilt spiral</h3><p>Missed a week? Here's the kind, no-drama way back in.</p><div class="meta"><span>4 min read</span><span class="arrow">Coming soon</span></div></div>
-      </article>
-      <article class="post reveal" data-cat="training">
-        <div class="img-slot" data-label="Post image"></div>
-        <div class="pc"><span class="ptag">Training</span><h3>The beginner's guide to lifting without fear</h3><p>Everything I wish someone told me before my first workout.</p><div class="meta"><span>7 min read</span><span class="arrow">Coming soon</span></div></div>
-      </article>
-      <article class="post reveal" data-cat="nutrition">
-        <div class="img-slot" data-label="Post image"></div>
-        <div class="pc"><span class="ptag">Nutrition</span><h3>Eating out without derailing your goals</h3><p>Simple ways to enjoy the restaurant and still feel great.</p><div class="meta"><span>5 min read</span><span class="arrow">Coming soon</span></div></div>
-      </article>
+      <a class="post reveal" href="get-back-on-track.html" data-cat="mindset">
+        <img class="resource-photo" src="assets/photos/kelsey-outdoor-bootcamp.jpg" alt="Kelsey leading an outdoor fitness class" />
+        <div class="pc"><span class="ptag">Mindset</span><h3>How to get back on track without the guilt spiral</h3><p>A calm 24-hour reset after missed workouts, travel, illness, or an off week.</p><div class="meta"><span>5 min read</span><span class="arrow">Read →</span></div></div>
+      </a>
+      <a class="post reveal" href="beginners-guide-to-lifting.html" data-cat="training">
+        <img class="resource-photo" src="assets/photos/kelsey-group-fitness.jpg" alt="Kelsey coaching a welcoming group fitness class" />
+        <div class="pc"><span class="ptag">Training</span><h3>The beginner's guide to lifting without fear</h3><p>Your first two-day plan, plus weights, soreness, gym etiquette, and simple progress.</p><div class="meta"><span>8 min read</span><span class="arrow">Read →</span></div></div>
+      </a>
+      <a class="post reveal" href="eating-out-with-your-goals.html" data-cat="nutrition">
+        <img class="resource-photo" src="assets/photos/kelsey-fitness-time-community.jpg" alt="Kelsey with members of her fitness community" />
+        <div class="pc"><span class="ptag">Nutrition</span><h3>Eating out without derailing your goals</h3><p>A flexible restaurant guide that leaves room for satisfaction and real life.</p><div class="meta"><span>6 min read</span><span class="arrow">Read →</span></div></div>
+      </a>
     </div>
   </div>
 </section>
@@ -221,9 +270,9 @@
 <section class="section alt">
   <div class="wrap">
     <div class="cta-band reveal">
-      <h2>Want this tailored to you?</h2>
-      <p>Free tips are great, but a coach in your corner is better. Book a free intro call and let's build your plan.</p>
-      <a class="btn btn-light" href="book.html">Book a free intro call <span class="arr">→</span></a>
+      <h2 data-site-content="final_heading">Want this tailored to you?</h2>
+      <p data-site-content="final_body">Free tips are great, but a coach in your corner is better. Book a free intro call and let's build your plan.</p>
+      <a class="btn btn-light" href="book.html" data-site-link="final_cta_url"><span data-site-content="final_cta_label">Book a free intro call</span> <span class="arr">→</span></a>
     </div>
   </div>
 </section>
@@ -251,7 +300,8 @@
         <p>Get free tips, recipes &amp; motivation.</p>
         <div class="socials">
           <a href="https://www.instagram.com/holdenhealthllc" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a>
-          <a href="https://www.facebook.com/holdenhealthllc/" target="_blank" rel="noopener" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 8h2V5h-2a3 3 0 0 0-3 3v2H9v3h2v6h3v-6h2l1-3h-3V8.5A.5.5 0 0 1 14 8Z" stroke-linejoin="round"/></svg></a>
+          <a href="https://www.facebook.com/share/1GLhhhQx8F/?mibextid=wwXIfr" target="_blank" rel="noopener" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 8h2V5h-2a3 3 0 0 0-3 3v2H9v3h2v6h3v-6h2l1-3h-3V8.5A.5.5 0 0 1 14 8Z" stroke-linejoin="round"/></svg></a>
+          <a href="https://venmo.com/u/holdenhealthllc" target="_blank" rel="noopener" aria-label="Venmo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 5h4l1 8c1.8-2.5 3-5 3.2-8H18c-.2 5.2-4.2 11.8-7.5 14H7.8L6 5Z" stroke-linejoin="round"/></svg></a>
           <a href="mailto:HoldenHealth.Coaching@gmail.com" aria-label="Email"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
         </div>
       </div>
@@ -263,7 +313,7 @@
   </div>
 </footer>
 
-<script src="site.js"></script>
+<script src="site.js?v=20260822-page-aware-editor"></script>
 <script>
 // Blog category filter
 document.querySelectorAll('.cat').forEach(function (btn) {

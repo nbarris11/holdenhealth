@@ -2,6 +2,8 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
 export async function updateSession(request: NextRequest) {
+  // Overwrite any incoming value; this is only a return destination, never authorization.
+  request.headers.set("x-holden-admin-return", `${request.nextUrl.pathname}${request.nextUrl.search}`);
   let response = NextResponse.next({ request });
 
   const supabase = createServerClient(
@@ -39,9 +41,11 @@ export async function updateSession(request: NextRequest) {
     if (path.startsWith("/admin")) {
       loginUrl.pathname = "/admin/login";
       loginUrl.search = "";
+      loginUrl.searchParams.set("next", `${path}${request.nextUrl.search}`);
     } else {
       loginUrl.pathname = "/login";
-      loginUrl.searchParams.set("next", path);
+      loginUrl.search = "";
+      loginUrl.searchParams.set("next", `${path}${request.nextUrl.search}`);
     }
     return NextResponse.redirect(loginUrl);
   }

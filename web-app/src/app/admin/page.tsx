@@ -1,143 +1,63 @@
-import {
-  approveRegistrationRequest, createAnnouncement, createResource, declineRegistrationRequest, deleteAnnouncement, deleteResource, inviteMember,
-  respondToCheckIn, signOut, updateEnrollmentAndPayment, updateSessionDetails,
-} from "@/app/actions";
-import { startMemberPreview } from "@/app/admin/preview-actions";
-import { inviteAdministrator, removeAdministrator } from "@/app/admin/admin-actions";
 import { verifyAdmin } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
+import Link from "next/link";
 
-type Profile = { id: string; full_name: string; phone: string | null };
-type Enrollment = { id: string; member_id: string; status: string; returning_member: boolean; weekly_commitment: number | null; created_at: string };
-type Payment = { enrollment_id: string; status: string; method: string | null; amount_cents: number; received_on: string | null; internal_note: string | null };
-type Meeting = { id: string; starts_at: string; title: string; cancelled: boolean };
-type CheckIn = { id: string; enrollment_id: string; week_number: number; went_well: string; did_not_go_well: string; upcoming_goal: string; support_needed: string; submitted_at: string; reviewed_at: string | null; coach_response: string | null };
+type Meeting = { id: string; title: string; starts_at: string; cancelled: boolean };
+type Enrollment = { id: string; member_id: string; status: string };
 
-const dateTimeFormatter = new Intl.DateTimeFormat("en-US", { weekday: "short", month: "short", day: "numeric", hour: "numeric", minute: "2-digit", timeZone: "America/Detroit" });
-const adminMessageLabels: Record<string, string> = {
-  "already-admin": "That person already has administrator access.",
-  "already-invited": "That email already has a pending invitation.",
-  "cannot-remove-yourself": "You cannot remove your own administrator access.",
-  "cannot-remove-last-admin": "The final administrator cannot be removed.",
-  "admin-removed": "Administrator access removed.",
-};
+const classTime = new Intl.DateTimeFormat("en-US", {
+  weekday: "long", month: "short", day: "numeric", hour: "numeric", minute: "2-digit", timeZone: "America/Detroit",
+});
 
-type AdminPageProps = { searchParams: Promise<Record<string, string | string[] | undefined>> };
-type AdminAccount = { user_id: string; email: string; full_name: string | null; created_at: string };
-
-export default async function AdminPage({ searchParams }: AdminPageProps) {
-  const activeAdmin = await verifyAdmin();
-  const params = await searchParams;
-  const adminMessage = typeof params.adminMessage === "string" ? params.adminMessage : "";
+export default async function AdminHomePage() {
+  await verifyAdmin();
   const supabase = await createClient();
-  const { data: session } = await supabase.from("sessions").select("*").in("status", ["enrolling", "active"]).order("starts_on").limit(1).maybeSingle();
+  const { data: session } = await supabase.from("sessions").select("id,name,capacity").in("status", ["enrolling", "active"]).order("starts_on").limit(1).maybeSingle();
+  if (!session) return <main className="app-shell admin-shell workspace-page"><section className="panel calm-empty"><span className="eyebrow">Today</span><h1>No current program.</h1><p>Open Settings when you are ready to prepare the next Holden Health program.</p><Link className="button primary" href="/admin/settings">Open program settings</Link></section></main>;
 
-  if (!session) return <main className="app-shell"><section className="panel"><h1>No session found.</h1></section></main>;
-
-  const [{ data: enrollments }, { data: meetings }, { data: attendance }, { data: announcements }, { data: resources }, { data: checkIns }, { data: invitations }, { data: registrationRequests }, { data: adminAccounts }, { data: adminInvitations }] = await Promise.all([
-    supabase.from("enrollments").select("id,member_id,status,returning_member,weekly_commitment,created_at").eq("session_id", session.id).order("created_at"),
-    supabase.from("class_meetings").select("id,starts_at,title,cancelled").eq("session_id", session.id).order("starts_at"),
-    supabase.from("attendance_selections").select("meeting_id,attended"),
-    supabase.from("announcements").select("id,title,body,published_at,created_at").eq("session_id", session.id).order("created_at", { ascending: false }),
-    supabase.from("resources").select("id,title,description,url,published,sort_order").eq("session_id", session.id).order("sort_order"),
-    supabase.from("check_ins").select("id,enrollment_id,week_number,went_well,did_not_go_well,upcoming_goal,support_needed,submitted_at,reviewed_at,coach_response").order("submitted_at", { ascending: false }),
-    supabase.from("member_invitations").select("id,email,full_name,claimed_at,created_at").eq("session_id", session.id).order("created_at", { ascending: false }),
-    supabase.from("registration_requests").select("id,full_name,email,phone,returning_member,weekly_commitment,attendance_interest,note,status,created_at").eq("session_id", session.id).order("created_at", { ascending: false }),
-    supabase.rpc("list_admin_accounts"),
-    supabase.from("admin_invitations").select("id,email,accepted_at,revoked_at,created_at").is("accepted_at", null).is("revoked_at", null).order("created_at", { ascending: false }),
+  const [{ data: requests }, { data: inquiries }, { data: checkIns }, { data: dropIns }, { data: pendingIntakes }, { data: enrollmentData }, { data: meetingData }, { data: workoutLogs }] = await Promise.all([
+    supabase.from("registration_requests").select("id").eq("session_id", session.id).eq("status", "pending"),
+    supabase.from("website_inquiries").select("id").eq("status", "pending"),
+    supabase.from("check_ins").select("id").is("reviewed_at", null),
+    supabase.from("drop_in_bookings").select("id").eq("status", "requested"),
+    supabase.from("member_intakes").select("enrollment_id").is("reviewed_at", null),
+    supabase.from("enrollments").select("id,member_id,status").eq("session_id", session.id).in("status", ["invited", "active"]),
+    supabase.from("class_meetings").select("id,title,starts_at,cancelled").eq("session_id", session.id).gte("starts_at", new Date().toISOString()).eq("cancelled", false).order("starts_at").limit(3),
+    supabase.from("workout_logs").select("id,workout_feedback(id)").order("completed_at", { ascending: false }).limit(50),
   ]);
-
-  const typedEnrollments = (enrollments ?? []) as Enrollment[];
-  const memberIds = typedEnrollments.map((row) => row.member_id);
-  const enrollmentIds = typedEnrollments.map((row) => row.id);
-  const [{ data: profiles }, { data: payments }] = await Promise.all([
-    memberIds.length ? supabase.from("profiles").select("id,full_name,phone").in("id", memberIds) : { data: [] },
-    enrollmentIds.length ? supabase.from("payment_records").select("enrollment_id,status,method,amount_cents,received_on,internal_note").in("enrollment_id", enrollmentIds) : { data: [] },
+  const enrollments = (enrollmentData ?? []) as Enrollment[];
+  const enrollmentIds = enrollments.map((row) => row.id);
+  const meetings = (meetingData ?? []) as Meeting[];
+  const meetingIds = meetings.map((row) => row.id);
+  const [{ data: payments }, { data: attendance }] = await Promise.all([
+    enrollmentIds.length ? supabase.from("payment_records").select("enrollment_id,status").in("enrollment_id", enrollmentIds) : Promise.resolve({ data: [] }),
+    meetingIds.length ? supabase.from("attendance_selections").select("meeting_id").in("meeting_id", meetingIds) : Promise.resolve({ data: [] }),
   ]);
+  const paymentMap = new Map((payments ?? []).map((payment) => [payment.enrollment_id, payment.status]));
+  const paymentNeeded = enrollments.filter((enrollment) => !new Set(["paid", "waived", "credited"]).has(paymentMap.get(enrollment.id) ?? "pending")).length;
+  const attendanceCounts = new Map<string, number>();
+  (attendance ?? []).forEach((selection) => attendanceCounts.set(selection.meeting_id, (attendanceCounts.get(selection.meeting_id) ?? 0) + 1));
+  const peopleHref = `/admin/people?program=${encodeURIComponent(session.id)}`;
+  const attentionItems = [
+    { count: inquiries?.length ?? 0, label: "website inquiry", plural: "website inquiries", href: "/admin/people#inquiries", action: "Reply" },
+    { count: requests?.length ?? 0, label: "registration request", plural: "registration requests", href: `${peopleHref}#requests`, action: "Review" },
+    { count: pendingIntakes?.length ?? 0, label: "intake ready for review", plural: "intakes ready for review", href: "/admin/people#intakes", action: "Review" },
+    { count: checkIns?.length ?? 0, label: "member check-in", plural: "member check-ins", href: "/admin/people#check-ins", action: "Respond" },
+    { count: dropIns?.length ?? 0, label: "drop-in request", plural: "drop-in requests", href: "/admin/classes#bookings", action: "Confirm" },
+    { count: paymentNeeded, label: "payment to follow up on", plural: "payments to follow up on", href: `${peopleHref}#members`, action: "View" },
+    { count: (workoutLogs ?? []).filter((log) => !log.workout_feedback).length, label: "workout ready for feedback", plural: "workouts ready for feedback", href: "/admin/training", action: "Coach" },
+  ].filter((item) => item.count > 0);
 
-  const profileMap = new Map(((profiles ?? []) as Profile[]).map((profile) => [profile.id, profile]));
-  const paymentMap = new Map(((payments ?? []) as Payment[]).map((payment) => [payment.enrollment_id, payment]));
-  const enrollmentMap = new Map(typedEnrollments.map((enrollment) => [enrollment.id, enrollment]));
-  const paidCount = ((payments ?? []) as Payment[]).filter((payment) => payment.status === "paid").length;
-  const openCheckIns = ((checkIns ?? []) as CheckIn[]).filter((checkIn) => !checkIn.reviewed_at);
-  const pendingRequests = (registrationRequests ?? []).filter((request) => request.status === "pending");
-  const selectedCounts = new Map<string, number>();
-  (attendance ?? []).forEach((selection) => selectedCounts.set(selection.meeting_id, (selectedCounts.get(selection.meeting_id) ?? 0) + 1));
-
-  return (
-    <main className="app-shell admin-shell">
-      <header className="app-header"><div><span className="eyebrow">Holden Health admin</span><h1>Focus on You.</h1><p className="lede">Run the session without juggling texts, notes, and spreadsheets.</p></div><div className="header-actions"><a className="button primary" href="/admin/communications">New communication</a><a className="button secondary" href="/admin/set-password">Change password</a><form action={signOut}><button className="button secondary" type="submit">Sign out</button></form></div></header>
-      <nav className="section-nav" aria-label="Admin sections"><a href="#today">Today</a><a href="#approvals">Approvals</a><a href="#members">Members</a><a href="#check-ins">Check-ins</a><a href="#content">Content</a><a href="/admin/communications">Communications</a><a href="#session">Session setup</a><a href="#administrators">Administrators</a></nav>
-
-      <section id="today" className="stat-grid">
-        <article className="panel stat-card"><span>Enrolled</span><strong>{typedEnrollments.filter((row) => ["invited", "active"].includes(row.status)).length}</strong><small>of {session.capacity} places</small></article>
-        <article className="panel stat-card"><span>Paid</span><strong>{paidCount}</strong><small>{typedEnrollments.length - paidCount} to follow up</small></article>
-        <article className="panel stat-card"><span>Needs attention</span><strong>{openCheckIns.length + pendingRequests.length}</strong><small>{pendingRequests.length} approval{pendingRequests.length === 1 ? "" : "s"} · {openCheckIns.length} check-in{openCheckIns.length === 1 ? "" : "s"}</small></article>
-      </section>
-
-      <section className="admin-quick-actions" aria-label="Quick actions"><a className="panel" href="#approvals"><span className="eyebrow">Approve</span><h3>Review requests</h3><p>{pendingRequests.length} waiting</p></a><a className="panel" href="#members"><span className="eyebrow">Add</span><h3>New member</h3><p>Create portal access</p></a><a className="panel featured" href="/admin/communications"><span className="eyebrow">Connect</span><h3>Message members</h3><p>Newsletter, update, or reminder →</p></a></section>
-
-      <section className="section-block">
-        <div className="section-heading"><div><span className="eyebrow">Attendance outlook</span><h2>Know who plans to show up.</h2></div><p>Member selections help with room and equipment setup. They are flexible, not strict reservations.</p></div>
-        <div className="admin-meeting-grid">{((meetings ?? []) as Meeting[]).map((meeting) => <article className="panel mini-meeting" key={meeting.id}><span>{dateTimeFormatter.format(new Date(meeting.starts_at))}</span><strong>{meeting.cancelled ? "Cancelled" : `${selectedCounts.get(meeting.id) ?? 0} planning to attend`}</strong></article>)}</div>
-      </section>
-
-      <section id="approvals" className="section-block">
-        <div className="section-heading"><div><span className="eyebrow">Pending registration approvals</span><h2>Meet the person before the portal opens.</h2></div><p>Approve after the fit conversation. Approval creates their account connection, enrolls them, and sends the secure portal link.</p></div>
-        <div className="approval-grid">{pendingRequests.length ? pendingRequests.map((request) => <article className="panel approval-card" key={request.id}><div className="roster-heading"><div><h3>{request.full_name}</h3><p>{request.email} · {request.phone}</p></div><span className="status-pill warning">Pending</span></div>{request.weekly_commitment ? <p><strong>Plan:</strong> {request.weekly_commitment} days per week</p> : null}<p><strong>Class interest:</strong> {(request.attendance_interest as string[]).join(", ")}</p>{request.note ? <div className="soft-note">{request.note}</div> : null}<div className="button-row"><form action={approveRegistrationRequest}><input type="hidden" name="requestId" value={request.id} /><button className="button primary" type="submit">Approve and invite</button></form><form action={declineRegistrationRequest}><input type="hidden" name="requestId" value={request.id} /><button className="button secondary" type="submit">Decline</button></form></div></article>) : <section className="panel empty-inline"><h3>No requests waiting.</h3><p>New session requests will appear here and notify Kelsey by email.</p></section>}</div>
-      </section>
-
-      <section id="members" className="section-block split-layout admin-split">
-        <div className="panel">
-          <span className="eyebrow">Add a confirmed signup</span><h2>Create their portal access.</h2><p>Save the registration and send a secure sign-in email in one step.</p>
-          <form className="stack-form" action={inviteMember}>
-            <input type="hidden" name="sessionId" value={session.id} />
-            <div className="field-grid"><label>Full name<input name="fullName" required /></label><label>Email<input name="email" type="email" required /></label></div>
-            <div className="field-grid"><label>Phone<input name="phone" type="tel" /></label><label>Enrollment<select name="enrollmentStatus" defaultValue="active"><option value="invited">Invited</option><option value="active">Active</option><option value="prospect">Prospect</option></select></label></div>
-            <div className="field-grid"><label>Payment status<select name="paymentStatus" defaultValue="pending"><option value="pending">Pending</option><option value="paid">Paid</option><option value="waived">Waived</option><option value="credited">Credited</option></select></label><label>Method<select name="paymentMethod" defaultValue=""><option value="">Not recorded</option><option value="venmo">Venmo</option><option value="zelle">Zelle</option><option value="check">Check</option><option value="other">Other</option></select></label></div>
-            <div className="field-grid"><label>Weekly plan<select name="weeklyCommitment" defaultValue="2"><option value="2">2 days per week</option><option value="3">3 days per week</option></select></label><label>Amount<input name="amount" type="number" min="0" step="0.01" defaultValue={((session.two_day_price_cents ?? session.new_member_price_cents) / 100).toFixed(0)} required /></label></div>
-            <button className="button primary" type="submit">Add member and send invite</button>
-          </form>
-        </div>
-        <div className="panel"><span className="eyebrow">Portal invitations</span><h2>Account status.</h2><div className="simple-list">{(invitations ?? []).length ? (invitations ?? []).map((invitation) => <div key={invitation.id}><strong>{invitation.full_name}</strong><span>{invitation.email}</span><em className={invitation.claimed_at ? "success-text" : "muted-text"}>{invitation.claimed_at ? "Account connected" : "Email sent · awaiting sign-in"}</em></div>) : <p>No invitations yet.</p>}</div></div>
-      </section>
-
-      <section className="section-block">
-        <div className="section-heading"><div><span className="eyebrow">Roster and payment tracking</span><h2>One place for each member.</h2></div><p>Update access and payment status without changing bank details or storing sensitive payment information.</p></div>
-        <div className="roster-grid">{typedEnrollments.map((enrollment) => { const profile = profileMap.get(enrollment.member_id); const payment = paymentMap.get(enrollment.id); return <article className="panel roster-card" key={enrollment.id}><div className="roster-heading"><div><h3>{profile?.full_name || "Member"}</h3><p>{profile?.phone || "No phone saved"}{enrollment.weekly_commitment ? ` · ${enrollment.weekly_commitment} days/week` : ""}</p></div><span className={`status-pill ${payment?.status === "paid" ? "success" : "warning"}`}>{payment?.status ?? "payment pending"}</span></div><form action={startMemberPreview}><input type="hidden" name="memberId" value={enrollment.member_id} /><button className="button preview-button" type="submit">View as member</button></form><form className="stack-form compact-form" action={updateEnrollmentAndPayment}><input type="hidden" name="enrollmentId" value={enrollment.id} /><div className="field-grid"><label>Enrollment<select name="enrollmentStatus" defaultValue={enrollment.status}><option value="prospect">Prospect</option><option value="invited">Invited</option><option value="active">Active</option><option value="completed">Completed</option><option value="withdrawn">Withdrawn</option></select></label><label>Weekly plan<select name="weeklyCommitment" defaultValue={enrollment.weekly_commitment?.toString() ?? "2"}><option value="2">2 days/week</option><option value="3">3 days/week</option></select></label></div><div className="field-grid"><label>Payment<select name="paymentStatus" defaultValue={payment?.status ?? "pending"}><option value="pending">Pending</option><option value="paid">Paid</option><option value="credited">Credited</option><option value="refunded">Refunded</option><option value="waived">Waived</option></select></label><label>Method<select name="paymentMethod" defaultValue={payment?.method ?? ""}><option value="">Not recorded</option><option value="venmo">Venmo</option><option value="zelle">Zelle</option><option value="check">Check</option><option value="other">Other</option></select></label></div><div className="field-grid"><label>Amount<input name="amount" type="number" step="0.01" min="0" defaultValue={((payment?.amount_cents ?? session.two_day_price_cents ?? session.new_member_price_cents) / 100).toFixed(2)} /></label><label>Received on<input name="receivedOn" type="date" defaultValue={payment?.received_on ?? ""} /></label></div><label>Internal note<input name="internalNote" defaultValue={payment?.internal_note ?? ""} /></label><button className="button secondary" type="submit">Save member</button></form></article>; })}</div>
-      </section>
-
-      <section id="check-ins" className="section-block">
-        <div className="section-heading"><div><span className="eyebrow">Weekly coaching loop</span><h2>Review the whole story.</h2></div><p>Members see your response in their portal as soon as you save it.</p></div>
-        <div className="checkin-admin-list">{((checkIns ?? []) as CheckIn[]).length ? ((checkIns ?? []) as CheckIn[]).map((checkIn) => { const enrollment = enrollmentMap.get(checkIn.enrollment_id); const profile = enrollment ? profileMap.get(enrollment.member_id) : null; return <article className="panel" key={checkIn.id}><div className="roster-heading"><div><span className="eyebrow">{profile?.full_name || "Member"} · Week {checkIn.week_number}</span><h3>{checkIn.upcoming_goal}</h3></div><span className={`status-pill ${checkIn.reviewed_at ? "success" : "warning"}`}>{checkIn.reviewed_at ? "Reviewed" : "Needs response"}</span></div><dl className="answer-grid"><div><dt>What went well</dt><dd>{checkIn.went_well}</dd></div><div><dt>What did not</dt><dd>{checkIn.did_not_go_well}</dd></div><div><dt>Support requested</dt><dd>{checkIn.support_needed}</dd></div></dl><form className="stack-form" action={respondToCheckIn}><input type="hidden" name="checkInId" value={checkIn.id} /><label>Your response<textarea name="coachResponse" defaultValue={checkIn.coach_response ?? ""} required /></label><button className="button primary" type="submit">Save response</button></form></article>; }) : <section className="panel empty-inline"><h3>No check-ins yet.</h3><p>Member submissions will collect here for review.</p></section>}</div>
-      </section>
-
-      <section id="content" className="section-block split-layout admin-split">
-        <div className="panel"><span className="eyebrow">Announcements</span><h2>Post a session update.</h2><form className="stack-form" action={createAnnouncement}><input type="hidden" name="sessionId" value={session.id} /><label>Title<input name="title" required /></label><label>Message<textarea name="body" required /></label><label className="check-label"><input name="published" type="checkbox" defaultChecked /> Publish now</label><button className="button primary" type="submit">Post announcement</button></form><div className="content-admin-list">{(announcements ?? []).map((item) => <div key={item.id}><div><strong>{item.title}</strong><span>{item.published_at ? "Published" : "Draft"}</span></div><form action={deleteAnnouncement}><input type="hidden" name="id" value={item.id} /><button className="text-button danger" type="submit">Remove</button></form></div>)}</div></div>
-        <div className="panel"><span className="eyebrow">Member resources</span><h2>Add an approved link.</h2><form className="stack-form" action={createResource}><input type="hidden" name="sessionId" value={session.id} /><label>Title<input name="title" required /></label><label>Description<textarea name="description" /></label><label>Full URL<input name="url" type="url" placeholder="https://" required /></label><div className="field-grid"><label>Order<input name="sortOrder" type="number" min="0" defaultValue="0" /></label><label className="check-label"><input name="published" type="checkbox" defaultChecked /> Publish now</label></div><button className="button primary" type="submit">Add resource</button></form><div className="content-admin-list">{(resources ?? []).map((item) => <div key={item.id}><div><strong>{item.title}</strong><span>{item.published ? "Published" : "Draft"}</span></div><form action={deleteResource}><input type="hidden" name="id" value={item.id} /><button className="text-button danger" type="submit">Remove</button></form></div>)}</div></div>
-      </section>
-
-      <section id="session" className="section-block panel">
-        <span className="eyebrow">Session setup</span><h2>Update the member-facing details.</h2><form className="stack-form wide-form" action={updateSessionDetails}><input type="hidden" name="sessionId" value={session.id} /><label>Session name<input name="name" defaultValue={session.name} required /></label><label>Description<textarea name="description" defaultValue={session.description ?? ""} required /></label><div className="field-grid three"><label>Status<select name="status" defaultValue={session.status}><option value="draft">Draft</option><option value="enrolling">Enrolling</option><option value="full">Full</option><option value="active">Active</option><option value="completed">Completed</option><option value="cancelled">Cancelled</option></select></label><label>Capacity<input name="capacity" type="number" min="1" max="100" defaultValue={session.capacity} /></label><label className="check-label"><input name="published" type="checkbox" defaultChecked={session.published} /> Published</label></div><div className="field-grid"><label>2 days/week price<input name="twoDayPrice" type="number" min="0" step="0.01" defaultValue={((session.two_day_price_cents ?? session.new_member_price_cents) / 100).toFixed(2)} /></label><label>3 days/week price<input name="threeDayPrice" type="number" min="0" step="0.01" defaultValue={((session.three_day_price_cents ?? session.returning_member_price_cents ?? 0) / 100).toFixed(2)} /></label></div><button className="button primary" type="submit">Save session details</button></form>
-      </section>
-
-      <section id="administrators" className="section-block split-layout admin-split">
-        <div className="panel">
-          <span className="eyebrow">Administrator access</span><h2>Invite someone you trust.</h2><p>Administrators can view members, payments, check-ins, and change portal content. Only grant this access when it is truly needed.</p>
-          {adminMessage ? <p className="notice success admin-notice">{adminMessageLabels[adminMessage] ?? adminMessage}</p> : null}
-          <form className="stack-form" action={inviteAdministrator}>
-            <label>Email address<input name="email" type="email" placeholder="name@example.com" required /></label>
-            <button className="button primary" type="submit">Invite administrator</button>
-          </form>
-        </div>
-        <div className="panel">
-          <span className="eyebrow">Who has access</span><h2>Current administrators.</h2>
-          <div className="admin-access-list">
-            {((adminAccounts ?? []) as AdminAccount[]).map((account) => <div key={account.user_id}><div><strong>{account.full_name || account.email}</strong><span>{account.email}{account.user_id === activeAdmin.userId ? " · You" : ""}</span></div>{account.user_id !== activeAdmin.userId ? <form action={removeAdministrator}><input type="hidden" name="userId" value={account.user_id} /><button className="text-button danger" type="submit">Remove access</button></form> : <span className="status-pill success">Active</span>}</div>)}
-          </div>
-          {(adminInvitations ?? []).length ? <><span className="eyebrow pending-admin-heading">Pending invitations</span><div className="simple-list">{(adminInvitations ?? []).map((invitation) => <div key={invitation.id}><strong>{invitation.email}</strong><em className="muted-text">Waiting for setup</em></div>)}</div></> : null}
-        </div>
-      </section>
-    </main>
-  );
+  return <main className="app-shell admin-shell workspace-page today-page">
+    <header className="workspace-page-header"><div><span className="eyebrow">{session.name}</span><h1>Good morning, Kelsey.</h1><p>Here is what is happening with your business today.</p></div><div className="workspace-header-actions"><Link className="button primary" href={`/admin/people/add?program=${encodeURIComponent(session.id)}`}>Add someone</Link><Link className="button secondary" href="/admin/communications">Send an update</Link></div></header>
+    <section className={`today-attention panel ${attentionItems.length ? "has-work" : "caught-up"}`}>
+      <div className="today-attention-heading"><span className="eyebrow">Needs your attention</span><h2>{attentionItems.length ? `${attentionItems.reduce((sum, item) => sum + item.count, 0)} things to take care of` : "You’re caught up."}</h2><p>{attentionItems.length ? "Each item below leads straight to the next step." : meetings[0] ? `Your next class is ${classTime.format(new Date(meetings[0].starts_at))}.` : "There are no upcoming classes on the calendar."}</p></div>
+      {attentionItems.length ? <div className="today-task-list">{attentionItems.map((item) => <Link href={item.href} key={item.href}><span className="task-count">{item.count}</span><span><strong>{item.count === 1 ? item.label : item.plural}</strong><small>{item.action} now</small></span><b aria-hidden="true">→</b></Link>)}</div> : <span className="caught-up-mark" aria-hidden="true">✓</span>}
+    </section>
+    <div className="today-main-grid">
+      <section className="panel upcoming-card"><div className="card-heading-row"><div><span className="eyebrow">Coming up</span><h2>Your next classes</h2></div><Link className="text-link inline-link" href="/admin/classes">Full schedule →</Link></div>{meetings.length ? <div className="upcoming-list">{meetings.map((meeting) => <Link href={`/admin/classes#class-${meeting.id}`} key={meeting.id}><time>{classTime.format(new Date(meeting.starts_at))}</time><strong>{meeting.title}</strong><span>{attendanceCounts.get(meeting.id) ?? 0} planning to attend</span><b aria-hidden="true">›</b></Link>)}</div> : <div className="compact-empty"><p>No upcoming classes are scheduled.</p><Link href="/admin/classes">Add a class →</Link></div>}</section>
+      <aside className="panel program-pulse"><span className="eyebrow">Current program</span><h2>{enrollments.length} of {session.capacity} spots filled</h2><div className="capacity-bar" aria-label={`${enrollments.length} of ${session.capacity} spots filled`}><span style={{ width: `${Math.min(100, (enrollments.length / session.capacity) * 100)}%` }} /></div><dl><div><dt>Active or invited</dt><dd>{enrollments.length}</dd></div><div><dt>Payment follow-up</dt><dd>{paymentNeeded}</dd></div></dl><Link className="button secondary" href={peopleHref}>Open people</Link></aside>
+    </div>
+    <section className="quick-action-strip" aria-label="Quick actions"><Link href={`/admin/people/add?program=${encodeURIComponent(session.id)}`}><span>＋</span><strong>Add someone</strong><small>Choose any program</small></Link><Link href="/admin/training"><span>ABC</span><strong>Build a workout</strong><small>Personal training plans</small></Link><Link href="/admin/communications"><span>↗</span><strong>Send an update</strong><small>Email your members</small></Link><Link href="/admin/classes#add-class"><span>□</span><strong>Add a class</strong><small>Update the schedule</small></Link></section>
+  </main>;
 }

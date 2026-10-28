@@ -19,7 +19,7 @@
 ## Key pages
 - [Home](https://www.holden.health/): Real-life coaching approach and ways to work with Kelsey
 - [Coaching & Packages](https://www.holden.health/coaching.html): Detailed plans and pricing
-- [Online Personal Training](https://www.holden.health/fitness-coaching.html): Custom strength coaching for home or gym
+- [Online Personal Training](https://www.holden.health/fitness-coaching.html): A personalized four-week plan with weekly Zoom coaching, direct support, and progress tracking
 - [Online Nutrition Coaching](https://www.holden.health/nutrition-coaching.html): Habit-based coaching without rigid meal plans
 - [Meet Kelsey](https://www.holden.health/about.html): Bio, credentials, and story
 - [Find Your Program quiz](https://www.holden.health/quiz.html): Recommends a plan

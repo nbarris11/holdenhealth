@@ -25,3 +25,11 @@ coverage/
 .vscode/
 *.swp
 *.swo
+.vercel
+.seo-cache/
+
+# Finder duplicates, local session files, TS build cache
+* 2.*
+* 2
+*.ses
+*.tsbuildinfo

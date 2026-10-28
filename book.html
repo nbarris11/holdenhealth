@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Free Fitness Coaching Consultation | Holden Health</title>
-<meta name="description" content="Book a free, no-pressure 20-minute intro call with Kelsey Holden. Talk through your goals and find the right fitness or nutrition coaching plan for you." />
-<link rel="icon" href="assets/logo.png" />
+<title>Free Online personal training Consultation | Holden Health</title>
+<meta name="description" content="Book a free, no-pressure 30–60 minute consultation with Kelsey Holden. Talk through your goals and find the right fitness or nutrition coaching plan for you." />
+<link rel="icon" href="assets/logo.png?v=20260909-repair" />
 <link href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&amp;f[]=switzer@300,400,500,600,700&amp;display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="styles.css" />
+<link rel="stylesheet" href="styles.css?v=20260911-audit" />
 <style>
 .book-wrap{position:relative;overflow:hidden}
 .book-wrap .blob{position:absolute;border-radius:50%;filter:blur(80px);z-index:0}
@@ -49,7 +49,7 @@
 .book-body .sub{color:var(--ink-soft);font-size:15.5px;margin:0 0 22px}
 
 .opts{display:flex;flex-direction:column;gap:11px}
-.opt{display:flex;align-items:center;gap:15px;padding:17px 18px;border:1.5px solid var(--line);
+.opt{width:100%;font:inherit;color:inherit;background:var(--card);text-align:left;display:flex;align-items:center;gap:15px;padding:17px 18px;border:1.5px solid var(--line);
   border-radius:15px;cursor:pointer;transition:border-color .15s,background .15s;background:var(--card)}
 .opt:hover{border-color:var(--ink-2)}
 .opt.sel{border-color:var(--primary);background:color-mix(in srgb,var(--primary) 7%,var(--card))}
@@ -63,22 +63,6 @@
 .opt.sel .chk{background:var(--primary);border-color:var(--primary)}
 .opt .chk svg{width:14px;height:14px;opacity:0;transition:opacity .15s}
 .opt.sel .chk svg{opacity:1}
-
-/* date + time */
-.dates{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
-.date{border:1.5px solid var(--line);border-radius:13px;padding:12px 6px;text-align:center;cursor:pointer;
-  transition:all .15s;background:var(--card)}
-.date:hover{border-color:var(--ink-2)}
-.date.sel{border-color:var(--primary);background:var(--primary);color:#fff}
-.date .dow{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;opacity:.7}
-.date .dnum{font-family:var(--font-display);font-weight:600;font-size:22px;line-height:1.1;margin-top:3px}
-.date .mon{font-size:11.5px;opacity:.7;margin-top:1px}
-.times{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:18px}
-.time{border:1.5px solid var(--line);border-radius:11px;padding:12px 6px;text-align:center;cursor:pointer;
-  font-weight:600;font-size:15px;transition:all .15s;background:var(--card)}
-.time:hover{border-color:var(--ink-2)}
-.time.sel{border-color:var(--primary);background:var(--primary);color:#fff}
-.tz{font-size:13px;color:var(--ink-soft);margin-top:14px;text-align:center}
 
 /* form */
 .field{margin-bottom:15px}
@@ -101,6 +85,34 @@
 .schip{font-size:13px;font-weight:600;padding:7px 13px;border-radius:999px;
   background:var(--paper-2);color:var(--ink-2);display:inline-flex;gap:7px;align-items:center}
 .schip svg{width:14px;height:14px;color:var(--primary)}
+.format-note{margin:14px 0 0;padding:13px 15px;border-radius:12px;background:var(--paper-2);color:var(--ink-soft);font-size:14px;line-height:1.45}
+.zoom-times{display:grid;gap:10px;margin-top:18px;padding-top:18px;border-top:1px solid var(--line)}
+.zoom-times[hidden]{display:none}
+.zoom-times h3{margin:0;font-size:18px}
+.zoom-times>p{margin:0;color:var(--ink-soft);font-size:14px}
+.booking-calendar{border:1.5px solid var(--line);border-radius:16px;padding:14px;background:var(--card)}
+.calendar-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+.calendar-month{font-family:var(--font-display);font-size:17px;font-weight:600;text-align:center}
+.calendar-nav{width:38px;height:38px;padding:0;border:1.5px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);font:inherit;font-size:20px;cursor:pointer}
+.calendar-nav:hover:not(:disabled){border-color:var(--primary);color:var(--primary)}
+.calendar-nav:disabled{opacity:.3;cursor:not-allowed}
+.calendar-weekdays,.calendar-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px}
+.calendar-weekdays span{text-align:center;color:var(--ink-soft);font-size:11px;font-weight:600;text-transform:uppercase;padding-bottom:3px}
+.calendar-day{position:relative;aspect-ratio:1;min-width:0;padding:0;border:0;border-radius:10px;background:transparent;color:var(--ink-soft);font:inherit;font-size:13px;display:grid;place-items:center}
+.calendar-day.available{background:color-mix(in srgb,var(--aqua) 18%,var(--paper));color:var(--ink);font-weight:700;cursor:pointer}
+.calendar-day.available:hover{background:color-mix(in srgb,var(--aqua) 32%,var(--paper))}
+.calendar-day.available::after{content:'';position:absolute;bottom:5px;width:4px;height:4px;border-radius:50%;background:var(--primary)}
+.calendar-day.selected{background:var(--primary);color:#fff}
+.calendar-day.selected::after{background:#fff}
+.calendar-day:disabled{cursor:default}
+.calendar-spacer{aspect-ratio:1}
+.day-times{margin-top:14px;padding-top:14px;border-top:1px solid var(--line)}
+.day-times h4{margin:0 0 10px;font-family:var(--font-display);font-size:15px}
+.day-times .time-help{margin:0;color:var(--ink-soft);font-size:13px}
+.slot-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.slot-option{padding:12px;border:1.5px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);font:inherit;font-size:13px;font-weight:600;line-height:1.35;text-align:left;cursor:pointer}
+.slot-option:hover,.slot-option.sel{border-color:var(--primary);background:color-mix(in srgb,var(--primary) 7%,var(--card))}
+.slot-empty{padding:14px;border-radius:12px;background:#fff4dc;color:#70531b;font-size:14px;line-height:1.45}
 
 /* confirmation */
 .confirm{text-align:center;padding:14px 8px 8px}
@@ -118,18 +130,19 @@
 
 @media (max-width:920px){
   .book-grid{grid-template-columns:1fr;gap:36px;padding-bottom:64px}
-  .dates{grid-template-columns:repeat(4,1fr)}
 }
 @media (max-width:520px){
-  .dates{grid-template-columns:repeat(3,1fr)}
-  .times{grid-template-columns:repeat(2,1fr)}
+  .booking-calendar{padding:11px}
+  .calendar-weekdays,.calendar-grid{gap:3px}
+  .calendar-day{font-size:12.5px;border-radius:8px}
+  .slot-list{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 </style>
 <link rel="canonical" href="https://www.holden.health/book.html" />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="Holden Health" />
-<meta property="og:title" content="Free Fitness Coaching Consultation | Holden Health" />
-<meta property="og:description" content="Book a free, no-pressure 20-minute intro call with Kelsey Holden and find the right fitness or nutrition coaching plan for you." />
+<meta property="og:title" content="Free Online personal training Consultation | Holden Health" />
+<meta property="og:description" content="Book a free, no-pressure 30–60 minute consultation with Kelsey Holden and find the right fitness or nutrition coaching plan for you." />
 <meta property="og:url" content="https://www.holden.health/book.html" />
 <meta property="og:image" content="https://www.holden.health/assets/logo.png" />
 <meta name="twitter:card" content="summary" />
@@ -139,24 +152,33 @@
 <form name="consultation-request" method="POST" data-netlify="true" netlify-honeypot="bot-field" hidden>
   <input type="hidden" name="form-name" value="consultation-request" />
   <input name="bot-field" />
-  <input name="goal" /><input name="preferred-date" /><input name="preferred-time" />
+  <input name="goal" />
   <input name="name" /><input name="email" /><input name="phone" /><textarea name="note"></textarea>
 </form>
 
 <header class="nav">
   <div class="nav-inner">
     <a class="brand" href="index.html">
-      <span class="mark"><img src="assets/logo.png" alt="Holden Health logo" /></span>
+      <span class="mark"><img src="assets/logo.png?v=20260909-repair" alt="Holden Health logo" /></span>
       <span>Holden Health<small>Train · Nourish · Thrive</small></span>
     </a>
-    <nav class="nav-links">
-      <a href="index.html">Home</a>
-      <a href="coaching.html">Coaching</a>
-      <a href="about.html">Meet Kelsey</a>
-      <a href="resources.html">Resources</a>
-      <a href="contact.html">Contact</a>
+    <nav class="nav-links" aria-label="Main navigation">
+      <details class="nav-group">
+        <summary>Coaching</summary>
+        <div class="nav-dropdown">
+          <a href="/coaching.html">Group Classes</a>
+          <a href="/fitness-coaching.html">Online Training</a><a href="/personal-training.html">Personal Training</a>
+        <a href="https://portal.holden.health/challenge">Free 14-Day Challenge</a></div>
+      </details>
+      <a href="/about.html">About</a>
+      <a href="/resources.html">Resources</a>
+      <a href="/index.html#the-app">The App</a>
     </nav>
-    <div class="nav-cta"><a class="btn btn-ghost" href="coaching.html">View coaching</a></div>
+    <div class="nav-cta">
+      <a class="member-login" href="https://portal.holden.health/login">Log in</a>
+      <a class="btn btn-ghost" href="/book.html" aria-label="Book a free call with Kelsey">Free call</a>
+      <a class="btn btn-primary" href="https://portal.holden.health/register">Join group classes</a>
+    </div>
   </div>
 </header>
 
@@ -166,18 +188,18 @@
     <div class="book-grid">
       <!-- LEFT -->
       <aside class="book-aside reveal">
-        <span class="eyebrow">Free · 20 minutes · No pressure</span>
+        <span class="eyebrow">Free · 30–60 minutes · No pressure</span>
         <h1>Let's find your <span class="grad-text">next step.</span></h1>
         <p class="lead">Book a free intro call with Kelsey. We'll talk through your goals, answer your questions, and figure out the right plan for you. That's it.</p>
         <ul class="expect">
-          <li><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 10h8M8 14h5"/><path d="M21 12a8 8 0 0 1-11.5 7.2L4 20l1-4.5A8 8 0 1 1 21 12Z" stroke-linejoin="round"/></svg></span><div><b>A real conversation</b><span>Just you and Kelsey, no sales script.</span></div></li>
+          <li><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 10h8M8 14h5"/><path d="M21 12a8 8 0 0 1-11.5 7.2L4 20l1-4.5A8 8 0 1 1 21 12Z" stroke-linejoin="round"/></svg></span><div><b>A real conversation</b><span>30–60 minutes with Kelsey. Consultation requests receive a response within 12 hours.</span></div></li>
           <li><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 17l5-5 4 4 8-8"/><path d="M16 8h4v4" stroke-linecap="round" stroke-linejoin="round"/></svg></span><div><b>A clear plan</b><span>Leave knowing exactly what would work for you.</span></div></li>
           <li><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg></span><div><b>Zero obligation</b><span>If it's not a fit, no worries at all.</span></div></li>
         </ul>
         <div class="mini-quote">
           <div class="stars">TRAIN · NOURISH · THRIVE</div>
           <p>Start with a conversation, leave with a clear next step.</p>
-          <div class="who"><span class="av">20</span><div><b>Free intro call</b><span>Twenty minutes, no pressure</span></div></div>
+          <div class="who"><span class="av">K</span><div><b>Free intro call</b><span>30–60 minutes, no pressure</span></div></div>
         </div>
       </aside>
 
@@ -196,11 +218,11 @@
             <h2>What are you most interested in?</h2>
             <p class="sub">Pick whatever's closest, we'll go deeper on the call.</p>
             <div class="opts" id="goalOpts">
-              <div class="opt" data-val="Fitness Coaching"><span class="oic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 7v10M18 7v10M3 9v6M21 9v6M6 12h12" stroke-linecap="round"/></svg></span><div class="ot"><b>Fitness coaching</b><span>Get stronger with custom training</span></div><span class="chk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
-              <div class="opt" data-val="Nutrition Coaching"><span class="oic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 11V7a5 5 0 0 1 10 0v4M5 11h14l-1 9H6l-1-9Z" stroke-linejoin="round"/></svg></span><div class="ot"><b>Nutrition coaching</b><span>Habit-based, no rigid meal plans</span></div><span class="chk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
-              <div class="opt" data-val="Training + Nutrition"><span class="oic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21C7 17.5 4 14 4 9.5A4.5 4.5 0 0 1 12 7a4.5 4.5 0 0 1 8 2.5C20 14 17 17.5 12 21Z" stroke-linejoin="round"/></svg></span><div class="ot"><b>Training + Nutrition</b><span>The complete system</span></div><span class="chk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
-              <div class="opt" data-val="Detroit Bootcamp"><span class="oic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 11a4 4 0 1 0-4-4M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2M22 21v-2a4 4 0 0 0-3-3.8"/></svg></span><div class="ot"><b>Detroit bootcamp</b><span>In-person classes, launching soon</span></div><span class="chk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
-              <div class="opt" data-val="Not sure yet"><span class="oic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.8.4-1 .8-1 1.7M12 17h.01" stroke-linecap="round"/></svg></span><div class="ot"><b>Not sure yet</b><span>Help me figure it out</span></div><span class="chk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
+              <button type="button" aria-pressed="false" class="opt" data-val="Online personal training"><span class="oic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 7v10M18 7v10M3 9v6M21 9v6M6 12h12" stroke-linecap="round"/></svg></span><span class="ot"><b>Online personal training</b><span>Get stronger with custom training</span></span><span class="chk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
+              <button type="button" aria-pressed="false" class="opt" data-val="In-person personal training"><span class="oic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 11V7a5 5 0 0 1 10 0v4M5 11h14l-1 9H6l-1-9Z" stroke-linejoin="round"/></svg></span><span class="ot"><b>In-person personal training</b><span>$100 for 60 minutes at Burroughs</span></span><span class="chk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
+              <button type="button" aria-pressed="false" class="opt" data-val="Free habit challenge"><span class="oic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21C7 17.5 4 14 4 9.5A4.5 4.5 0 0 1 12 7a4.5 4.5 0 0 1 8 2.5C20 14 17 17.5 12 21Z" stroke-linejoin="round"/></svg></span><span class="ot"><b>Free habit challenge</b><span>14 days, September 21–October 4</span></span><span class="chk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
+              <button type="button" aria-pressed="false" class="opt" data-val="Group classes"><span class="oic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 11a4 4 0 1 0-4-4M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2M22 21v-2a4 4 0 0 0-3-3.8"/></svg></span><span class="ot"><b>Group classes</b><span>Six weeks, starting October 13</span></span><span class="chk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
+              <button type="button" aria-pressed="false" class="opt" data-val="Not sure yet"><span class="oic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.8.4-1 .8-1 1.7M12 17h.01" stroke-linecap="round"/></svg></span><span class="ot"><b>Not sure yet</b><span>Help me figure it out</span></span><span class="chk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
             </div>
             <div class="book-nav">
               <button class="btn btn-primary" id="next1" disabled>Continue <span class="arr">→</span></button>
@@ -210,23 +232,25 @@
           <!-- STEP 2 -->
           <div class="step" data-step="2" style="display:none">
             <div class="step-label">Step 2 of 3</div>
-            <h2>What time would work best?</h2>
-            <p class="sub">Choose a preferred day and time. Kelsey will confirm availability by email.</p>
-            <div class="dates" id="dateRow"></div>
-            <div class="times" id="timeRow"></div>
-            <div class="tz">🕒 Don't see a good time? Mention it in the next step and we'll sort it out.</div>
-            <div class="book-nav">
-              <button class="btn btn-ghost back" data-back>← Back</button>
-              <button class="btn btn-primary" id="next2" disabled>Continue <span class="arr">→</span></button>
+            <h2>How would you like to connect?</h2>
+            <p class="sub">Choose a regular phone request or book a Zoom time now.</p>
+            <div class="summary" id="summary2"></div>
+            <div class="opts" id="formatOpts">
+              <button type="button" aria-pressed="false" class="opt" data-val="phone"><span class="oic">☎</span><span class="ot"><b>Phone call</b><span>Send a request. Kelsey will follow up to arrange it.</span></span><span class="chk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
+              <button type="button" aria-pressed="false" class="opt" data-val="zoom"><span class="oic">▣</span><span class="ot"><b>Zoom video call</b><span>Choose one of Kelsey’s available 60-minute times.</span></span><span class="chk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
             </div>
+            <p class="format-note" id="formatNote">Phone requests do not require choosing a calendar time.</p>
+            <div class="zoom-times" id="zoomTimes" hidden><h3>Choose a Zoom time</h3><p>Pick an available date, then choose a time. Times are shown in Eastern Time.</p><div id="slotList"><span>Loading available times…</span></div></div>
+            <div class="book-nav"><button class="btn btn-ghost back" data-back>← Back</button><button class="btn btn-primary" id="next2" disabled>Continue <span class="arr">→</span></button></div>
           </div>
 
           <!-- STEP 3 -->
           <div class="step" data-step="3" style="display:none">
             <div class="step-label">Step 3 of 3</div>
             <h2>Where should Kelsey reach you?</h2>
-            <p class="sub">Kelsey will review your request and confirm the call by email.</p>
+            <p class="sub" id="contactSub">Kelsey will review your request and email you to arrange the call.</p>
             <div class="summary" id="summary3"></div>
+            <p class="fine-print">We use your details to respond to your request. Please keep medical details out of this form. <a href="privacy.html">Privacy policy</a>.</p>
             <div class="field" id="f-name"><label for="book-name">Full name</label><input id="book-name" type="text" autocomplete="name" placeholder="Jamie Rivera" /><div class="msg">Please enter your name.</div></div>
             <div class="field" id="f-email"><label for="book-email">Email</label><input id="book-email" type="email" autocomplete="email" placeholder="you@email.com" /><div class="msg">Please enter a valid email.</div></div>
             <div class="field" id="f-phone"><label for="book-phone">Phone <span style="font-weight:400;color:var(--ink-soft)">(optional)</span></label><input id="book-phone" type="tel" autocomplete="tel" placeholder="(248) 555-0123" /></div>
@@ -242,7 +266,7 @@
             <div class="confirm">
               <div class="big-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
               <h2>Request received! 🎉</h2>
-              <p id="confirmLine">Kelsey will review your preferred time and confirm the call by email.</p>
+              <p id="confirmLine">Kelsey will email you to arrange the call.</p>
               <div class="recap" id="recap"></div>
               <div class="book-nav" style="margin-top:22px">
                 <a class="btn btn-ghost back" href="index.html">Back to home</a>
@@ -262,7 +286,7 @@
     <div class="footer-top">
       <div class="footer-col">
         <a class="brand" href="index.html">
-          <span class="mark"><img src="assets/logo.png" alt="Holden Health logo" /></span>
+          <span class="mark"><img src="assets/logo.png?v=20260909-repair" alt="Holden Health logo" /></span>
           <span>Holden Health<small>Train · Nourish · Thrive</small></span>
         </a>
         <p style="margin-top:18px">Personal fitness and nutrition coaching built around small habits that stick. Online and in Metro Detroit.</p>
@@ -272,79 +296,41 @@
         <li><a href="about.html">Meet Kelsey</a></li><li><a href="resources.html">Resources</a></li><li><a href="contact.html">Contact</a></li>
       </ul></div>
       <div class="footer-col"><h5>Programs</h5><ul>
-        <li><a href="fitness-coaching.html">Online personal training</a></li><li><a href="nutrition-coaching.html">Online nutrition coaching</a></li>
-        <li><a href="coaching.html">Training + Nutrition</a></li><li><a href="coaching.html#bootcamp">Detroit bootcamp</a></li>
+        <li><a href="fitness-coaching.html">Online personal training</a></li><li><a href="nutrition-coaching.html">Nutrition habits</a></li>
+        <li><a href="personal-training.html">Personal training</a></li><li><a href="coaching.html#details">Group classes</a></li>
       </ul></div>
       <div class="footer-col"><h5>Stay connected</h5>
         <p>Get free tips, recipes &amp; motivation.</p>
         <div class="socials">
           <a href="https://www.instagram.com/holdenhealthllc" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a>
-          <a href="https://www.facebook.com/holdenhealthllc/" target="_blank" rel="noopener" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 8h2V5h-2a3 3 0 0 0-3 3v2H9v3h2v6h3v-6h2l1-3h-3V8.5A.5.5 0 0 1 14 8Z" stroke-linejoin="round"/></svg></a>
+          <a href="https://www.facebook.com/share/1GLhhhQx8F/?mibextid=wwXIfr" target="_blank" rel="noopener" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 8h2V5h-2a3 3 0 0 0-3 3v2H9v3h2v6h3v-6h2l1-3h-3V8.5A.5.5 0 0 1 14 8Z" stroke-linejoin="round"/></svg></a>
+          <a href="https://venmo.com/u/holdenhealthllc" target="_blank" rel="noopener" aria-label="Venmo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 5h4l1 8c1.8-2.5 3-5 3.2-8H18c-.2 5.2-4.2 11.8-7.5 14H7.8L6 5Z" stroke-linejoin="round"/></svg></a>
           <a href="mailto:HoldenHealth.Coaching@gmail.com" aria-label="Email"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
         </div>
       </div>
     </div>
-    <div class="footer-bottom">
+    <div class="footer-bottom"><span><a href="https://share.google/EOKYvkNJMEZN22Cta" target="_blank" rel="noopener noreferrer">Find us on Google</a></span>
       <span>© 2026 Holden Health LLC. All rights reserved.</span>
       <span>Made with care in Metro Detroit.</span><span class="legal-links"><a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a> · <a href="disclaimer.html">Health disclaimer</a></span>
     </div>
   </div>
 </footer>
 
-<script src="site.js"></script>
+<script src="site.js?v=20261027-draft-preview"></script>
 <script>
-// ── Booking flow (3 steps → confirmation) ──
+// ── Phone request or scheduled Zoom booking ──
 (function () {
-  var state = { goal: null, date: null, time: null, name: '', email: '', phone: '', note: '' };
+  var state = { goal: null, format: null, slotId: null, slotLabel: '', name: '', email: '', phone: '', note: '' };
   var step = 1;
-
-  // build dates: next 8 weekdays
-  var DOW = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-  var MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  var dateRow = document.getElementById('dateRow');
-  var days = [];
-  var d = new Date(); d.setHours(0,0,0,0);
-  while (days.length < 8) {
-    d.setDate(d.getDate() + 1);
-    var wd = d.getDay();
-    if (wd === 0 || wd === 6) continue;
-    days.push(new Date(d));
-  }
-  days.forEach(function (day) {
-    var el = document.createElement('button');
-    el.className = 'date'; el.type = 'button';
-    el.innerHTML = '<div class="dow">' + DOW[day.getDay()] + '</div><div class="dnum">' + day.getDate() + '</div><div class="mon">' + MON[day.getMonth()] + '</div>';
-    el.addEventListener('click', function () {
-      dateRow.querySelectorAll('.date').forEach(function (x){x.classList.remove('sel');});
-      el.classList.add('sel');
-      state.date = DOW[day.getDay()] + ', ' + MON[day.getMonth()] + ' ' + day.getDate();
-      checkStep2();
-    });
-    dateRow.appendChild(el);
-  });
-
-  var TIMES = ['7:00 AM','9:00 AM','11:00 AM','12:30 PM','3:00 PM','5:30 PM'];
-  var timeRow = document.getElementById('timeRow');
-  TIMES.forEach(function (t) {
-    var el = document.createElement('button');
-    el.className = 'time'; el.type = 'button'; el.textContent = t;
-    el.addEventListener('click', function () {
-      timeRow.querySelectorAll('.time').forEach(function (x){x.classList.remove('sel');});
-      el.classList.add('sel'); state.time = t; checkStep2();
-    });
-    timeRow.appendChild(el);
-  });
 
   // step 1 options
   document.querySelectorAll('#goalOpts .opt').forEach(function (opt) {
     opt.addEventListener('click', function () {
-      document.querySelectorAll('#goalOpts .opt').forEach(function (x){x.classList.remove('sel');});
-      opt.classList.add('sel'); state.goal = opt.getAttribute('data-val');
+      document.querySelectorAll('#goalOpts .opt').forEach(function (x){x.classList.remove('sel'); x.setAttribute('aria-pressed','false');});
+      opt.classList.add('sel'); opt.setAttribute('aria-pressed','true'); state.goal = opt.getAttribute('data-val');
       document.getElementById('next1').disabled = false;
     });
   });
-
-  function checkStep2(){ document.getElementById('next2').disabled = !(state.date && state.time); }
 
   function setProg() {
     document.querySelectorAll('.book-prog .seg').forEach(function (s) {
@@ -361,19 +347,200 @@
     setProg();
   }
 
-  document.getElementById('next1').addEventListener('click', function () { show(2); });
-  document.getElementById('next2').addEventListener('click', function () { renderSummary(); show(3); });
+  document.getElementById('next1').addEventListener('click', function () { renderSummaries(); show(2); });
   document.querySelectorAll('[data-back]').forEach(function (b) {
     if (b.tagName === 'BUTTON') b.addEventListener('click', function () { show(step - 1); });
   });
 
-  function renderSummary() {
-    var s = document.getElementById('summary3');
-    s.innerHTML =
-      '<span class="schip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5" stroke-linecap="round" stroke-linejoin="round"/></svg>' + state.goal + '</span>' +
-      '<span class="schip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 2v3M16 2v3M3 9h18M5 5h14a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Z"/></svg>' + state.date + '</span>' +
-      '<span class="schip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2" stroke-linecap="round" stroke-linejoin="round"/></svg>' + state.time + '</span>';
+  function summaryChip(text) {
+    var chip = document.createElement('span'); chip.className = 'schip'; chip.textContent = '✓ ' + text; return chip;
   }
+
+  function renderSummaries() {
+    var s2 = document.getElementById('summary2'); s2.textContent = ''; s2.appendChild(summaryChip(state.goal));
+    var s3 = document.getElementById('summary3'); s3.textContent = ''; s3.appendChild(summaryChip(state.goal));
+    if (state.format) s3.appendChild(summaryChip(state.format === 'zoom' ? 'Zoom' : 'Phone request'));
+    if (state.slotLabel) s3.appendChild(summaryChip(state.slotLabel));
+  }
+
+  function slotLabel(value) {
+    return new Intl.DateTimeFormat('en-US', { weekday:'short', month:'short', day:'numeric', hour:'numeric', minute:'2-digit', timeZone:'America/Detroit' }).format(new Date(value));
+  }
+
+  function slotTimeLabel(value) {
+    return new Intl.DateTimeFormat('en-US', { hour:'numeric', minute:'2-digit', timeZone:'America/Detroit' }).format(new Date(value));
+  }
+
+  function slotDayKey(value) {
+    var parts = new Intl.DateTimeFormat('en-US', { year:'numeric', month:'2-digit', day:'2-digit', timeZone:'America/Detroit' }).formatToParts(new Date(value));
+    var values = {};
+    parts.forEach(function (part) { values[part.type] = part.value; });
+    return values.year + '-' + values.month + '-' + values.day;
+  }
+
+  function monthKey(year, month) {
+    return year + '-' + String(month + 1).padStart(2, '0');
+  }
+
+  function calendarMonthLabel(year, month) {
+    return new Intl.DateTimeFormat('en-US', { month:'long', year:'numeric', timeZone:'UTC' }).format(new Date(Date.UTC(year, month, 1)));
+  }
+
+  function calendarDayLabel(dayKey) {
+    var pieces = dayKey.split('-').map(Number);
+    return new Intl.DateTimeFormat('en-US', { weekday:'long', month:'long', day:'numeric', timeZone:'UTC' }).format(new Date(Date.UTC(pieces[0], pieces[1] - 1, pieces[2])));
+  }
+
+  function loadZoomTimes() {
+    var list = document.getElementById('slotList');
+    list.innerHTML = '<span>Loading available times…</span>';
+    fetch('https://portal.holden.health/api/consultations').then(function (response) {
+      if (!response.ok) throw new Error('Could not load');
+      return response.json();
+    }).then(function (payload) {
+      list.textContent = '';
+      if (!payload.slots || !payload.slots.length) {
+        list.innerHTML = '<div class="slot-empty">Kelsey has not posted any Zoom times right now. Choose Phone to send a request, or check back soon.</div>';
+        return;
+      }
+      renderZoomCalendar(list, payload.slots);
+    }).catch(function () {
+      list.innerHTML = '<div class="slot-empty">Available Zoom times could not load. Choose Phone to send Kelsey a request.</div>';
+    });
+  }
+
+  function renderZoomCalendar(root, slots) {
+    var sortedSlots = slots.slice().sort(function (a, b) { return new Date(a.starts_at) - new Date(b.starts_at); });
+    var slotsByDay = {};
+    sortedSlots.forEach(function (slot) {
+      var key = slotDayKey(slot.starts_at);
+      if (!slotsByDay[key]) slotsByDay[key] = [];
+      slotsByDay[key].push(slot);
+    });
+
+    var availableDays = Object.keys(slotsByDay).sort();
+    var firstParts = availableDays[0].split('-').map(Number);
+    var lastParts = availableDays[availableDays.length - 1].split('-').map(Number);
+    var currentYear = firstParts[0];
+    var currentMonth = firstParts[1] - 1;
+    var firstMonthKey = monthKey(currentYear, currentMonth);
+    var lastMonthKey = monthKey(lastParts[0], lastParts[1] - 1);
+    var selectedDay = '';
+
+    root.textContent = '';
+    var calendar = document.createElement('div');
+    calendar.className = 'booking-calendar';
+
+    var head = document.createElement('div');
+    head.className = 'calendar-head';
+    var previous = document.createElement('button');
+    previous.type = 'button'; previous.className = 'calendar-nav'; previous.textContent = '‹'; previous.setAttribute('aria-label', 'Previous month');
+    var title = document.createElement('div');
+    title.className = 'calendar-month'; title.setAttribute('aria-live', 'polite');
+    var next = document.createElement('button');
+    next.type = 'button'; next.className = 'calendar-nav'; next.textContent = '›'; next.setAttribute('aria-label', 'Next month');
+    head.appendChild(previous); head.appendChild(title); head.appendChild(next);
+
+    var weekdays = document.createElement('div');
+    weekdays.className = 'calendar-weekdays';
+    ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].forEach(function (day) {
+      var label = document.createElement('span'); label.textContent = day; weekdays.appendChild(label);
+    });
+    var grid = document.createElement('div');
+    grid.className = 'calendar-grid';
+    var times = document.createElement('div');
+    times.className = 'day-times';
+    calendar.appendChild(head); calendar.appendChild(weekdays); calendar.appendChild(grid); calendar.appendChild(times);
+    root.appendChild(calendar);
+
+    function clearSelectedSlot() {
+      state.slotId = null;
+      state.slotLabel = '';
+      document.getElementById('next2').disabled = true;
+    }
+
+    function renderTimes(dayKey) {
+      times.textContent = '';
+      if (!dayKey) {
+        var help = document.createElement('p'); help.className = 'time-help'; help.textContent = 'Select an available date to see its times.'; times.appendChild(help); return;
+      }
+      var heading = document.createElement('h4'); heading.textContent = 'Available times for ' + calendarDayLabel(dayKey); times.appendChild(heading);
+      var slotList = document.createElement('div'); slotList.className = 'slot-list';
+      slotsByDay[dayKey].forEach(function (slot) {
+        var button = document.createElement('button');
+        button.type = 'button'; button.className = 'slot-option'; button.textContent = slotTimeLabel(slot.starts_at);
+        button.setAttribute('aria-pressed', state.slotId === slot.id ? 'true' : 'false');
+        if (state.slotId === slot.id) button.classList.add('sel');
+        button.addEventListener('click', function () {
+          slotList.querySelectorAll('.slot-option').forEach(function (item) { item.classList.remove('sel'); item.setAttribute('aria-pressed','false'); item.setAttribute('aria-pressed', 'false'); });
+          button.classList.add('sel'); button.setAttribute('aria-pressed', 'true');
+          state.slotId = slot.id; state.slotLabel = slotLabel(slot.starts_at);
+          document.getElementById('next2').disabled = false;
+        });
+        slotList.appendChild(button);
+      });
+      times.appendChild(slotList);
+    }
+
+    function renderMonth() {
+      grid.textContent = '';
+      title.textContent = calendarMonthLabel(currentYear, currentMonth);
+      var currentKey = monthKey(currentYear, currentMonth);
+      previous.disabled = currentKey <= firstMonthKey;
+      next.disabled = currentKey >= lastMonthKey;
+      var firstWeekday = new Date(Date.UTC(currentYear, currentMonth, 1)).getUTCDay();
+      var daysInMonth = new Date(Date.UTC(currentYear, currentMonth + 1, 0)).getUTCDate();
+      for (var spacerIndex = 0; spacerIndex < firstWeekday; spacerIndex += 1) {
+        var spacer = document.createElement('span'); spacer.className = 'calendar-spacer'; spacer.setAttribute('aria-hidden', 'true'); grid.appendChild(spacer);
+      }
+      for (var day = 1; day <= daysInMonth; day += 1) {
+        (function (dayNumber) {
+          var key = currentYear + '-' + String(currentMonth + 1).padStart(2, '0') + '-' + String(dayNumber).padStart(2, '0');
+          var button = document.createElement('button'); button.type = 'button'; button.className = 'calendar-day'; button.textContent = dayNumber;
+          button.setAttribute('aria-label', calendarDayLabel(key) + (slotsByDay[key] ? ', available' : ', unavailable'));
+          if (!slotsByDay[key]) button.disabled = true;
+          else {
+            button.classList.add('available');
+            button.addEventListener('click', function () {
+              if (selectedDay !== key) clearSelectedSlot();
+              selectedDay = key;
+              grid.querySelectorAll('.calendar-day').forEach(function (item) { item.classList.remove('selected'); item.setAttribute('aria-pressed', 'false'); });
+              button.classList.add('selected'); button.setAttribute('aria-pressed', 'true'); renderTimes(key);
+            });
+          }
+          if (selectedDay === key) { button.classList.add('selected'); button.setAttribute('aria-pressed', 'true'); }
+          grid.appendChild(button);
+        })(day);
+      }
+      renderTimes(selectedDay && selectedDay.indexOf(currentKey + '-') === 0 ? selectedDay : '');
+    }
+
+    previous.addEventListener('click', function () {
+      clearSelectedSlot(); selectedDay = ''; currentMonth -= 1; if (currentMonth < 0) { currentMonth = 11; currentYear -= 1; } renderMonth();
+    });
+    next.addEventListener('click', function () {
+      clearSelectedSlot(); selectedDay = ''; currentMonth += 1; if (currentMonth > 11) { currentMonth = 0; currentYear += 1; } renderMonth();
+    });
+    renderMonth();
+  }
+
+  document.querySelectorAll('#formatOpts .opt').forEach(function (opt) {
+    opt.addEventListener('click', function () {
+      document.querySelectorAll('#formatOpts .opt').forEach(function (item) { item.classList.remove('sel'); item.setAttribute('aria-pressed','false'); });
+      opt.classList.add('sel'); opt.setAttribute('aria-pressed','true'); state.format = opt.getAttribute('data-val'); state.slotId = null; state.slotLabel = '';
+      var isZoom = state.format === 'zoom';
+      document.getElementById('zoomTimes').hidden = !isZoom;
+      document.getElementById('formatNote').textContent = isZoom ? 'A unique private Zoom link will be emailed to you and Kelsey after booking.' : 'Phone requests do not require choosing a calendar time.';
+      document.getElementById('next2').disabled = isZoom;
+      if (isZoom) loadZoomTimes();
+    });
+  });
+
+  document.getElementById('next2').addEventListener('click', function () {
+    if (!state.format || (state.format === 'zoom' && !state.slotId)) return;
+    document.getElementById('contactSub').textContent = state.format === 'zoom' ? 'Your selected time will be booked as soon as you submit.' : 'Kelsey will respond within 12 hours to arrange your 30–60 minute phone consultation.';
+    document.getElementById('submitBtn').textContent = state.format === 'zoom' ? 'Book my Zoom call' : 'Send my call request'; renderSummaries(); show(3);
+  });
 
   function valEmail(v){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
 
@@ -390,28 +557,33 @@
     state.note = document.getElementById('f-note').querySelector('textarea').value.trim();
     var button = document.getElementById('submitBtn');
     button.disabled = true;
-    button.textContent = 'Sending request…';
-    var data = new URLSearchParams({
-      'form-name': 'consultation-request',
+    button.textContent = state.format === 'zoom' ? 'Booking Zoom call…' : 'Sending request…';
+    var dataValues = {
       goal: state.goal,
-      'preferred-date': state.date,
-      'preferred-time': state.time + ' ET',
       name: state.name,
       email: state.email,
       phone: state.phone,
       note: state.note
-    });
-    fetch('https://portal.holden.health/api/forms', {
+    };
+    var endpoint = 'https://portal.holden.health/api/forms';
+    if (state.format === 'zoom') { dataValues.slotId = state.slotId; endpoint = 'https://portal.holden.health/api/consultations'; }
+    else dataValues['form-name'] = 'consultation-request';
+    var data = new URLSearchParams(dataValues);
+    fetch(endpoint, {
       method: 'POST',
       headers: {'Content-Type': 'application/x-www-form-urlencoded'},
       body: data.toString()
     }).then(function (response) {
       if (!response.ok) throw new Error('Submission failed');
-      document.getElementById('confirmLine').textContent =
-        'Thanks, ' + name.split(' ')[0] + '! Kelsey will review your preferred time and reply to ' + email + ' to confirm.';
+      document.getElementById('confirmLine').textContent = state.format === 'zoom'
+        ? 'Thanks, ' + name.split(' ')[0] + '! Your Zoom call is booked. The private link was emailed to you and Kelsey.'
+        : 'Thanks, ' + name.split(' ')[0] + '! Kelsey will reply to ' + email + ' within 12 hours to arrange the phone call.';
       var recap = document.getElementById('recap');
       recap.textContent = '';
-      [['Focus', state.goal], ['Preferred time', state.date + ' · ' + state.time + ' ET'], ['Format', 'Free 20-minute call'], ['Reply to', email]].forEach(function (item) {
+      var recapRows = [['Focus', state.goal], ['Format', state.format === 'zoom' ? 'Zoom video call' : 'Phone call request']];
+      if (state.slotLabel) recapRows.push(['Time', state.slotLabel + ' ET']);
+      recapRows.push(['Email', email]);
+      recapRows.forEach(function (item) {
         var row = document.createElement('div'); row.className = 'row';
         var label = document.createElement('span'); label.textContent = item[0];
         var value = document.createElement('b'); value.textContent = item[1];
@@ -422,7 +594,7 @@
       button.disabled = false;
       button.textContent = 'Try sending again';
       document.getElementById('f-email').classList.add('err');
-      document.getElementById('f-email').querySelector('.msg').textContent = 'Could not send. Please try again or email Kelsey directly.';
+      document.getElementById('f-email').querySelector('.msg').textContent = state.format === 'zoom' ? 'That time may no longer be available. Go back and choose another.' : 'Could not send. Please try again or email Kelsey directly.';
     });
   });
 

@@ -2,6 +2,7 @@
 
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { captureServerEvent, distinctIdForValue } from "@/lib/posthog-server";
 import { createClient } from "@/lib/supabase/server";
 
 export async function requestMagicLink(formData: FormData) {
@@ -35,5 +36,7 @@ export async function requestMagicLink(formData: FormData) {
     redirect(`/login?error=${encodeURIComponent(message)}`);
   }
 
+  const distinctId = distinctIdForValue(email);
+  await captureServerEvent(distinctId, "magic_link_requested");
   redirect(`/login?sent=${encodeURIComponent(email)}`);
 }

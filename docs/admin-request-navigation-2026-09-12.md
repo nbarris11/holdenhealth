@@ -1,0 +1,11 @@
+# Admin registration request navigation — September 12, 2026
+
+Reproduced in authenticated production Chrome: Today showed one pending registration request for First 6-Week Session. Clicking Review navigated and scrolled successfully to People, but People selected December Mini Session and showed no requests. Dashboard default sorted start dates ascending; People sorted descending.
+
+Changed People to the same earliest-current-program default. Dashboard registration/payment/add-person links preserve session ID. Added a labeled native program selector in People and preserved the selected program through directory search. Future registration review emails include the submitted session ID. Existing email links use the corrected default. No changes to approval actions or authorization.
+
+User also questioned Ahmad's Free Challenge badge. Read-only production query confirmed both a pending First 6-Week Session registration and a September 12 challenge participant record with three selected habits and a weekly target of three. The class registration action does not insert challenge participation; challenge join is a separate authenticated form action. Directory reads actual participant records but does not show pending registration requests in its badges. These records do not prove the person's intent. No customer records changed, no enrollment removed, and no emails or approvals submitted.
+
+Validation: all 57 portal tests passed, including two page-render regressions using multiple programs, explicit/default selection, request destination, and directory search context. Full lint and local production build/TypeScript passed. No dependencies, migrations, or public-site changes.
+
+Portal deployment `dpl_CHT4r7bHeynAzTF1fv7WJwRzaKm8` READY via root `npm run deploy:portal`, aliased to https://portal.holden.health. Authenticated production Chrome verified the dashboard request link preserves First 6-Week Session and scrolls to Ahmad’s actual pending request with review controls visible. Request shows three classes/week and Venmo payment pending. Did not submit approval, decline, payment or email actions. Program selector present with correct selected value; alternate selection covered by automated tests. No physical-phone test claimed.

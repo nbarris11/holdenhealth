@@ -9,6 +9,22 @@
 
 The projects are intentionally separate. Do not change the public project's root directory to `web-app`.
 
+## Safe manual deployment commands
+
+Run both commands from `/Users/barris/Desktop/holden-health-site`:
+
+```bash
+# Public website only
+npm run deploy:site
+
+# Secure member portal only
+npm run deploy:portal
+```
+
+Do not run `vercel --prod` from inside `web-app`. The portal project already uses `web-app` as its Vercel Root Directory, so deploying from inside that folder makes Vercel look for `web-app/web-app`.
+
+The portal helper checks the linked project name before deploying, excludes local environment files and build caches, and cleans up its temporary staging folder when finished.
+
 ## What to send next
 
 Do not send passwords, private keys, recovery codes, or database credentials.

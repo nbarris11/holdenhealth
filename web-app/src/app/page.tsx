@@ -1,17 +1,36 @@
 import Link from "next/link";
+import BrandLogo from "@/components/brand-logo";
 
 export default function HomePage() {
   return (
     <main className="landing-shell">
       <section className="landing-card">
-        <span className="eyebrow">Holden Health · Focus on You</span>
-        <h1>A more personal way to stay connected between classes.</h1>
-        <p className="lede">Your schedule, weekly check-ins, Kelsey’s notes, and session resources—without another complicated fitness app.</p>
-        <div className="button-row">
-          <Link className="button primary" href="/login">Member sign-in</Link>
-          <Link className="button secondary" href="/register">Request a session place</Link>
+        <header className="landing-brand">
+          <BrandLogo />
+          <span>Member portal</span>
+        </header>
+        <div className="landing-grid">
+          <div className="landing-intro">
+            <span className="eyebrow">Focus on you</span>
+            <h1>Your session, all in one place.</h1>
+            <p className="lede">See your schedule, check in each week, and find Kelsey’s notes and resources whenever you need them.</p>
+            <div className="landing-actions">
+              <Link className="button secondary" href="/challenge">Join the free 14-day habit challenge</Link>
+              <Link className="button primary" href="/login">Sign in to your portal</Link>
+              <p>Explore <a href="https://holden.health/#programs">all coaching options</a>. New to Holden Health? <Link href="/register">Request a session place</Link></p>
+            </div>
+          </div>
+          <aside className="landing-details">
+            <span className="eyebrow">Inside your portal</span>
+            <h2>Simple support between classes.</h2>
+            <ul>
+              <li><span aria-hidden="true">01</span> Your class schedule</li>
+              <li><span aria-hidden="true">02</span> Weekly check-ins</li>
+              <li><span aria-hidden="true">03</span> Notes and resources</li>
+            </ul>
+            <Link className="landing-drop-in" href="/drop-in">Session already started? Ask about joining late <span aria-hidden="true">→</span></Link>
+          </aside>
         </div>
-        <p className="fine-print">This is the private application currently being prepared for Holden Health members.</p>
       </section>
     </main>
   );

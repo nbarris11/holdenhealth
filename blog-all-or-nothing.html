@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Why "All or Nothing" Is Sabotaging Your Progress | Holden Health</title>
+<title>How to Break the All-or-Nothing Fitness Mindset</title>
 <meta name="description" content="The all-or-nothing mindset, not willpower, is what stalls most people. Here's the shift that finally lets results stick, from coach Kelsey Holden." />
-<link rel="icon" href="assets/logo.png" />
+<link rel="icon" href="assets/logo.png?v=20260909-repair" />
 <link href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&amp;f[]=switzer@300,400,500,600,700&amp;display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="styles.css" />
+<link rel="stylesheet" href="styles.css?v=20260911-audit" />
 <style>
 .article{max-width:760px;margin:0 auto;padding:0 32px}
 .article-head{padding:56px 0 0;text-align:center}
@@ -18,7 +18,7 @@
   margin-top:22px;font-size:14.5px;color:var(--ink-soft)}
 .article-head .meta .av{width:34px;height:34px;border-radius:50%;background:var(--grad);color:#fff;
   display:grid;place-items:center;font-weight:600;font-family:var(--font-display);font-size:14px}
-.article-hero{width:100%;height:380px;border-radius:24px;margin:36px 0 8px}
+.article-hero{width:100%;height:auto;object-fit:contain;border-radius:24px;margin:36px 0 8px;background:var(--paper-2)}
 .prose{font-size:18.5px;line-height:1.75;color:var(--ink-2)}
 .prose p{margin:24px 0}
 .prose h2{font-size:28px;color:var(--ink);margin:44px 0 0}
@@ -39,7 +39,6 @@
 .article-cta h2{color:#fff;font-size:30px}
 .article-cta p{color:rgba(255,255,255,.9);font-size:17px;margin:14px auto 24px;max-width:48ch}
 .back-link{display:inline-flex;align-items:center;gap:8px;margin:40px 0 0;font-weight:600;color:var(--primary)}
-@media (max-width:600px){ .article-hero{height:240px} }
 </style>
 <link rel="canonical" href="https://www.holden.health/blog-all-or-nothing.html" />
 <meta property="og:type" content="article" />
@@ -47,7 +46,7 @@
 <meta property="og:title" content="Why &quot;All or Nothing&quot; Is Sabotaging Your Progress" />
 <meta property="og:description" content="The all-or-nothing mindset, not willpower, is what stalls most people. Here's the shift that finally lets results stick." />
 <meta property="og:url" content="https://www.holden.health/blog-all-or-nothing.html" />
-<meta property="og:image" content="https://www.holden.health/assets/logo.png" />
+<meta property="og:image" content="https://www.holden.health/assets/photos/kelsey-holden-portrait.jpg" />
 <meta name="twitter:card" content="summary_large_image" />
 <script type="application/ld+json">
 {
@@ -57,8 +56,10 @@
   "description": "The all-or-nothing mindset, not willpower, is what stalls most people. Here's the shift that finally lets results stick.",
   "datePublished": "2026-06-04",
   "dateModified": "2026-06-04",
-  "author": { "@type": "Person", "name": "Kelsey Holden" },
+  "image": "https://www.holden.health/assets/photos/kelsey-holden-portrait.jpg",
+  "author": { "@type": "Person", "@id": "https://www.holden.health/about.html#kelsey-holden", "name": "Kelsey Holden", "url": "https://www.holden.health/about.html" },
   "publisher": {
+    "@id": "https://www.holden.health/#business",
     "@type": "Organization",
     "name": "Holden Health",
     "logo": { "@type": "ImageObject", "url": "https://www.holden.health/assets/logo.png" }
@@ -73,17 +74,26 @@
 <header class="nav">
   <div class="nav-inner">
     <a class="brand" href="index.html">
-      <span class="mark"><img src="assets/logo.png" alt="Holden Health logo" /></span>
+      <span class="mark"><img src="assets/logo.png?v=20260909-repair" alt="Holden Health logo" /></span>
       <span>Holden Health<small>Train · Nourish · Thrive</small></span>
     </a>
-    <nav class="nav-links">
-      <a href="index.html">Home</a>
-      <a href="coaching.html">Coaching</a>
-      <a href="about.html">Meet Kelsey</a>
-      <a href="resources.html" class="active">Resources</a>
-      <a href="contact.html">Contact</a>
+    <nav class="nav-links" aria-label="Main navigation">
+      <details class="nav-group">
+        <summary>Coaching</summary>
+        <div class="nav-dropdown">
+          <a href="/coaching.html">Group Classes</a>
+          <a href="/fitness-coaching.html">Online Training</a><a href="/personal-training.html">Personal Training</a>
+        <a href="https://portal.holden.health/challenge">Free 14-Day Challenge</a></div>
+      </details>
+      <a href="/about.html">About</a>
+      <a href="/resources.html">Resources</a>
+      <a href="/index.html#the-app">The App</a>
     </nav>
-    <div class="nav-cta"><a class="btn btn-primary" href="book.html">Book a free call</a></div>
+    <div class="nav-cta">
+      <a class="member-login" href="https://portal.holden.health/login">Log in</a>
+      <a class="btn btn-ghost" href="/book.html" aria-label="Book a free call with Kelsey">Free call</a>
+      <a class="btn btn-primary" href="https://portal.holden.health/register">Join group classes</a>
+    </div>
   </div>
 </header>
 
@@ -94,10 +104,10 @@
       <h1>Why "all or nothing" is sabotaging your progress</h1>
       <div class="meta">
         <span class="av">K</span>
-        <span>Kelsey Holden</span><span>·</span><span>6 min read</span>
+        <a href="about.html">Kelsey Holden</a><span>·</span><time datetime="2026-06-04">June 4, 2026</time><span>·</span><span>6 min read</span>
       </div>
     </div>
-    <div class="article-hero img-slot" data-label="Article header photo"></div>
+    <img class="article-hero" src="assets/photos/kelsey-holden-portrait.jpg?v=20260909-repair" alt="Kelsey Holden, personal trainer and nutrition coach" width="890" height="886" />
 
     <div class="prose">
       <p>Here is the pattern I have watched for years, in my clients and in myself. You decide Monday is the day. You meal prep, you plan your workouts, you are all in. For a few days it feels amazing. Then Wednesday gets busy, you miss a workout, you grab takeout, and a quiet voice says, "Well, this week is ruined. I'll start fresh next Monday."</p>
@@ -105,7 +115,7 @@
 
       <h2>The all-or-nothing cycle</h2>
       <p>All-or-nothing thinking turns one small slip into a full stop. A missed workout becomes a missed week. One unplanned dinner becomes "I'll just restart on Monday." You spend half your life either being perfect or waiting to be perfect again, and almost none of it actually moving forward.</p>
-      <p>The math is brutal. If you are perfect for three days and then write off the other four, you are getting about 40 percent of the way there, over and over. Someone who is never perfect but rarely quits is hitting 80 percent every single week. Guess who gets results.</p>
+      <p>A routine you can return to after a difficult day gives you more chances to practice. Progress does not require a perfect score for the week.</p>
 
       <div class="pullquote">"Consistency does not mean perfect. It means you keep going, especially on the days that fall apart."</div>
 
@@ -116,23 +126,23 @@
       <h2>The shift: good enough, often</h2>
       <p>The goal is not a perfect week. The goal is a good-enough week, repeated for months. Here is what that actually looks like:</p>
       <ul>
-        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5" stroke-linecap="round" stroke-linejoin="round"/></svg><span><strong>Shrink the workout, do not skip it.</strong> No time for 45 minutes? Do 15. A short workout keeps the habit alive. A skipped one chips away at it.</span></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5" stroke-linecap="round" stroke-linejoin="round"/></svg><span><strong>Choose a manageable next step.</strong> No time for 45 minutes? Do 15. A shorter workout can help on a busy day. When you need rest, take it.</span></li>
         <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5" stroke-linecap="round" stroke-linejoin="round"/></svg><span><strong>Add, do not overhaul.</strong> Pick one habit, like protein at breakfast or a daily walk, and let it get boring before you add the next one.</span></li>
         <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5" stroke-linecap="round" stroke-linejoin="round"/></svg><span><strong>Aim for the next right choice,</strong> not a clean slate. You do not need to start over. You just need to make the next decision a good one.</span></li>
       </ul>
 
-      <h2>My favorite rule: never miss twice</h2>
-      <p>This is the one rule I give almost every client. Missing once is human. You will miss workouts, you will have off days, that is normal and fine. The trouble starts when one miss becomes two, then three, then a month off.</p>
-      <p>So the rule is simple. You are allowed to miss once. You are not allowed to miss twice in a row. Skipped Monday's workout? Monday is over, let it go. Tuesday, you show up, even if it is short. One miss is a blip. Two misses is the start of a pattern, and patterns are what we are really building here.</p>
+      <h2>Choose your next realistic opportunity</h2>
+      <p>Missing a workout is human. Rest, illness, and a busy week do not erase your progress. Think about what would help you return when you are ready.</p>
+      <p>When you miss a workout, choose your next realistic opportunity to move. That might be a short walk tomorrow or your next planned session. Adjust the plan to your circumstances.</p>
 
       <h2>Give yourself permission to be consistent, not perfect</h2>
-      <p>If you take one thing from this, let it be this: you are not failing when life gets in the way. You are failing only when you let one hard day talk you into quitting the whole week. The people who get lasting results are not the most disciplined or the most motivated. They are the ones who got good at the messy, imperfect, keep-going middle.</p>
-      <p>That is the entire game. Show up at 80 percent, most of the time, for a long time. It is far less impressive than a perfect week, and it works far, far better.</p>
+      <p>If you take one thing from this, let it be this: you are not failing when life gets in the way. You can return to a useful habit without judging yourself for the interruption. The people who get lasting results are not the most disciplined or the most motivated. They are the ones who got good at the messy, imperfect, keep-going middle.</p>
+      <p>That is the entire game. Keep practicing the habits that support you, and adjust them when life changes. It is far less impressive than a perfect week, and it works far, far better.</p>
 
       <div class="author">
-        <div class="ph img-slot" data-label="Kelsey" style="border-radius:50%"></div>
+        <img class="ph" src="assets/photos/kelsey-holden-portrait.jpg?v=20260909-repair" alt="Kelsey Holden" width="890" height="886" />
         <div>
-          <b>Kelsey Holden</b>
+          <b><a href="about.html">Kelsey Holden</a></b>
           <p>Certified personal trainer and nutrition coach in Metro Detroit. She helps busy people build sustainable habits, online and in person.</p>
         </div>
       </div>
@@ -155,7 +165,7 @@
     <div class="footer-top">
       <div class="footer-col">
         <a class="brand" href="index.html">
-          <span class="mark"><img src="assets/logo.png" alt="Holden Health logo" /></span>
+          <span class="mark"><img src="assets/logo.png?v=20260909-repair" alt="Holden Health logo" /></span>
           <span>Holden Health<small>Train · Nourish · Thrive</small></span>
         </a>
         <p style="margin-top:18px">Personal fitness and nutrition coaching built around small habits that stick. Online and in Metro Detroit.</p>
@@ -167,25 +177,26 @@
         <li><a href="contact.html">Contact</a></li>
       </ul></div>
       <div class="footer-col"><h5>Programs</h5><ul>
-        <li><a href="fitness-coaching.html">Online personal training</a></li><li><a href="nutrition-coaching.html">Online nutrition coaching</a></li>
-        <li><a href="coaching.html">Training + Nutrition</a></li><li><a href="coaching.html#bootcamp">Detroit bootcamp</a></li>
+        <li><a href="fitness-coaching.html">Online personal training</a></li><li><a href="nutrition-coaching.html">Nutrition habits</a></li>
+        <li><a href="personal-training.html">Personal training</a></li><li><a href="coaching.html#details">Group classes</a></li>
       </ul></div>
       <div class="footer-col"><h5>Stay connected</h5>
         <p>Get free tips, recipes &amp; motivation.</p>
         <div class="socials">
           <a href="https://www.instagram.com/holdenhealthllc" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a>
-          <a href="https://www.facebook.com/holdenhealthllc/" target="_blank" rel="noopener" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 8h2V5h-2a3 3 0 0 0-3 3v2H9v3h2v6h3v-6h2l1-3h-3V8.5A.5.5 0 0 1 14 8Z" stroke-linejoin="round"/></svg></a>
+          <a href="https://www.facebook.com/share/1GLhhhQx8F/?mibextid=wwXIfr" target="_blank" rel="noopener" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 8h2V5h-2a3 3 0 0 0-3 3v2H9v3h2v6h3v-6h2l1-3h-3V8.5A.5.5 0 0 1 14 8Z" stroke-linejoin="round"/></svg></a>
+          <a href="https://venmo.com/u/holdenhealthllc" target="_blank" rel="noopener" aria-label="Venmo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 5h4l1 8c1.8-2.5 3-5 3.2-8H18c-.2 5.2-4.2 11.8-7.5 14H7.8L6 5Z" stroke-linejoin="round"/></svg></a>
           <a href="mailto:HoldenHealth.Coaching@gmail.com" aria-label="Email"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
         </div>
       </div>
     </div>
-    <div class="footer-bottom">
+    <div class="footer-bottom"><span><a href="https://share.google/EOKYvkNJMEZN22Cta" target="_blank" rel="noopener noreferrer">Find us on Google</a></span>
       <span>© 2026 Holden Health LLC. All rights reserved.</span>
       <span>Made with care in Metro Detroit.</span><span class="legal-links"><a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a> · <a href="disclaimer.html">Health disclaimer</a></span>
     </div>
   </div>
 </footer>
 
-<script src="site.js"></script>
+<script src="site.js?v=20261027-draft-preview"></script>
 </body>
 </html>

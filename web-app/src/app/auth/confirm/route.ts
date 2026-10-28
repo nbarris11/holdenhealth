@@ -1,3 +1,5 @@
+import { cookies } from "next/headers";
+import { isUuid } from "@/lib/challenge";
 import type { EmailOtpType } from "@supabase/supabase-js";
 import { NextResponse, type NextRequest } from "next/server";
 import { createClient } from "@/lib/supabase/server";
@@ -7,7 +9,11 @@ export async function GET(request: NextRequest) {
   const tokenHash = request.nextUrl.searchParams.get("token_hash");
   const type = request.nextUrl.searchParams.get("type") as EmailOtpType | null;
   const requestedNext = request.nextUrl.searchParams.get("next") ?? "/portal";
-  const next = requestedNext.startsWith("/") && !requestedNext.startsWith("//") ? requestedNext : "/portal";
+  const challengeReturn = (await cookies()).get("holden_challenge_return")?.value;
+  const safeNext = requestedNext.startsWith("/") && !requestedNext.startsWith("//") && !requestedNext.includes("\\") ? requestedNext : "/portal";
+  // Older email templates may return to /portal instead of preserving redirectTo.
+  const next = safeNext === "/portal" && challengeReturn && isUuid(challengeReturn)
+    ? `/challenge?id=${challengeReturn}` : safeNext;
 
   const supabase = await createClient();
 
@@ -18,6 +24,7 @@ export async function GET(request: NextRequest) {
     const { error } = await supabase.auth.exchangeCodeForSession(code);
     if (!error) {
       await supabase.rpc("claim_admin_invitation");
+      (await cookies()).delete("holden_challenge_return");
       return NextResponse.redirect(new URL(next, request.url));
     }
   }
@@ -26,6 +33,7 @@ export async function GET(request: NextRequest) {
     const { error } = await supabase.auth.verifyOtp({ type, token_hash: tokenHash });
     if (!error) {
       await supabase.rpc("claim_admin_invitation");
+      (await cookies()).delete("holden_challenge_return");
       return NextResponse.redirect(new URL(next, request.url));
     }
   }

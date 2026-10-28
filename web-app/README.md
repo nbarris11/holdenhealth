@@ -1,36 +1,38 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Holden Health member portal
 
-## Getting Started
+Next.js portal for enrollment, ACH payment, secure member intake, check-ins, and administration.
 
-First, run the development server:
+## Local setup
+
+1. Copy `.env.example` to `.env.local` and fill in the Supabase, Stripe, and Resend values.
+2. Apply pending Supabase migrations.
+3. Install dependencies and start the app:
 
 ```bash
+cd /Users/barris/Desktop/holden-health-site/web-app
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Stripe ACH setup
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- The Vercel Stripe integration initially creates a test sandbox. From the Stripe installation page, use **Install → Import Existing Stripe Account** to connect an activated live account.
+- Enable ACH Direct Debit in the live Stripe Dashboard.
+- Add a webhook endpoint at `https://portal.holden.health/api/webhooks/stripe`.
+- Subscribe it to `checkout.session.completed`, `checkout.session.async_payment_succeeded`, and `checkout.session.async_payment_failed`.
+- Save the webhook signing secret as `STRIPE_WEBHOOK_SECRET` in Vercel.
+- Save the Stripe secret key as `STRIPE_SECRET_KEY` in Vercel.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Supabase server access
 
-## Learn More
+Create a restricted server secret from Supabase project settings → API Keys → Secret keys, then store it in Vercel production as `SUPABASE_SECRET_KEY`. Never expose this value in a browser or with a `NEXT_PUBLIC_` prefix.
 
-To learn more about Next.js, take a look at the following resources:
+Online enrollment stays hidden until Stripe and the Supabase server secret are configured. The existing request form and free-call path remain available.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Verification
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+cd /Users/barris/Desktop/holden-health-site/web-app
+npm run lint
+npm run build
+```

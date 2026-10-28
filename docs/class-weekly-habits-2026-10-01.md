@@ -1,0 +1,9 @@
+# Six-week class habit tracking — October 1, 2026
+
+Class members can now choose three habits for their first week, check them off for each eligible day, see full-day and per-habit counts, and carry the habits forward or add up to three more when a new week begins. Weeks follow Monday–Sunday to align with the existing Sunday check-in; the first and last weeks are clipped to the session dates. Each week's habit list is a separate snapshot, so later changes do not rewrite prior counts.
+
+The member tracker is at `/portal/habits`, linked from Today, Classes, and Account & support. The existing free challenge tracker remains separate. The existing Google Form weekly reflection remains linked; its answers are still reviewed outside the portal. Kelsey can see automatic class habit counts in each person's People record. No reminder, email, payment, or class schedule behavior changed.
+
+Migration `20261001160712_class_weekly_habits.sql` was applied to Supabase project `urxxiohatmvqbgrzqibq`. It adds private `class_habit_weeks` and `class_habit_marks` tables with member-owned access and admin read access. A rollback-only database check confirmed member insert/read, cross-member read/write denial, and zero retained test rows. Security and performance advisors reported no new findings; existing unrelated findings remain.
+
+All 158 portal tests, changed-source lint, TypeScript, local production build, and Vercel production build passed. Final portal deployment `dpl_K6sEZHdi9nvePjo63dsYdZghcBNc` was READY and aliased to https://portal.holden.health. The live `/portal/habits` route redirected signed-out visitors to login, while login pages returned HTTP 200. No authenticated browser checkmark save or physical-phone walkthrough was performed before this record. No real member habits were created or changed during testing.

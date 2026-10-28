@@ -6,9 +6,11 @@ import { verifyAdmin } from "@/lib/auth";
 import { renderHoldenHealthEmail, renderHoldenHealthText } from "@/lib/communication-email";
 import { createClient } from "@/lib/supabase/server";
 
+import { loadChallengeRecipients } from "@/lib/challenge-email-recipients";
+
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const KINDS = new Set(["newsletter", "session_update", "reminder"]);
-const AUDIENCES = new Set(["all_active", "two_day", "three_day"]);
+const AUDIENCES = new Set(["all_active", "two_day", "three_day", "wednesday_note", "free_challenge"]);
 
 function field(formData: FormData, name: string, maxLength: number) {
   return String(formData.get(name) ?? "").trim().slice(0, maxLength);
@@ -27,6 +29,8 @@ function completeUrl(value: string) {
 
 type EnrollmentRow = { member_id: string; weekly_commitment: number | null; profiles: { full_name: string } | { full_name: string }[] | null };
 type ContactRow = { user_id: string; email: string; unsubscribe_token: string };
+type SubscriberRow = { id: string; email: string; unsubscribe_token: string };
+type Recipient = { memberId: string | null; subscriberId: string | null; email: string; unsubscribeToken: string; firstName: string };
 
 export async function sendMemberCommunication(formData: FormData) {
   const admin = await verifyAdmin();
@@ -42,7 +46,8 @@ export async function sendMemberCommunication(formData: FormData) {
   const ctaUrl = completeUrl(ctaUrlInput);
   const intent = field(formData, "intent", 20);
 
-  if (!UUID_PATTERN.test(sessionId) || !KINDS.has(kind) || !AUDIENCES.has(audience) || !subject || !heading || !body) {
+  const classAudience = new Set(["all_active", "two_day", "three_day"]).has(audience);
+  if ((classAudience && !UUID_PATTERN.test(sessionId)) || !KINDS.has(kind) || !AUDIENCES.has(audience) || !subject || !heading || !body) {
     redirect("/admin/communications?message=missing-fields");
   }
   if ((ctaLabel && !ctaUrl) || (!ctaLabel && ctaUrlInput)) redirect("/admin/communications?message=invalid-button");
@@ -66,29 +71,49 @@ export async function sendMemberCommunication(formData: FormData) {
 
   if (formData.get("confirmed") !== "on") redirect("/admin/communications?message=confirm-send");
   const supabase = await createClient();
-  let enrollmentQuery = supabase.from("enrollments").select("member_id,weekly_commitment,profiles(full_name)").eq("session_id", sessionId).eq("status", "active");
-  if (audience === "two_day") enrollmentQuery = enrollmentQuery.eq("weekly_commitment", 2);
-  if (audience === "three_day") enrollmentQuery = enrollmentQuery.eq("weekly_commitment", 3);
-  const { data: enrollmentData, error: enrollmentError } = await enrollmentQuery;
-  if (enrollmentError) redirect("/admin/communications?message=recipient-error");
+  let recipients: Recipient[] = [];
 
-  const enrollments = (enrollmentData ?? []) as unknown as EnrollmentRow[];
-  const memberIds = enrollments.map((row) => row.member_id);
-  if (!memberIds.length) redirect("/admin/communications?message=no-recipients");
-  const { data: contactData, error: contactError } = await supabase.from("member_contacts").select("user_id,email,unsubscribe_token").in("user_id", memberIds).eq("email_opt_in", true).eq("is_test", false);
-  if (contactError) redirect("/admin/communications?message=recipient-error");
+  if (audience === "free_challenge") {
+    try {
+      recipients = await loadChallengeRecipients(supabase);
+    } catch {
+      redirect("/admin/communications?message=recipient-error");
+    }
+  } else if (audience === "wednesday_note") {
+    const { data, error } = await supabase.from("wednesday_note_subscribers").select("id,email,unsubscribe_token").eq("email_opt_in", true).order("subscribed_at");
+    if (error) redirect("/admin/communications?message=recipient-error");
+    recipients = ((data ?? []) as SubscriberRow[]).map((subscriber) => ({
+      memberId: null,
+      subscriberId: subscriber.id,
+      email: subscriber.email,
+      unsubscribeToken: subscriber.unsubscribe_token,
+      firstName: "there",
+    }));
+  } else {
+    let enrollmentQuery = supabase.from("enrollments").select("member_id,weekly_commitment,profiles(full_name)").eq("session_id", sessionId).eq("status", "active");
+    if (audience === "two_day") enrollmentQuery = enrollmentQuery.eq("weekly_commitment", 2);
+    if (audience === "three_day") enrollmentQuery = enrollmentQuery.eq("weekly_commitment", 3);
+    const { data: enrollmentData, error: enrollmentError } = await enrollmentQuery;
+    if (enrollmentError) redirect("/admin/communications?message=recipient-error");
 
-  const contacts = new Map(((contactData ?? []) as ContactRow[]).map((contact) => [contact.user_id, contact]));
-  const recipients = enrollments.flatMap((enrollment) => {
-    const contact = contacts.get(enrollment.member_id);
-    if (!contact) return [];
-    const profile = Array.isArray(enrollment.profiles) ? enrollment.profiles[0] : enrollment.profiles;
-    return [{ ...contact, firstName: profile?.full_name?.trim().split(/\s+/)[0] || "there" }];
-  });
+    const enrollments = (enrollmentData ?? []) as unknown as EnrollmentRow[];
+    const memberIds = enrollments.map((row) => row.member_id);
+    if (!memberIds.length) redirect("/admin/communications?message=no-recipients");
+    const { data: contactData, error: contactError } = await supabase.from("member_contacts").select("user_id,email,unsubscribe_token").in("user_id", memberIds).eq("email_opt_in", true).eq("is_test", false);
+    if (contactError) redirect("/admin/communications?message=recipient-error");
+
+    const contacts = new Map(((contactData ?? []) as ContactRow[]).map((contact) => [contact.user_id, contact]));
+    recipients = enrollments.flatMap((enrollment) => {
+      const contact = contacts.get(enrollment.member_id);
+      if (!contact) return [];
+      const profile = Array.isArray(enrollment.profiles) ? enrollment.profiles[0] : enrollment.profiles;
+      return [{ memberId: contact.user_id, subscriberId: null, email: contact.email, unsubscribeToken: contact.unsubscribe_token, firstName: profile?.full_name?.trim().split(/\s+/)[0] || "there" }];
+    });
+  }
   if (!recipients.length) redirect("/admin/communications?message=no-recipients");
 
   const { data: campaign, error: campaignError } = await supabase.from("communication_campaigns").insert({
-    session_id: sessionId, kind, audience, subject, preheader, heading, body, cta_label: ctaLabel, cta_url: ctaUrl,
+    session_id: classAudience ? sessionId : null, kind, audience, subject, preheader, heading, body, cta_label: ctaLabel, cta_url: ctaUrl,
     recipient_count: recipients.length, created_by: admin.userId,
   }).select("id").single();
   if (campaignError || !campaign) redirect("/admin/communications?message=save-failed");
@@ -98,8 +123,8 @@ export async function sendMemberCommunication(formData: FormData) {
     to: [recipient.email],
     reply_to: "holdenhealth.coaching@gmail.com",
     subject,
-    html: renderHoldenHealthEmail({ firstName: recipient.firstName, preheader, heading, body, ctaLabel, ctaUrl, unsubscribeToken: recipient.unsubscribe_token }),
-    text: renderHoldenHealthText({ firstName: recipient.firstName, preheader, heading, body, ctaLabel, ctaUrl, unsubscribeToken: recipient.unsubscribe_token }),
+    html: renderHoldenHealthEmail({ firstName: recipient.firstName, preheader, heading, body, ctaLabel, ctaUrl, unsubscribeToken: recipient.unsubscribeToken }),
+    text: renderHoldenHealthText({ firstName: recipient.firstName, preheader, heading, body, ctaLabel, ctaUrl, unsubscribeToken: recipient.unsubscribeToken }),
     tags: [{ name: "campaign_id", value: campaign.id }],
   }));
 
@@ -113,7 +138,8 @@ export async function sendMemberCommunication(formData: FormData) {
   const failedCount = recipients.length - sentCount;
   const deliveries = recipients.map((recipient, index) => ({
     campaign_id: campaign.id,
-    member_id: recipient.user_id,
+    member_id: recipient.memberId,
+    subscriber_id: recipient.subscriberId,
     email: recipient.email,
     status: batchResponse.ok ? "sent" : "failed",
     provider_id: responseData.data?.[index]?.id ?? null,

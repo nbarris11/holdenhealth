@@ -1,7 +1,16 @@
 {
   "name": "holden-health-site",
   "private": true,
+  "scripts": {
+    "deploy:site": "node scripts/deploy-site.mjs",
+    "deploy:portal": "node scripts/deploy-portal.mjs",
+    "check:site": "node --check site.js && python3 scripts/check-site-seo.py && node --test tests/*.test.cjs"
+  },
   "dependencies": {
     "@vercel/functions": "^3.9.3"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.43",
+    "typescript": "^5.9.3"
   }
 }

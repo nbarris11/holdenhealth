@@ -1,0 +1,2 @@
+create index consultation_slots_created_by_idx
+on public.consultation_slots(created_by);

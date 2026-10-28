@@ -5,9 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Fitness &amp; Nutrition Coaching Quiz | Holden Health</title>
 <meta name="description" content="Not sure which coaching plan fits? Take this quick quiz and get a personalized recommendation from Holden Health in under a minute." />
-<link rel="icon" href="assets/logo.png" />
+<link rel="icon" href="assets/logo.png?v=20260909-repair" />
 <link href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&amp;f[]=switzer@300,400,500,600,700&amp;display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="styles.css" />
+<link rel="stylesheet" href="styles.css?v=20260911-audit" />
 <style>
 .quiz-wrap{position:relative;overflow:hidden;min-height:70vh}
 .quiz-wrap .blob{position:absolute;border-radius:50%;filter:blur(80px);z-index:0}
@@ -73,17 +73,26 @@
 <header class="nav">
   <div class="nav-inner">
     <a class="brand" href="index.html">
-      <span class="mark"><img src="assets/logo.png" alt="Holden Health logo" /></span>
+      <span class="mark"><img src="assets/logo.png?v=20260909-repair" alt="Holden Health logo" /></span>
       <span>Holden Health<small>Train · Nourish · Thrive</small></span>
     </a>
-    <nav class="nav-links">
-      <a href="index.html">Home</a>
-      <a href="coaching.html">Coaching</a>
-      <a href="about.html">Meet Kelsey</a>
-      <a href="resources.html">Resources</a>
-      <a href="contact.html">Contact</a>
+    <nav class="nav-links" aria-label="Main navigation">
+      <details class="nav-group">
+        <summary>Coaching</summary>
+        <div class="nav-dropdown">
+          <a href="/coaching.html">Group Classes</a>
+          <a href="/fitness-coaching.html">Online Training</a><a href="/personal-training.html">Personal Training</a>
+        <a href="https://portal.holden.health/challenge">Free 14-Day Challenge</a></div>
+      </details>
+      <a href="/about.html">About</a>
+      <a href="/resources.html">Resources</a>
+      <a href="/index.html#the-app">The App</a>
     </nav>
-    <div class="nav-cta"><a class="btn btn-primary" href="book.html">Book a free call</a></div>
+    <div class="nav-cta">
+      <a class="member-login" href="https://portal.holden.health/login">Log in</a>
+      <a class="btn btn-ghost" href="/book.html" aria-label="Book a free call with Kelsey">Free call</a>
+      <a class="btn btn-primary" href="https://portal.holden.health/register">Join group classes</a>
+    </div>
   </div>
 </header>
 
@@ -108,7 +117,7 @@
     <div class="footer-top">
       <div class="footer-col">
         <a class="brand" href="index.html">
-          <span class="mark"><img src="assets/logo.png" alt="Holden Health logo" /></span>
+          <span class="mark"><img src="assets/logo.png?v=20260909-repair" alt="Holden Health logo" /></span>
           <span>Holden Health<small>Train · Nourish · Thrive</small></span>
         </a>
         <p style="margin-top:18px">Personal fitness and nutrition coaching built around small habits that stick. Online and in Metro Detroit.</p>
@@ -120,26 +129,27 @@
         <li><a href="contact.html">Contact</a></li>
       </ul></div>
       <div class="footer-col"><h5>Programs</h5><ul>
-        <li><a href="fitness-coaching.html">Online personal training</a></li><li><a href="nutrition-coaching.html">Online nutrition coaching</a></li>
-        <li><a href="coaching.html">Training + Nutrition</a></li><li><a href="coaching.html#bootcamp">Detroit bootcamp</a></li>
+        <li><a href="fitness-coaching.html">Online personal training</a></li><li><a href="nutrition-coaching.html">Nutrition habits</a></li>
+        <li><a href="personal-training.html">Personal training</a></li><li><a href="coaching.html#details">Group classes</a></li>
       </ul></div>
       <div class="footer-col"><h5>Stay connected</h5>
         <p>Get free tips, recipes &amp; motivation.</p>
         <div class="socials">
           <a href="https://www.instagram.com/holdenhealthllc" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a>
-          <a href="https://www.facebook.com/holdenhealthllc/" target="_blank" rel="noopener" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 8h2V5h-2a3 3 0 0 0-3 3v2H9v3h2v6h3v-6h2l1-3h-3V8.5A.5.5 0 0 1 14 8Z" stroke-linejoin="round"/></svg></a>
+          <a href="https://www.facebook.com/share/1GLhhhQx8F/?mibextid=wwXIfr" target="_blank" rel="noopener" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 8h2V5h-2a3 3 0 0 0-3 3v2H9v3h2v6h3v-6h2l1-3h-3V8.5A.5.5 0 0 1 14 8Z" stroke-linejoin="round"/></svg></a>
+          <a href="https://venmo.com/u/holdenhealthllc" target="_blank" rel="noopener" aria-label="Venmo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 5h4l1 8c1.8-2.5 3-5 3.2-8H18c-.2 5.2-4.2 11.8-7.5 14H7.8L6 5Z" stroke-linejoin="round"/></svg></a>
           <a href="mailto:HoldenHealth.Coaching@gmail.com" aria-label="Email"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
         </div>
       </div>
     </div>
-    <div class="footer-bottom">
+    <div class="footer-bottom"><span><a href="https://share.google/EOKYvkNJMEZN22Cta" target="_blank" rel="noopener noreferrer">Find us on Google</a></span>
       <span>© 2026 Holden Health LLC. All rights reserved.</span>
       <span>Made with care in Metro Detroit.</span><span class="legal-links"><a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a> · <a href="disclaimer.html">Health disclaimer</a></span>
     </div>
   </div>
 </footer>
 
-<script src="site.js"></script>
+<script src="site.js?v=20261027-draft-preview"></script>
 <script>
 // ── Program-fit quiz ──
 (function () {
@@ -155,55 +165,38 @@
     check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5" stroke-linecap="round" stroke-linejoin="round"/></svg>'
   };
 
-  // Each option adds weight toward: fitness, nutrition, combined, bootcamp
+  // Each option adds weight toward: fitness, challenge, personal, group
   var QUESTIONS = [
     { label: 'Goal', q: 'What are you most focused on right now?', opts: [
       { t: 'Getting stronger and building a fitness habit', ic: 'dumbbell', w: { fitness: 2 } },
-      { t: 'Eating better without a restrictive diet', ic: 'apple', w: { nutrition: 2 } },
-      { t: 'A full transformation, training and nutrition', ic: 'heart', w: { combined: 2 } },
-      { t: 'Fun, in-person community and accountability', ic: 'group', w: { bootcamp: 2 } }
+      { t: 'Building a few simple daily habits', ic: 'apple', w: { challenge: 2 } },
+      { t: 'One-to-one training with Kelsey', ic: 'heart', w: { personal: 2 } },
+      { t: 'Fun, in-person community and accountability', ic: 'group', w: { group: 2 } }
     ]},
     { label: 'Help', q: 'What would help you most?', opts: [
       { t: 'A custom workout plan in an app', ic: 'dumbbell', w: { fitness: 2 } },
-      { t: 'Daily food coaching and small lessons', ic: 'apple', w: { nutrition: 2 } },
-      { t: 'Workouts and nutrition working together', ic: 'heart', w: { combined: 2 } },
-      { t: 'Group classes with a coach in the room', ic: 'group', w: { bootcamp: 2 } }
+      { t: 'A free, guided habit challenge', ic: 'apple', w: { challenge: 2 } },
+      { t: 'An hour of personal attention in the gym', ic: 'heart', w: { personal: 2 } },
+      { t: 'Group classes with a coach in the room', ic: 'group', w: { group: 2 } }
     ]},
     { label: 'Support', q: 'How do you like to be supported?', opts: [
-      { t: 'Weekly check-ins, mostly self-driven', ic: 'clock', w: { fitness: 1, nutrition: 1 } },
-      { t: 'Daily structure and accountability', ic: 'spark', w: { nutrition: 1, combined: 1 } },
-      { t: 'Close 1:1 attention on everything', ic: 'heart', w: { combined: 2 } },
-      { t: 'The energy of working out with people', ic: 'group', w: { bootcamp: 2 } }
+      { t: 'Weekly check-ins, mostly self-driven', ic: 'clock', w: { fitness: 1, challenge: 1 } },
+      { t: 'Daily structure and accountability', ic: 'spark', w: { challenge: 1, personal: 1 } },
+      { t: 'One-to-one coaching in person', ic: 'heart', w: { personal: 2 } },
+      { t: 'The energy of working out with people', ic: 'group', w: { group: 2 } }
     ]},
     { label: 'Where', q: 'Where are you based?', opts: [
-      { t: 'Online, coach me from anywhere', ic: 'globe', w: {}, online: true },
-      { t: 'Metro Detroit, open to in-person', ic: 'pin', w: { bootcamp: 1 } }
+      { t: 'Online support fits me best', ic: 'globe', w: {}, online: true },
+      { t: 'Metro Detroit, open to in-person', ic: 'pin', w: { group: 1 } }
     ]}
   ];
 
-  var RESULTS = {
-    fitness:  { badge: 'Your match', name: 'Fitness Coaching', price: '$199', per: '/ month',
-      why: 'You want to move, get stronger, and build a habit that sticks. Custom training in your app is your lane.',
-      bullets: ['A 1:1 consultation to map your goals', 'Custom workouts in your app, updated weekly', 'Weekly check-ins and 24/7 coach access'],
-      primary: { t: 'Book a free intro call', href: 'book.html' }, secondary: { t: 'See the details', href: 'fitness-coaching.html' } },
-    nutrition: { badge: 'Your match', name: 'Nutrition Coaching', price: '$199', per: '/ month',
-      why: 'You are ready to fix how you eat without a rigid diet. Daily habit coaching is built for exactly that.',
-      bullets: ['A daily skill-building lesson in the app', 'Daily coach check-ins and weekly habit goals', 'Bi-weekly video chats, no rigid meal plans'],
-      primary: { t: 'Book a free intro call', href: 'book.html' }, secondary: { t: 'See the details', href: 'nutrition-coaching.html' } },
-    combined: { badge: 'Most popular', name: 'Training + Nutrition', price: '$299', per: '/ month',
-      why: 'You want training and food habits to support the same goal. The combined plan keeps both pieces connected.',
-      bullets: ['Everything in Fitness and Nutrition', 'Weekly training check-ins plus daily nutrition coaching', 'Bi-weekly video chats with Kelsey'],
-      primary: { t: 'Book a free intro call', href: 'book.html' }, secondary: { t: 'See the details', href: 'coaching.html' } },
-    bootcamp: { badge: 'Coming soon', name: 'Metro Detroit Bootcamp', price: 'Joining list', per: '',
-      why: 'You thrive on community and in-person energy. Kelsey is bringing her small-group bootcamp to Metro Detroit.',
-      bullets: ['Small-group, all levels welcome', 'A coach keeping you accountable in person', 'Get on the early list to hear first'],
-      primary: { t: 'Join the interest list', href: 'contact.html' }, secondary: { t: 'See coaching options', href: 'coaching.html' } }
-  };
+  var RESULTS = {"fitness": {"badge": "Your match", "name": "Online personal training", "price": "$199", "per": " / four weeks", "why": "A personal workout plan and coaching support fit your schedule. Start with a consultation to discuss your goals.", "bullets": ["A free consultation first", "Workouts built around your goals and equipment", "Full app access included"], "primary": {"t": "Book a free consultation", "href": "book.html"}, "secondary": {"t": "Explore online training", "href": "fitness-coaching.html"}}, "challenge": {"badge": "A free place to start", "name": "14-day habit challenge", "price": "Free", "per": "", "why": "Build momentum with small daily habits. The challenge starts September 21.", "bullets": ["14 days of practical habit building", "A simple way to get started", "Explore the Holden Health app"], "primary": {"t": "Join the free challenge", "href": "https://portal.holden.health/challenge"}, "secondary": {"t": "Ask Kelsey a question", "href": "contact.html"}}, "personal": {"badge": "Your match", "name": "In-person personal training", "price": "$100", "per": " / 60-minute session", "why": "Work one-to-one with Kelsey at Burroughs in Plymouth. A consultation comes first so you can discuss the right approach.", "bullets": ["A free consultation first", "60-minute sessions at Burroughs", "Personal attention focused on your goals"], "primary": {"t": "Book a free consultation", "href": "book.html"}, "secondary": {"t": "See personal training", "href": "personal-training.html"}}, "group": {"badge": "Now enrolling", "name": "Six-week group classes", "price": "From $199", "per": " / six weeks", "why": "Train with Kelsey and a supportive group in Plymouth, October 13–November 21.", "bullets": ["Choose two or three class days each week", "Tuesday 6 AM, Wednesday 7 PM, Saturday 7:30 or 9 AM", "November 7 classes meet on Zoom"], "primary": {"t": "Explore the six-week session", "href": "coaching.html"}, "secondary": {"t": "Talk with Kelsey", "href": "book.html"}}};
 
   var prog = document.getElementById('quizProg');
   var body = document.getElementById('quizBody');
   var step = 0;
-  var scores = { fitness: 0, nutrition: 0, combined: 0, bootcamp: 0 };
+  var scores = { fitness: 0, challenge: 0, personal: 0, group: 0 };
   var online = false;
   var history = [];
 
@@ -255,11 +248,11 @@
   }
 
   function pick() {
-    var s = { fitness: scores.fitness, nutrition: scores.nutrition, combined: scores.combined, bootcamp: scores.bootcamp };
-    if (online) s.bootcamp = -1; // online-only never gets the in-person bootcamp
-    var best = 'combined', max = -Infinity;
-    // priority order on ties favors the combined upsell, then fitness/nutrition
-    ['combined', 'fitness', 'nutrition', 'bootcamp'].forEach(function (k) {
+    var s = { fitness: scores.fitness, challenge: scores.challenge, personal: scores.personal, group: scores.group };
+    if (online) { s.group = -1; s.personal = -1; } // online-only never gets the in-person group
+    var best = 'personal', max = -Infinity;
+    // On a tie, show a relevant option and invite a conversation.
+    ['personal', 'fitness', 'challenge', 'group'].forEach(function (k) {
       if (s[k] > max) { max = s[k]; best = k; }
     });
     return best;
@@ -280,7 +273,7 @@
       '<button class="restart" id="qrestart">Start over</button></div>';
     body.innerHTML = html;
     document.getElementById('qrestart').addEventListener('click', function () {
-      step = 0; scores = { fitness: 0, nutrition: 0, combined: 0, bootcamp: 0 }; online = false; history = [];
+      step = 0; scores = { fitness: 0, challenge: 0, personal: 0, group: 0 }; online = false; history = [];
       renderQuestion();
     });
   }

@@ -1,3 +1,5 @@
+import PrivacyNotice from "@/components/privacy-notice";
+import BrandLogo from "@/components/brand-logo";
 import Link from "next/link";
 import { requestMagicLink } from "./actions";
 
@@ -14,19 +16,20 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
   return (
     <main className="auth-shell">
       <section className="auth-card">
-        <Link className="wordmark" href="/">Holden Health</Link>
+        <BrandLogo className="wordmark" href="/" />
         <span className="eyebrow">Member sign-in</span>
         <h1>Your session, all in one place.</h1>
-        <p className="lede">Use the email Kelsey invited. We’ll send a secure sign-in link—no password to remember.</p>
+        <p className="lede">Use the email connected to your Holden Health account. We’ll send a secure sign-in link, so there is no password to remember.</p>
         {error ? <p className="notice error" role="alert">{error}</p> : null}
         {sent ? <p className="notice success">Check {sent} for your sign-in link.</p> : null}
         <form action={requestMagicLink} className="auth-form">
           <input type="hidden" name="next" value={next} />
           <label htmlFor="email">Email address</label>
           <input id="email" name="email" type="email" autoComplete="email" required />
+          <PrivacyNotice />
           <button className="button primary" type="submit">Email me a sign-in link</button>
         </form>
-        <p className="fine-print">Interested in a session? <Link href="/register">Request a place</Link>. Already spoke with Kelsey? <a href="mailto:HoldenHealth.Coaching@gmail.com">Contact Holden Health</a>.</p>
+        <p className="fine-print">Interested in a session? <Link href="/register">Join online or talk with Kelsey</Link>. Already spoke with Kelsey? <a href="mailto:HoldenHealth.Coaching@gmail.com">Contact Holden Health</a>.</p>
       </section>
     </main>
   );

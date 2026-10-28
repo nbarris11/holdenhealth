@@ -1,5 +1,6 @@
 "use server";
 
+import { adminLoginPath, adminReturnPath } from "@/lib/admin-return";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { verifyAdmin } from "@/lib/auth";
@@ -8,28 +9,29 @@ import { createClient } from "@/lib/supabase/server";
 function emailField(formData: FormData) {
   const email = String(formData.get("email") ?? "").trim().toLowerCase();
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    redirect(`/admin/login?error=${encodeURIComponent("Enter a valid email address.")}`);
+    redirect(adminLoginPath(formData.get("next"), "Enter a valid email address."));
   }
   return email;
 }
 
 export async function adminSignIn(formData: FormData) {
   const email = emailField(formData);
+  const next = adminReturnPath(formData.get("next"));
   const password = String(formData.get("password") ?? "");
   const supabase = await createClient();
   const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 
   if (error || !data.user) {
-    redirect(`/admin/login?error=${encodeURIComponent("That email and password did not match.")}`);
+    redirect(adminLoginPath(next, "That email and password did not match."));
   }
 
   const { data: role } = await supabase.from("staff_roles").select("role").eq("user_id", data.user.id).eq("role", "admin").maybeSingle();
   if (!role) {
     await supabase.auth.signOut({ scope: "local" });
-    redirect(`/admin/login?error=${encodeURIComponent("This account does not have admin access.")}`);
+    redirect(adminLoginPath(next, "This account does not have admin access. Sign in with your admin account."));
   }
 
-  redirect("/admin");
+  redirect(next);
 }
 
 export async function requestAdminPasswordReset(formData: FormData) {
@@ -60,4 +62,10 @@ export async function updateAdminPassword(formData: FormData) {
     redirect(`/admin/set-password?error=${encodeURIComponent("We could not save that password. Request a new reset link and try again.")}`);
   }
   redirect("/admin");
+}
+
+export async function adminSignOut() {
+  const supabase = await createClient();
+  await supabase.auth.signOut({ scope: "local" });
+  redirect("/admin/login");
 }

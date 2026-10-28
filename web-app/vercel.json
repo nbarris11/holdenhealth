@@ -1,0 +1,16 @@
+{
+  "crons": [
+    {
+      "path": "/api/cron/sunday-check-in",
+      "schedule": "0 14 * * 0"
+    },
+    {
+      "path": "/api/cron/program-reviews",
+      "schedule": "0 14 * * *"
+    },
+    {
+      "path": "/api/cron/coach-activity",
+      "schedule": "30 13 * * *"
+    }
+  ]
+}

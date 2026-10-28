@@ -6,7 +6,7 @@ Build for the business Kelsey has now: in-person, group-based total-body conditi
 
 Use **Holden Health: Focus on You** as the working program name. Present each cohort as an edition beneath it, such as **Focus on You: 6-Week Group Fitness & Nutrition Session** or **Focus on You: December Mini Session**. This keeps the idea recognizable when the duration changes while tying a widely used phrase to the more distinctive Holden Health brand. A preliminary web search found “Focus on You” used by other fitness businesses and many competitors as general marketing language, so it should not be treated as a unique or legally cleared standalone brand name.
 
-Do not build individualized workout programming, exercise logging, subscription billing, progress charts, wearables, messaging, or a large exercise-video library yet. Kelsey does not currently use those workflows, and building them now would mean guessing how her future business should operate.
+The secure Session Hub remains the foundation for group members. Holden Health now also plans to offer personal training, so individualized workout programming, exercise logging, progress, and messaging are defined as additive phases in `PERSONAL-TRAINING-PORTAL-ROADMAP.md`. Keep group-session workflows simple while those personal-training tools are added.
 
 The first portal should make joining and completing a six-week session feel organized, personal, and professional. It should also give Kelsey a simple roster and content-management tool.
 
@@ -65,7 +65,7 @@ This should be the workflow the first portal supports.
 
 ### Recommended customer-facing attendance language
 
-> Choose the two- or three-day option that fits your goals. Classes are offered Tuesday at 6:00 a.m., Wednesday at 7:00 p.m., and Saturday at 9:00 a.m. Your days can change when life changes—just attend another available class during the same session. Missed classes are not refundable and cannot be carried into a future session.
+> Choose the two- or three-day option that fits your goals. Classes are offered Tuesday at 6:00 a.m., Wednesday at 7:00 p.m., and Saturday at 9:00 a.m. Your days can change when life changes. Just attend another available class during the same session. Missed classes are not refundable and cannot be carried into a future session.
 
 Because the full cohort is capped at 25, switching days cannot exceed the program's overall enrollment cap. A lightweight weekly attendance selector is still useful for room setup and planning, but it does not need to function as a strict reservation system.
 
@@ -232,7 +232,7 @@ A focused Session Hub is approximately a 5-7 week build for one experienced full
 3. Approve or revise the recommended pre-session, medical-withdrawal, transfer, and Holden Health cancellation policy above.
 4. Besides check-ins and accountability, will nutrition/habit coaching include group lessons, guides, individual goals, or direct written feedback?
 5. What should members do after completing the six weeks: enroll in another cohort, schedule individual coaching, or continue independently?
-6. Define “returning member” for the $99 loyalty price—for example, anyone who previously completed a Holden Health paid session.
+6. Define “returning member” for the $99 loyalty price. For example, anyone who previously completed a Holden Health paid session.
 7. Complete the exercise-video answer that ended with “No but”.
 8. Confirm Kelsey's administrator email address and the site's five-digit ZIP code.
 

@@ -1,6 +1,6 @@
 # Holden Health member and admin portal plan
 
-> **Revised direction - August 15, 2026:** Discovery confirmed that Kelsey's current business is based on six-week group sessions, not ongoing individualized online personal training. The full portal below is a future roadmap. The correct first product is the smaller **6-Week Session Hub** defined in `SIX-WEEK-SESSION-HUB-PLAN.md`. Do not begin the full workout-programming system until Kelsey is actively delivering individualized programs and has a real workflow to model.
+> **Revised direction - August 22, 2026:** The secure six-week Session Hub now exists, and Holden Health wants to add personal training. Use `PERSONAL-TRAINING-PORTAL-ROADMAP.md` as the current product plan. It expands the working group-session portal instead of replacing it or building a separate app. The older full-portal material below remains useful background, but its phases and estimates are superseded by the newer roadmap.
 
 ## Recommendation
 

@@ -64,22 +64,6 @@
 .opt .chk svg{width:14px;height:14px;opacity:0;transition:opacity .15s}
 .opt.sel .chk svg{opacity:1}
 
-/* date + time */
-.dates{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
-.date{border:1.5px solid var(--line);border-radius:13px;padding:12px 6px;text-align:center;cursor:pointer;
-  transition:all .15s;background:var(--card)}
-.date:hover{border-color:var(--ink-2)}
-.date.sel{border-color:var(--primary);background:var(--primary);color:#fff}
-.date .dow{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;opacity:.7}
-.date .dnum{font-family:var(--font-display);font-weight:600;font-size:22px;line-height:1.1;margin-top:3px}
-.date .mon{font-size:11.5px;opacity:.7;margin-top:1px}
-.times{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:18px}
-.time{border:1.5px solid var(--line);border-radius:11px;padding:12px 6px;text-align:center;cursor:pointer;
-  font-weight:600;font-size:15px;transition:all .15s;background:var(--card)}
-.time:hover{border-color:var(--ink-2)}
-.time.sel{border-color:var(--primary);background:var(--primary);color:#fff}
-.tz{font-size:13px;color:var(--ink-soft);margin-top:14px;text-align:center}
-
 /* form */
 .field{margin-bottom:15px}
 .field label{display:block;font-size:14px;font-weight:600;margin-bottom:7px}
@@ -118,11 +102,6 @@
 
 @media (max-width:920px){
   .book-grid{grid-template-columns:1fr;gap:36px;padding-bottom:64px}
-  .dates{grid-template-columns:repeat(4,1fr)}
-}
-@media (max-width:520px){
-  .dates{grid-template-columns:repeat(3,1fr)}
-  .times{grid-template-columns:repeat(2,1fr)}
 }
 </style>
 <link rel="canonical" href="https://www.holden.health/book.html" />
@@ -139,7 +118,7 @@
 <form name="consultation-request" method="POST" data-netlify="true" netlify-honeypot="bot-field" hidden>
   <input type="hidden" name="form-name" value="consultation-request" />
   <input name="bot-field" />
-  <input name="goal" /><input name="preferred-date" /><input name="preferred-time" />
+  <input name="goal" />
   <input name="name" /><input name="email" /><input name="phone" /><textarea name="note"></textarea>
 </form>
 
@@ -186,13 +165,12 @@
         <div class="book-prog">
           <div class="seg" data-seg="1"><i></i></div>
           <div class="seg" data-seg="2"><i></i></div>
-          <div class="seg" data-seg="3"><i></i></div>
         </div>
         <div class="book-body">
 
           <!-- STEP 1 -->
           <div class="step" data-step="1">
-            <div class="step-label">Step 1 of 3</div>
+            <div class="step-label">Step 1 of 2</div>
             <h2>What are you most interested in?</h2>
             <p class="sub">Pick whatever's closest, we'll go deeper on the call.</p>
             <div class="opts" id="goalOpts">
@@ -209,23 +187,9 @@
 
           <!-- STEP 2 -->
           <div class="step" data-step="2" style="display:none">
-            <div class="step-label">Step 2 of 3</div>
-            <h2>What time would work best?</h2>
-            <p class="sub">Choose a preferred day and time. Kelsey will confirm availability by email.</p>
-            <div class="dates" id="dateRow"></div>
-            <div class="times" id="timeRow"></div>
-            <div class="tz">🕒 Don't see a good time? Mention it in the next step and we'll sort it out.</div>
-            <div class="book-nav">
-              <button class="btn btn-ghost back" data-back>← Back</button>
-              <button class="btn btn-primary" id="next2" disabled>Continue <span class="arr">→</span></button>
-            </div>
-          </div>
-
-          <!-- STEP 3 -->
-          <div class="step" data-step="3" style="display:none">
-            <div class="step-label">Step 3 of 3</div>
+            <div class="step-label">Step 2 of 2</div>
             <h2>Where should Kelsey reach you?</h2>
-            <p class="sub">Kelsey will review your request and confirm the call by email.</p>
+            <p class="sub">Kelsey will review your request and email you to arrange the call.</p>
             <div class="summary" id="summary3"></div>
             <div class="field" id="f-name"><label for="book-name">Full name</label><input id="book-name" type="text" autocomplete="name" placeholder="Jamie Rivera" /><div class="msg">Please enter your name.</div></div>
             <div class="field" id="f-email"><label for="book-email">Email</label><input id="book-email" type="email" autocomplete="email" placeholder="you@email.com" /><div class="msg">Please enter a valid email.</div></div>
@@ -238,11 +202,11 @@
           </div>
 
           <!-- CONFIRM -->
-          <div class="step" data-step="4" style="display:none">
+          <div class="step" data-step="3" style="display:none">
             <div class="confirm">
               <div class="big-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
               <h2>Request received! 🎉</h2>
-              <p id="confirmLine">Kelsey will review your preferred time and confirm the call by email.</p>
+              <p id="confirmLine">Kelsey will email you to arrange the call.</p>
               <div class="recap" id="recap"></div>
               <div class="book-nav" style="margin-top:22px">
                 <a class="btn btn-ghost back" href="index.html">Back to home</a>
@@ -279,7 +243,8 @@
         <p>Get free tips, recipes &amp; motivation.</p>
         <div class="socials">
           <a href="https://www.instagram.com/holdenhealthllc" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a>
-          <a href="https://www.facebook.com/holdenhealthllc/" target="_blank" rel="noopener" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 8h2V5h-2a3 3 0 0 0-3 3v2H9v3h2v6h3v-6h2l1-3h-3V8.5A.5.5 0 0 1 14 8Z" stroke-linejoin="round"/></svg></a>
+          <a href="https://www.facebook.com/share/1GLhhhQx8F/?mibextid=wwXIfr" target="_blank" rel="noopener" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 8h2V5h-2a3 3 0 0 0-3 3v2H9v3h2v6h3v-6h2l1-3h-3V8.5A.5.5 0 0 1 14 8Z" stroke-linejoin="round"/></svg></a>
+          <a href="https://venmo.com/u/holdenhealthllc" target="_blank" rel="noopener" aria-label="Venmo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 5h4l1 8c1.8-2.5 3-5 3.2-8H18c-.2 5.2-4.2 11.8-7.5 14H7.8L6 5Z" stroke-linejoin="round"/></svg></a>
           <a href="mailto:HoldenHealth.Coaching@gmail.com" aria-label="Email"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
         </div>
       </div>
@@ -293,47 +258,10 @@
 
 <script src="site.js"></script>
 <script>
-// ── Booking flow (3 steps → confirmation) ──
+// ── Booking flow (2 steps → confirmation) ──
 (function () {
-  var state = { goal: null, date: null, time: null, name: '', email: '', phone: '', note: '' };
+  var state = { goal: null, name: '', email: '', phone: '', note: '' };
   var step = 1;
-
-  // build dates: next 8 weekdays
-  var DOW = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-  var MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  var dateRow = document.getElementById('dateRow');
-  var days = [];
-  var d = new Date(); d.setHours(0,0,0,0);
-  while (days.length < 8) {
-    d.setDate(d.getDate() + 1);
-    var wd = d.getDay();
-    if (wd === 0 || wd === 6) continue;
-    days.push(new Date(d));
-  }
-  days.forEach(function (day) {
-    var el = document.createElement('button');
-    el.className = 'date'; el.type = 'button';
-    el.innerHTML = '<div class="dow">' + DOW[day.getDay()] + '</div><div class="dnum">' + day.getDate() + '</div><div class="mon">' + MON[day.getMonth()] + '</div>';
-    el.addEventListener('click', function () {
-      dateRow.querySelectorAll('.date').forEach(function (x){x.classList.remove('sel');});
-      el.classList.add('sel');
-      state.date = DOW[day.getDay()] + ', ' + MON[day.getMonth()] + ' ' + day.getDate();
-      checkStep2();
-    });
-    dateRow.appendChild(el);
-  });
-
-  var TIMES = ['7:00 AM','9:00 AM','11:00 AM','12:30 PM','3:00 PM','5:30 PM'];
-  var timeRow = document.getElementById('timeRow');
-  TIMES.forEach(function (t) {
-    var el = document.createElement('button');
-    el.className = 'time'; el.type = 'button'; el.textContent = t;
-    el.addEventListener('click', function () {
-      timeRow.querySelectorAll('.time').forEach(function (x){x.classList.remove('sel');});
-      el.classList.add('sel'); state.time = t; checkStep2();
-    });
-    timeRow.appendChild(el);
-  });
 
   // step 1 options
   document.querySelectorAll('#goalOpts .opt').forEach(function (opt) {
@@ -343,8 +271,6 @@
       document.getElementById('next1').disabled = false;
     });
   });
-
-  function checkStep2(){ document.getElementById('next2').disabled = !(state.date && state.time); }
 
   function setProg() {
     document.querySelectorAll('.book-prog .seg').forEach(function (s) {
@@ -361,8 +287,7 @@
     setProg();
   }
 
-  document.getElementById('next1').addEventListener('click', function () { show(2); });
-  document.getElementById('next2').addEventListener('click', function () { renderSummary(); show(3); });
+  document.getElementById('next1').addEventListener('click', function () { renderSummary(); show(2); });
   document.querySelectorAll('[data-back]').forEach(function (b) {
     if (b.tagName === 'BUTTON') b.addEventListener('click', function () { show(step - 1); });
   });
@@ -370,9 +295,7 @@
   function renderSummary() {
     var s = document.getElementById('summary3');
     s.innerHTML =
-      '<span class="schip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5" stroke-linecap="round" stroke-linejoin="round"/></svg>' + state.goal + '</span>' +
-      '<span class="schip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 2v3M16 2v3M3 9h18M5 5h14a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Z"/></svg>' + state.date + '</span>' +
-      '<span class="schip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2" stroke-linecap="round" stroke-linejoin="round"/></svg>' + state.time + '</span>';
+      '<span class="schip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5" stroke-linecap="round" stroke-linejoin="round"/></svg>' + state.goal + '</span>';
   }
 
   function valEmail(v){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
@@ -394,8 +317,6 @@
     var data = new URLSearchParams({
       'form-name': 'consultation-request',
       goal: state.goal,
-      'preferred-date': state.date,
-      'preferred-time': state.time + ' ET',
       name: state.name,
       email: state.email,
       phone: state.phone,
@@ -408,16 +329,16 @@
     }).then(function (response) {
       if (!response.ok) throw new Error('Submission failed');
       document.getElementById('confirmLine').textContent =
-        'Thanks, ' + name.split(' ')[0] + '! Kelsey will review your preferred time and reply to ' + email + ' to confirm.';
+        'Thanks, ' + name.split(' ')[0] + '! Kelsey will reply to ' + email + ' to arrange the call.';
       var recap = document.getElementById('recap');
       recap.textContent = '';
-      [['Focus', state.goal], ['Preferred time', state.date + ' · ' + state.time + ' ET'], ['Format', 'Free 20-minute call'], ['Reply to', email]].forEach(function (item) {
+      [['Focus', state.goal], ['Format', 'Free 20-minute call'], ['Reply to', email]].forEach(function (item) {
         var row = document.createElement('div'); row.className = 'row';
         var label = document.createElement('span'); label.textContent = item[0];
         var value = document.createElement('b'); value.textContent = item[1];
         row.appendChild(label); row.appendChild(value); recap.appendChild(row);
       });
-      show(4);
+      show(3);
     }).catch(function () {
       button.disabled = false;
       button.textContent = 'Try sending again';

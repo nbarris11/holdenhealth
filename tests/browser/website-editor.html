@@ -1,0 +1,62 @@
+<!doctype html><meta charset="utf-8"><title>Website editor regression checks</title>
+<button id="run">Run all pages</button><pre id="results">Ready</pre><iframe title="Test page" style="width:1280px;height:850px"></iframe>
+<script>
+const frame=document.querySelector('iframe'); const results=document.querySelector('#results');
+const pages=['index.html','coaching.html','about.html','resources.html','contact.html','fitness-coaching.html','personal-training.html','backup-plan.html','nutrition-coaching.html','book.html','wednesday-reset.html','quiz.html','recipes.html','20-minute-strength-workout.html','beginners-guide-to-lifting.html','get-back-on-track.html','protein-habit.html','eating-out-with-your-goals.html','blog-all-or-nothing.html','wednesday-note.html','privacy.html','terms.html','disclaimer.html','404.html'];
+let items=[],selection=null,featuredProgramClicks=0;
+// Capture only the editor transport in this same-origin test harness. The iframe
+// runs the unchanged production script and uses real DOM clicks and rendering.
+window.postMessage=function(message){if(message.type==='holden-health-editor-inventory')items=message.items;if(message.type==='holden-health-editor-selection')selection=message.selection;if(message.type==='holden-health-editor-featured-program')featuredProgramClicks++;};
+function send(data){frame.contentWindow.dispatchEvent(new MessageEvent('message',{origin:'https://portal.holden.health',source:window,data}));}
+function preview(overrides){send({type:'holden-health-editor-preview',content:{visual_overrides:JSON.stringify(overrides)}});}
+const tick=()=>new Promise(r=>setTimeout(r,30));
+function assert(ok,message){if(!ok)throw Error(message);}
+async function load(page){items=[]; frame.src='/'+page+'?holden-editor=1';const until=Date.now()+15000;while(Date.now()<until){await tick();const d=frame.contentDocument;if(d&&d.location.pathname==='/'+page&&d.body?.classList.contains('holden-visual-editing')&&items.length)return;}throw Error(page+': editor did not become ready');}
+async function run(){
+ results.textContent='Running…'; let total=0; const lines=[];
+ try {
+ await load('coaching.html');
+ featuredProgramClicks=0;
+ const featuredButton=frame.contentDocument.querySelector('[data-featured-program] .btn');
+ assert(featuredButton,'featured program button missing');
+ featuredButton.click();
+ assert(featuredProgramClicks===1,'featured program click did not open its editor');
+ assert(frame.contentDocument.querySelector('[data-featured-program] .btn'),'featured program click left the preview');
+ lines.push('Featured program click opens its editor — PASS');
+ const promo={id:'qa-preview',name:'Draft program',starts_on:'2026-12-01',ends_on:'2026-12-19',format:'all-classes',first_price_cents:13900,second_price_cents:9900,class_times:[],headline:'Private draft headline',body:'Private draft invitation',button:'Draft button'};
+ send({type:'holden-health-editor-preview',review:true,requestId:1,content:{featured_program:promo}});
+ assert(frame.contentDocument.querySelector('[data-site-content="mini_heading"]').textContent==='Private draft headline','promotion draft did not render');
+ assert(!frame.contentDocument.body.classList.contains('holden-visual-editing'),'review kept editing controls');
+ const before=featuredProgramClicks;frame.contentDocument.querySelector('[data-featured-program] .btn').click();assert(featuredProgramClicks===before,'review opened edit controls');
+ send({type:'holden-health-editor-preview',review:false,requestId:2,content:{featured_program:promo}});
+ assert(frame.contentDocument.body.classList.contains('holden-visual-editing'),'edit mode did not return');
+ lines.push('Private promotion preview, clean review, blocked navigation, return to edit — PASS');
+ for(const page of pages){
+ await load(page); const d=frame.contentDocument; assert(items.length>0,page+': no inventory');
+ // Independently walk every text node, rather than relying on the inventory to
+ // define its own coverage. Ignore non-content and the separate shared header.
+ const walker=d.createTreeWalker(d.body,4);let node;let count=0;
+ while(node=walker.nextNode()){
+ if(!node.textContent.trim())continue;const el=node.parentElement;
+ if(el.closest('script,style,noscript,svg,.nav,.mobile-menu,.skip-link,textarea,[data-holden-section-id],[data-featured-program]'))continue;
+ assert(items.some(item=>item.text!==undefined && d.querySelector(item.selector)===el),page+': missing text '+node.textContent.slice(0,65));count++;
+ }
+ for(const item of items){const el=d.querySelector(item.selector);assert(el,page+': invalid selector');selection=null;el.click();assert(selection&&selection.selector===item.selector,page+': not selectable '+item.summary);}
+ const image=d.querySelector('main img,section img');if(image)assert(items.some(i=>i.kind==='image'&&d.querySelector(i.selector)===image),page+': image missing');
+ total+=count;lines.push(page+': '+count+' text parts, '+items.length+' editable items — PASS');results.textContent=lines.join('\n');
+ }
+ await load('coaching.html');const d=frame.contentDocument;
+ const p=d.createElement('p');p.id='qa-mixed';p.innerHTML='Before <a href="/about.html">a linked <strong>phrase</strong></a> after <em>emphasis</em>.';d.querySelector('main,section').append(p);await tick();
+ const first=items.find(i=>i.text==='Before');assert(first,'new mixed text missing');const link=p.querySelector('a');const original=link;
+ preview([{selector:first.selector,text:'Changed before'}]);assert(link===original&&p.querySelector('a')===original,'link replaced');assert(p.textContent.includes('Changed before a linked phrase after emphasis.'),'spacing changed');
+ preview([]);assert(p.textContent==='Before a linked phrase after emphasis.','reset failed');
+ const state=d.createElement('div');state.id='qa-state';d.body.append(state);state.innerHTML='<h2>First dynamic step</h2>';await tick();const step=items.find(i=>i.text==='First dynamic step');assert(step,'dynamic step missing');preview([{selector:step.selector,text:'Edited first step'}]);assert(state.textContent==='Edited first step','dynamic preview failed');
+ state.innerHTML='<h2>Second dynamic step</h2>';await tick();assert(state.textContent==='Second dynamic step','edit leaked into another step');state.innerHTML='<h2>First dynamic step</h2>';await tick();assert(state.textContent==='Edited first step','dynamic edit did not reapply');preview([]);assert(state.textContent==='First dynamic step','dynamic reset failed');
+ await load('contact.html');const field=items.find(i=>i.kind==='input');assert(field,'input missing');const input=frame.contentDocument.querySelector(field.selector);const originalPlaceholder=input.getAttribute('placeholder');preview([{selector:field.selector,placeholder:'Your name here'}]);assert(input.getAttribute('placeholder')==='Your name here','placeholder update failed');preview([]);assert(input.getAttribute('placeholder')===originalPlaceholder,'placeholder reset failed');
+ let blocked=false;try{await frame.contentWindow.fetch('/qa-do-not-submit',{method:'POST'});}catch(_){blocked=true;}assert(blocked,'preview allowed a write request');
+ lines.push('Mixed inline text, preserved links and whitespace, preview/reset, dynamic state isolation/reapply, and placeholders — PASS');
+ lines.push('PASS: '+pages.length+' pages, '+total+' text parts covered');results.textContent=lines.join('\n');
+ }catch(error){results.textContent+='\nFAIL: '+error.message;}
+}
+document.querySelector('#run').onclick=run;
+</script>
