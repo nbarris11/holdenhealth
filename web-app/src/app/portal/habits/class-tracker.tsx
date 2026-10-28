@@ -4,7 +4,6 @@ import { useState, useTransition } from "react";
 import { addDays, dateLabel } from "@/lib/challenge";
 import { habitCounts, weekDates, type HabitMark, type HabitWeek } from "@/lib/class-habits";
 import { saveHabitWeek, setHabitMark } from "./actions";
-import { SIX_WEEK_CHECK_IN_URL } from "@/lib/check-in";
 import type { HabitComment } from "@/lib/habit-comments";
 import HabitComments from "./habit-comments";
 
@@ -84,7 +83,6 @@ export default function ClassTracker({ enrollmentId, sessionName, startsOn, ends
         {editing && <button type="button" className="member-button secondary" onClick={() => setEditing(false)}>Cancel</button>}
       </form>}
       <p role="status" aria-live="polite">{message}</p>
-      {editable && !relationshipId && <p><a className="member-button secondary" href={SIX_WEEK_CHECK_IN_URL} target="_blank" rel="noreferrer">Complete Kelsey’s weekly check-in ↗</a></p>}
     </section>
     {revisions.length > 0 && <section className="member-card"><h2>Previous habit versions</h2><p>These saved records show your habits and checkmarks before an edit.</p>{revisions.map(revision => <details key={revision.id}><summary>Week {weeks.find(w => w.id === revision.week_id)?.week_number} · version {revision.version}</summary><ul>{revision.habits.map((habit, index) => <li key={index}>{habit}: {revision.marks.filter(m => m.habit_index === index).length} checkmarks</li>)}</ul></details>)}</section>}
     {weeks.length > 1 && <section className="member-card class-habit-history"><h2>Earlier weeks</h2>{weeks.filter(week => week.week_number < weekNumber - 1).reverse().map(week => {

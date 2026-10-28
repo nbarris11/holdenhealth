@@ -7,7 +7,6 @@ type Program = { id: string; name: string; status: string; capacity: number; sta
 type Enrollment = { id: string; status: string; returning_member: boolean; weekly_commitment: number | null };
 type Payment = { enrollment_id: string; status: string; amount_cents: number; method: string | null };
 type Request = { id: string; status: string };
-type CheckIn = { enrollment_id: string; week_number: number; reviewed_at: string | null };
 type Intake = { enrollment_id: string; reviewed_at: string | null };
 type Meeting = { id: string; title: string; starts_at: string; cancelled: boolean; drop_in_capacity: number };
 type Selection = { meeting_id: string };
@@ -19,15 +18,6 @@ const classDate = new Intl.DateTimeFormat("en-US", { weekday: "short", month: "s
 
 function percent(value: number, total: number) {
   return total ? `${Math.round((value / total) * 100)}%` : "—";
-}
-
-function programWeek(program: Program) {
-  const now = new Date();
-  const start = new Date(`${program.starts_on}T12:00:00Z`);
-  const end = new Date(`${program.ends_on}T12:00:00Z`);
-  if (now < start) return 1;
-  const weeks = Math.max(1, Math.ceil((end.getTime() - start.getTime() + 86400000) / 604800000));
-  return Math.min(weeks, Math.max(1, Math.floor((now.getTime() - start.getTime()) / 604800000) + 1));
 }
 
 function SummaryStat({ label, value, detail, attention = false }: { label: string; value: string | number; detail: string; attention?: boolean }) {
@@ -69,24 +59,20 @@ export default async function ReportsPage({ searchParams }: ReportsPageProps) {
   const enrollmentIds = enrollments.map((row) => row.id);
   const meetingIds = meetings.map((row) => row.id);
 
-  const [paymentResult, checkInResult, intakeResult, selectionResult, dropInResult] = await Promise.all([
+  const [paymentResult, intakeResult, selectionResult, dropInResult] = await Promise.all([
     enrollmentIds.length ? supabase.from("payment_records").select("enrollment_id,status,amount_cents,method").in("enrollment_id", enrollmentIds) : Promise.resolve({ data: [], error: null }),
-    enrollmentIds.length ? supabase.from("check_ins").select("enrollment_id,week_number,reviewed_at").in("enrollment_id", enrollmentIds) : Promise.resolve({ data: [], error: null }),
     enrollmentIds.length ? supabase.from("member_intakes").select("enrollment_id,reviewed_at").in("enrollment_id", enrollmentIds) : Promise.resolve({ data: [], error: null }),
     meetingIds.length ? supabase.from("attendance_selections").select("meeting_id").in("meeting_id", meetingIds) : Promise.resolve({ data: [], error: null }),
     meetingIds.length ? supabase.from("drop_in_bookings").select("meeting_id,status").in("meeting_id", meetingIds) : Promise.resolve({ data: [], error: null }),
   ]);
-  if (paymentResult.error || checkInResult.error || intakeResult.error || selectionResult.error || dropInResult.error) throw new Error("Some report details could not be loaded.");
+  if (paymentResult.error || intakeResult.error || selectionResult.error || dropInResult.error) throw new Error("Some report details could not be loaded.");
 
   const payments = (paymentResult.data ?? []) as Payment[];
-  const checkIns = (checkInResult.data ?? []) as CheckIn[];
   const intakes = (intakeResult.data ?? []) as Intake[];
   const selections = (selectionResult.data ?? []) as Selection[];
   const dropIns = (dropInResult.data ?? []) as DropIn[];
   const currentEnrollments = enrollments.filter((row) => new Set(["invited", "active"]).has(row.status));
-  const activeEnrollments = enrollments.filter((row) => row.status === "active");
   const currentEnrollmentIds = new Set(currentEnrollments.map((row) => row.id));
-  const activeEnrollmentIds = new Set(activeEnrollments.map((row) => row.id));
   const paidPayments = payments.filter((row) => row.status === "paid");
   const pendingPayments = payments.filter((row) => row.status === "pending" && currentEnrollmentIds.has(row.enrollment_id));
   const revenue = paidPayments.reduce((sum, row) => sum + row.amount_cents, 0);
@@ -97,10 +83,6 @@ export default async function ReportsPage({ searchParams }: ReportsPageProps) {
   const approvedRequests = requests.filter((row) => row.status === "approved").length;
   const pendingRequests = requests.filter((row) => row.status === "pending").length;
   const declinedRequests = requests.filter((row) => row.status === "declined").length;
-  const weekNumber = programWeek(program);
-  const submittedThisWeek = new Set(checkIns.filter((row) => row.week_number === weekNumber && activeEnrollmentIds.has(row.enrollment_id)).map((row) => row.enrollment_id)).size;
-  const missingThisWeek = program.status === "active" ? Math.max(0, activeEnrollments.length - submittedThisWeek) : 0;
-  const reviewedCheckIns = checkIns.filter((row) => row.reviewed_at).length;
   const currentIntakes = intakes.filter((row) => currentEnrollmentIds.has(row.enrollment_id));
   const reviewedIntakes = currentIntakes.filter((row) => row.reviewed_at).length;
   const intakesWaitingReview = currentIntakes.filter((row) => !row.reviewed_at).length;
@@ -121,7 +103,6 @@ export default async function ReportsPage({ searchParams }: ReportsPageProps) {
     { count: pendingRequests, label: "registration requests waiting", detail: "Review", href: `${peopleHref}#requests` },
     { count: intakesWaitingReview, label: `intake${intakesWaitingReview === 1 ? "" : "s"} waiting for review`, detail: "Review", href: `${peopleHref}#intakes` },
     { count: missingIntakes, label: `intake${missingIntakes === 1 ? "" : "s"} not submitted`, detail: "View members", href: `${peopleHref}#members` },
-    { count: missingThisWeek, label: `week ${weekNumber} check-ins missing`, detail: "View members", href: `${peopleHref}#members` },
     { count: waitingDropIns, label: "drop-in requests waiting", detail: "Review", href: "/admin/classes#bookings" },
   ].filter((item) => item.count > 0);
 
@@ -137,7 +118,6 @@ export default async function ReportsPage({ searchParams }: ReportsPageProps) {
       <SummaryStat label="Outstanding" value={currency.format(outstanding / 100)} detail={`${pendingPayments.length} pending`} attention={pendingPayments.length > 0} />
       <SummaryStat label="Spots filled" value={`${currentEnrollments.length} / ${program.capacity}`} detail={`${Math.max(0, program.capacity - currentEnrollments.length)} available`} />
       <SummaryStat label="Returning" value={returning} detail={percent(returning, currentEnrollments.length)} />
-      <SummaryStat label="Check-ins this week" value={`${submittedThisWeek} / ${activeEnrollments.length}`} detail={`${missingThisWeek} missing`} attention={missingThisWeek > 0} />
     </div></section>
 
     <div className="reports-grid">
@@ -151,10 +131,7 @@ export default async function ReportsPage({ searchParams }: ReportsPageProps) {
         { label: "3-class plan", value: threeDay },
       ]} /></section>
 
-      <section id="engagement" className="report-section report-data-block"><div className="reports-section-header"><div><h2>Engagement</h2><p>Member and coach follow-through</p></div><Link href={`${peopleHref}#check-ins`}>Open check-ins →</Link></div><DataList rows={[
-        { label: `Week ${weekNumber} check-ins submitted`, value: `${submittedThisWeek} / ${activeEnrollments.length}` },
-        { label: "Week check-ins missing", value: missingThisWeek },
-        { label: "All check-ins reviewed", value: `${reviewedCheckIns} / ${checkIns.length}` },
+      <section id="engagement" className="report-section report-data-block"><div className="reports-section-header"><div><h2>Engagement</h2><p>Member and coach follow-through</p></div><Link href={`${peopleHref}#intakes`}>Open intakes →</Link></div><DataList rows={[
         { label: "Current member intakes", value: currentIntakes.length },
         { label: "Intakes reviewed", value: reviewedIntakes },
         { label: "Intakes waiting for review", value: intakesWaitingReview },

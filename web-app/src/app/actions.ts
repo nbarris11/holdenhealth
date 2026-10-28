@@ -171,24 +171,6 @@ export async function setAttendanceSelection(formData: FormData) {
   revalidateHub();
 }
 
-export async function submitWeeklyCheckIn(formData: FormData) {
-  const session = await verifySession();
-  const enrollmentId = uuidField(formData, "enrollmentId");
-  const weekNumber = Math.max(1, Math.min(12, Number(formData.get("weekNumber")) || 1));
-  const supabase = await createClient();
-  const { data: enrollment } = await supabase.from("enrollments").select("id").eq("id", enrollmentId).eq("member_id", session.userId).eq("status", "active").maybeSingle();
-  if (!enrollment) throw new Error("This enrollment is not active.");
-  const { error } = await supabase.from("check_ins").insert({
-    enrollment_id: enrollmentId,
-    week_number: weekNumber,
-    went_well: requiredText(formData, "wentWell", 2500),
-    did_not_go_well: requiredText(formData, "didNotGoWell", 2500),
-    upcoming_goal: requiredText(formData, "upcomingGoal", 2500),
-    support_needed: requiredText(formData, "supportNeeded", 2500),
-  });
-  if (error) throw new Error(error.code === "23505" ? "This week's check-in was already submitted." : "We could not save your check-in.");
-  revalidateHub();
-}
 
 export async function inviteMember(formData: FormData) {
   const admin = await verifyAdmin();
@@ -968,17 +950,6 @@ export async function reviewMemberIntake(formData: FormData) {
   redirect(`/admin/members/${enrollmentId}?message=${approvalEmailSent ? "intake-reviewed" : "intake-reviewed-email-failed"}`);
 }
 
-export async function respondToCheckIn(formData: FormData) {
-  const admin = await verifyAdmin();
-  const supabase = await createClient();
-  const { error } = await supabase.from("check_ins").update({
-    coach_response: requiredText(formData, "coachResponse", 3000),
-    reviewed_at: new Date().toISOString(),
-    reviewed_by: admin.userId,
-  }).eq("id", uuidField(formData, "checkInId"));
-  if (error) throw new Error("We could not save the response.");
-  revalidateHub();
-}
 
 function websiteLink(formData: FormData, name: string) {
   const value = requiredText(formData, name, 700);

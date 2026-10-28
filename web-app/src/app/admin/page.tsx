@@ -15,10 +15,9 @@ export default async function AdminHomePage() {
   const { data: session } = await supabase.from("sessions").select("id,name,capacity").in("status", ["enrolling", "active"]).order("starts_on").limit(1).maybeSingle();
   if (!session) return <main className="app-shell admin-shell workspace-page"><section className="panel calm-empty"><span className="eyebrow">Today</span><h1>No current program.</h1><p>Open Settings when you are ready to prepare the next Holden Health program.</p><Link className="button primary" href="/admin/settings">Open program settings</Link></section></main>;
 
-  const [{ data: requests }, { data: inquiries }, { data: checkIns }, { data: dropIns }, { data: pendingIntakes }, { data: enrollmentData }, { data: meetingData }, { data: workoutLogs }] = await Promise.all([
+  const [{ data: requests }, { data: inquiries }, { data: dropIns }, { data: pendingIntakes }, { data: enrollmentData }, { data: meetingData }, { data: workoutLogs }] = await Promise.all([
     supabase.from("registration_requests").select("id").eq("session_id", session.id).eq("status", "pending"),
     supabase.from("website_inquiries").select("id").eq("status", "pending"),
-    supabase.from("check_ins").select("id").is("reviewed_at", null),
     supabase.from("drop_in_bookings").select("id").eq("status", "requested"),
     supabase.from("member_intakes").select("enrollment_id").is("reviewed_at", null),
     supabase.from("enrollments").select("id,member_id,status").eq("session_id", session.id).in("status", ["invited", "active"]),
@@ -42,7 +41,6 @@ export default async function AdminHomePage() {
     { count: inquiries?.length ?? 0, label: "website inquiry", plural: "website inquiries", href: "/admin/people#inquiries", action: "Reply" },
     { count: requests?.length ?? 0, label: "registration request", plural: "registration requests", href: `${peopleHref}#requests`, action: "Review" },
     { count: pendingIntakes?.length ?? 0, label: "intake ready for review", plural: "intakes ready for review", href: "/admin/people#intakes", action: "Review" },
-    { count: checkIns?.length ?? 0, label: "member check-in", plural: "member check-ins", href: "/admin/people#check-ins", action: "Respond" },
     { count: dropIns?.length ?? 0, label: "drop-in request", plural: "drop-in requests", href: "/admin/classes#bookings", action: "Confirm" },
     { count: paymentNeeded, label: "payment to follow up on", plural: "payments to follow up on", href: `${peopleHref}#members`, action: "View" },
     { count: (workoutLogs ?? []).filter((log) => !log.workout_feedback).length, label: "workout ready for feedback", plural: "workouts ready for feedback", href: "/admin/training", action: "Coach" },

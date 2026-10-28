@@ -1,14 +1,13 @@
 import { setAttendanceSelection, signOut } from "@/app/actions";
 import { stopMemberPreview } from "@/app/admin/preview-actions";
 import { verifySession } from "@/lib/auth";
-import { SIX_WEEK_CHECK_IN_URL } from "@/lib/check-in";
 import { createClient } from "@/lib/supabase/server";
 import { weeklyScheduleLabel, weeklyScheduleSlots } from "@/lib/class-schedule";
 import { cookies } from "next/headers";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { memberEnrollments } from "@/lib/member-enrollments";
-import { chooseEnrollment, sessionPhase, sessionWeek, sundayFor, classVisible, ARRIVAL_DIRECTIONS } from "@/lib/member-session";
+import { chooseEnrollment, sessionPhase, sessionWeek, classVisible, ARRIVAL_DIRECTIONS } from "@/lib/member-session";
 import { detroitToday } from "@/lib/challenge";
 
 type SessionSummary = {
@@ -90,7 +89,6 @@ export default async function SessionPage({ searchParams }: { searchParams: Prom
   const publishedResources = (resources ?? []) as Resource[];
   const phase = sessionPhase(program, today);
   const weekNumber = sessionWeek(program.starts_on, today);
-  const dueDate = sundayFor(phase === "upcoming" ? program.starts_on : today);
   const paid = ["paid", "waived", "credited"].includes(payment?.status ?? "");
   const ready = Boolean(intake?.reviewed_at && paid && enrollment.status === "active" && (!enrollment.risk_agreement_required || agreement));
   const sessionHref = `/portal/session?enrollment=${enrollment.id}`;
@@ -116,10 +114,10 @@ export default async function SessionPage({ searchParams }: { searchParams: Prom
       {isMemberPreview ? <aside className="preview-banner"><strong>Admin preview: viewing the portal as {profile?.full_name || "this member"}.</strong><span>This view is read-only.</span></aside> : null}
 
       {!isMemberPreview && enrollmentRows.length > 1 && <nav className="member-programs" aria-label="Your class sessions">{enrollmentRows.map(row => <Link className="member-pill" aria-current={row.id === enrollment.id ? "page" : undefined} key={row.id} href={`/portal/session?enrollment=${row.id}`}>{row.sessions?.name}</Link>)}</nav>}
-      {phase !== "finished" && !intake && !isMemberPreview ? <section className="panel onboarding-callout"><div><span className="eyebrow">One step before you begin</span><h2>Complete your private new member intake.</h2><p>Kelsey will review your goals and health information before you participate.</p></div><Link className="button primary" href={`/portal/intake?enrollment=${enrollment.id}`}>Start my intake</Link></section> : intake && enrollment.risk_agreement_required && !agreement ? <section className="panel onboarding-callout"><div><span className="eyebrow">One step before you begin</span><h2>Sign your Assumption of Risk.</h2><p>Your intake is saved. Review the class agreement before participating.</p></div>{!isMemberPreview && <Link className="button primary" href={`/portal/intake?enrollment=${enrollment.id}`}>Review agreement</Link>}</section> : intake && !intake.reviewed_at ? <section className="panel onboarding-callout"><div><span className="eyebrow">Intake received</span><h2>Kelsey is reviewing your answers.</h2><p>{intake.health_review_required ? "Kelsey may reach out privately about one or more health answers before activation." : "Kelsey will confirm when you’re ready to participate."}</p></div><span className="status-pill warning">Review pending</span></section> : intake?.reviewed_at ? <section className="panel onboarding-callout complete"><div><span className="eyebrow">Onboarding complete</span><h2>Your intake has been reviewed.</h2><p>Your ongoing weekly check-ins will appear below while the session is active.</p></div><span className="status-pill success">Intake reviewed</span></section> : null}
+      {phase !== "finished" && !intake && !isMemberPreview ? <section className="panel onboarding-callout"><div><span className="eyebrow">One step before you begin</span><h2>Complete your private new member intake.</h2><p>Kelsey will review your goals and health information before you participate.</p></div><Link className="button primary" href={`/portal/intake?enrollment=${enrollment.id}`}>Start my intake</Link></section> : intake && enrollment.risk_agreement_required && !agreement ? <section className="panel onboarding-callout"><div><span className="eyebrow">One step before you begin</span><h2>Sign your Assumption of Risk.</h2><p>Your intake is saved. Review the class agreement before participating.</p></div>{!isMemberPreview && <Link className="button primary" href={`/portal/intake?enrollment=${enrollment.id}`}>Review agreement</Link>}</section> : intake && !intake.reviewed_at ? <section className="panel onboarding-callout"><div><span className="eyebrow">Intake received</span><h2>Kelsey is reviewing your answers.</h2><p>{intake.health_review_required ? "Kelsey may reach out privately about one or more health answers before activation." : "Kelsey will confirm when you’re ready to participate."}</p></div><span className="status-pill warning">Review pending</span></section> : intake?.reviewed_at ? <section className="panel onboarding-callout complete"><div><span className="eyebrow">Onboarding complete</span><h2>Your intake has been reviewed.</h2><p>You’re all set for your session.</p></div><span className="status-pill success">Intake reviewed</span></section> : null}
 
       <nav className="section-nav" aria-label="Member sections">
-        <a href="#overview">Overview</a><Link href={`/portal/habits?enrollment=${enrollment.id}`}>Weekly habits</Link><a href="#class-calendar">Class calendar</a>{personalTraining ? <Link href="/portal/training">Personal training</Link> : null}<a href="#check-in">Check-in</a>{publishedResources.length > 0 ? <a href="#resources">Resources</a> : null}<a href="#details">Session details</a>
+        <a href="#overview">Overview</a><Link href={`/portal/habits?enrollment=${enrollment.id}`}>Weekly habits</Link><a href="#class-calendar">Class calendar</a>{personalTraining ? <Link href="/portal/training">Personal training</Link> : null}{publishedResources.length > 0 ? <a href="#resources">Resources</a> : null}<a href="#details">Session details</a>
       </nav>
 
       {personalTraining ? <section className="panel personal-training-callout"><div><span className="eyebrow">Your one-to-one plan</span><h2>{personalTraining.primary_goal || "Personal training that works around your real week."}</h2><p>Open your next workout, choose the version that fits today, plan your week with Kelsey, and see Kelsey&apos;s feedback.</p></div><Link className="button primary" href="/portal/training">Open personal training</Link></section> : null}
@@ -212,19 +210,9 @@ export default async function SessionPage({ searchParams }: { searchParams: Prom
       <div className="dashboard-grid summary-grid">
         <section className="panel"><span className="eyebrow">Session enrollment</span><h2>Your session place</h2><p>{program.name}. There are no drop-ins at this time. Contact Kelsey about joining after a session starts.</p></section>
         <section className="panel"><span className="eyebrow">Latest update</span>{(announcements as Announcement[] | null)?.[0] ? <><h2>{(announcements as Announcement[])[0].title}</h2><p>{(announcements as Announcement[])[0].body}</p></> : <><h2>You’re all caught up.</h2><p>Session announcements will appear here.</p></>}</section>
-        <section className="panel accent-panel"><span className="eyebrow">Need Kelsey?</span><h2>Questions count.</h2><p>Reach out between check-ins when you need clarification or support.</p><a className="text-link" href="mailto:HoldenHealth.Coaching@gmail.com">Email Holden Health →</a></section>
+        <section className="panel accent-panel"><span className="eyebrow">Need Kelsey?</span><h2>Questions count.</h2><p>Reach out anytime you need clarification or support.</p><a className="text-link" href="mailto:HoldenHealth.Coaching@gmail.com">Email Holden Health →</a></section>
       </div>
 
-      <section id="check-in" className="section-block split-layout">
-        <div className="panel">
-          <span className="eyebrow">{phase === "current" ? `Week ${weekNumber} check-in` : phase === "upcoming" ? "Your first weekly check-in" : "Session reflections"}</span>
-          <h2>Take a few honest minutes.</h2>
-          <p>Reflect on your goal, share what worked, and choose one small action for the week ahead. If you haven’t received your Goal-to-Action sheet, ask Kelsey for a copy.</p>
-          {phase === "current" && (ready || isMemberPreview) ? <a className="button primary" href={SIX_WEEK_CHECK_IN_URL} target="_blank" rel="noreferrer">Open my weekly check-in ↗</a> : <><p>{phase === "upcoming" ? `Your first check-in is due ${dateFormatter.format(new Date(`${dueDate}T12:00:00Z`))}. It opens after your session begins and your participation is confirmed.` : phase === "finished" ? "Weekly check-ins for this session have finished. You can keep saving personal wins in Progress." : "Your weekly check-in opens when Kelsey confirms your intake, payment, and participation."}</p></>}
-          <p><Link className="text-link" href={`/portal/habits?enrollment=${enrollment.id}`}>{isMemberPreview ? "Preview weekly habits →" : "Track my weekly habits →"}</Link></p>
-        </div>
-        <aside className="panel compact-history"><span className="eyebrow">{phase === "finished" ? "Keep your story going" : phase === "upcoming" ? "During your session" : `Due ${dateFormatter.format(new Date(`${dueDate}T12:00:00Z`))}`}</span><h2>Your answers go to Kelsey.</h2><p>During your session, complete this once each week. The check-in opens in Google Forms and Kelsey reviews those answers separately. They do not automatically appear in your portal history; you can save a personal win in Progress too.</p><div className="soft-note">If you’re subscribed to member emails, you’ll also receive a Sunday reminder while your session is running.</div></aside>
-      </section>
 
       {publishedResources.length > 0 ? <section id="resources" className="section-block">
         <div className="section-heading"><div><span className="eyebrow">Member resources</span><h2>Useful, not overwhelming.</h2></div><p>Kelsey’s approved session, nutrition, habit, and recovery guidance.</p></div>
