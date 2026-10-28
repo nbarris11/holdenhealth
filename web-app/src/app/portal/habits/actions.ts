@@ -47,7 +47,7 @@ export async function saveHabitWeek(form: FormData) {
   if (error) return { error: error.code === "23505" ? "This week is already set up. Reload to see it." : "Your habits did not save. Please try again." };
   queueCoachActivityDelivery();
   revalidatePath("/portal/habits");
-  revalidatePath("/portal/today");
+  revalidatePath("/portal/workouts");
   return { success: "Your habits are ready for this week." };
 }
 
@@ -66,6 +66,6 @@ export async function setHabitMark(input: { weekId: string; day: string; habitIn
   if (result.error) return { error: "That checkmark did not save. Please try again." };
   queueCoachActivityDelivery();
   revalidatePath("/portal/habits");
-  revalidatePath("/portal/today");
+  revalidatePath("/portal/workouts");
   return { success: "Progress saved." };
 }

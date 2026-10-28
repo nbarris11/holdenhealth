@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { memberData } from "@/lib/member-data";
+import MemberAlerts from "@/components/member-alerts";
 import {
   EmptyWorkouts,
   WorkoutCard,
@@ -32,6 +33,7 @@ export default async function Workouts({
       <p className="member-muted">
         A little stronger. A little more you. Find your session.
       </p>
+      <MemberAlerts challenge={p.challenge} />
       <ProgramPicker
         joined={d.joined}
         current={d.challenge}

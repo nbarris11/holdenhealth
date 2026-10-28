@@ -2,12 +2,8 @@
 import Link from "next/link";
 import { usePathname, useSearchParams, useRouter } from "next/navigation";
 import { useEffect } from "react";
-const items = [
-  { href: "/portal/today", label: "Today", icon: "sun" },
-  { href: "/portal/workouts", label: "Workouts", icon: "work" },
-  { href: "/portal/progress", label: "Progress", icon: "chart" },
-  { href: "/portal/more", label: "More", icon: "more" },
-];
+import { memberNavItems } from "@/lib/member-nav-items";
+import { useChatUnread } from "./chat-nav-link";
 function Icon({ name }: { name: string }) {
   return (
     <svg
@@ -20,36 +16,30 @@ function Icon({ name }: { name: string }) {
       strokeLinecap="round"
       aria-hidden="true"
     >
-      {name === "sun" ? (
-        <>
-          <circle cx="12" cy="12" r="4" />
-          <path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5" />
-        </>
-      ) : name === "work" ? (
+      {name === "work" ? (
         <>
           <rect x="5" y="3" width="14" height="18" rx="3" />
           <path d="m8 9 2 2 5-5M8 15h8m-8 3h5" />
         </>
-      ) : name === "chart" ? (
+      ) : name === "habits" ? (
         <>
-          <path d="M4 20h16M6 16v-4m6 4V5m6 11V9" />
+          <circle cx="12" cy="12" r="9" />
+          <path d="m8 12 3 3 5-6" />
         </>
       ) : (
         <>
-          <circle cx="5" cy="12" r="1" />
-          <circle cx="12" cy="12" r="1" />
-          <circle cx="19" cy="12" r="1" />
+          <path d="M5 5h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H10l-5 4v-4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Z" />
         </>
       )}
     </svg>
   );
 }
-export default function MemberNav({ hasClasses = false }: { hasClasses?: boolean }) {
-  const navigation = hasClasses ? [...items.slice(0, 2), { href: "/portal/session", label: "Classes", icon: "work" }, ...items.slice(2)] : items;
+export default function MemberNav({ canChat, habitUnread }: { canChat: boolean; habitUnread: number }) {
   const path = usePathname(),
     params = useSearchParams(),
     router = useRouter();
   const challenge = params.get("challenge");
+  const chatUnread = useChatUnread(canChat);
   useEffect(() => {
     const refresh = () => router.refresh();
     window.addEventListener("focus", refresh);
@@ -57,22 +47,18 @@ export default function MemberNav({ hasClasses = false }: { hasClasses?: boolean
   }, [router]);
   return (
     <nav className="member-bottom-nav" aria-label="Member app">
-      {navigation.map((item) => {
-        const active =
-          path.startsWith(item.href) ||
-          (item.label === "Today" && path === "/portal/habits") ||
-          (item.label === "More" &&
-            ["/portal/intake", "/portal/training"].some(
-              (p) => path.startsWith(p),
-            ));
+      {memberNavItems({ canChat, habitUnread }).map((item) => {
+        const active = path.startsWith(item.href) || (item.label === "Habits" && path.startsWith("/portal/training/habits"));
+        const badge = item.label === "Messages" ? chatUnread : item.badge ?? 0;
         return (
           <Link
             key={item.href}
-            href={`${item.href}${item.label === "Classes" && params.get("enrollment") ? `?enrollment=${encodeURIComponent(params.get("enrollment")!)}` : challenge ? `?challenge=${encodeURIComponent(challenge)}` : ""}`}
+            href={`${item.href}${challenge && item.label !== "Messages" ? `?challenge=${encodeURIComponent(challenge)}` : ""}`}
             aria-current={active ? "page" : undefined}
           >
             <Icon name={item.icon} />
             <span>{item.label}</span>
+            {badge > 0 ? <span className="member-nav-badge" aria-label={`${badge} new`}>{badge > 99 ? "99+" : badge}</span> : null}
           </Link>
         );
       })}

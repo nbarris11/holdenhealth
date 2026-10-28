@@ -85,7 +85,7 @@ export default async function ChallengePage({
   if (participantError) throw new Error("Unable to load challenge enrollment.");
   const participant = participantData as Participant | null;
   if (participant && !preview)
-    redirect(`/portal/today?challenge=${challenge.id}`);
+    redirect(`/portal/workouts?challenge=${challenge.id}`);
   const [
     { data: markData, error: markError },
     { data: workoutData, error: workoutError },

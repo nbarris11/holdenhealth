@@ -4,11 +4,11 @@ import type { Challenge, Workout } from "@/lib/challenge";
 export function ProgramPicker({
   joined,
   current,
-  destination = "/portal/today",
+  destination = "/portal/workouts",
 }: {
   joined: Challenge[];
   current?: Challenge;
-  destination?: "/portal/today" | "/portal/workouts" | "/portal/progress";
+  destination?: "/portal/workouts" | "/portal/progress";
 }) {
   return joined.length > 1 ? (
     <nav className="member-programs" aria-label="Your challenges">

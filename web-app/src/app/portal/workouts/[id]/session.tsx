@@ -358,7 +358,7 @@ export default function WorkoutSession({
           </Link>
           <Link
             className="member-button secondary"
-            href={demo ? "/demo" : w.session_id ? "/portal/today" : `/portal/today?challenge=${w.challenge_id}`}
+            href={demo ? "/demo" : w.session_id ? "/portal/workouts" : `/portal/workouts?challenge=${w.challenge_id}`}
           >
             Back to Today
           </Link>

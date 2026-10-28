@@ -8,6 +8,6 @@ export default async function Communicate({
   searchParams: Promise<{ conversation?: string }>;
 }) {
   await verifySession();
-  if (!(await hasChatAccess())) redirect("/portal/today");
+  if (!(await hasChatAccess())) redirect("/portal/workouts");
   return <ChatInbox initialConversation={(await searchParams).conversation} />;
 }

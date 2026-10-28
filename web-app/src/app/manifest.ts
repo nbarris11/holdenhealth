@@ -5,7 +5,7 @@ export default function manifest(): MetadataRoute.Manifest {
     name: "Holden Health",
     short_name: "Holden Health",
     description: "Your workouts, programs, and conversations with Kelsey.",
-    start_url: "/portal/today",
+    start_url: "/portal/workouts",
     scope: "/",
     display: "standalone",
     background_color: "#ffffff",

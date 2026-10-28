@@ -1,45 +1,24 @@
 import Link from "next/link";
 import { signOut } from "@/app/actions";
 import { memberData } from "@/lib/member-data";
-import { hasChatAccess } from "@/lib/chat-access";
 export default async function More({
   searchParams,
 }: {
   searchParams: Promise<{ challenge?: string }>;
 }) {
   const d = await memberData((await searchParams).challenge);
-  const canChat = await hasChatAccess();
   const links = [
-    {href:"/portal/renew", title:"Join the next 6-week session", text:"Renew with your existing account, or check your registration and payment status."},
+    { href: "/portal/progress", title: "Progress", text: "Your workout history, session history, and wins." },
     ...(d.hasClasses
-      ? [
-          { href: "/portal/habits", title: "Weekly habits", text: "Choose habits, check off each day, and review your weekly progress." },
-          {
-            href: "/portal/session",
-            title: "Classes & membership",
-            text: "Your calendar, intake, resources, payments, and check-ins.",
-          },
-        ]
+      ? [{ href: "/portal/session", title: "Class calendar & details", text: "Your class calendar, intake, resources, and payments." }]
       : []),
     ...(d.training
-      ? [
-          {
-            href: "/portal/training",
-            title: "Personal training",
-            text: "Your personal plan, workout logs, and coach feedback.",
-          },
-        ]
+      ? [{ href: "/portal/training", title: "Personal training", text: "Your personal plan, appointments, billing, and coach feedback." }]
       : []),
-    {
-      href: "/challenge",
-      title: "Habit challenges",
-      text: "Explore the next challenge or return to your current one.",
-    },
-    ...(canChat ? [{
-      href: "/portal/communicate",
-      title: "Messaging",
-      text: "Message Kelsey privately or catch up with your program group.",
-    }] : []),
+    {href:"/portal/renew", title:"Join the next 6-week session", text:"Renew with your existing account, or check your registration and payment status."},
+    ...(d.participant
+      ? [{ href: "/challenge", title: "Habit challenge", text: "Return to your current challenge." }]
+      : []),
   ];
   return (
     <main className="member-page">

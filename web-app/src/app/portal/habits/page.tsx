@@ -44,11 +44,11 @@ export default async function Habits({
       <span className="member-kicker">Small things, every day</span>
       <h1>Your habits</h1>
       {isPreview && <aside className="preview-banner"><strong>Admin preview · this member’s class habits</strong><span>Read-only checkmarks · you can comment on any day’s habit.</span><form action={stopMemberPreview}><button className="member-button secondary">Return to admin</button></form></aside>}
-      {enrollment && <p><Link className="member-text-link" href={`/portal/session?enrollment=${enrollment.id}`}>← Back to my class program</Link></p>}
+      {enrollment && <p><Link className="member-text-link" href={`/portal/session?enrollment=${enrollment.id}`}>Class calendar & details →</Link></p>}
       {!isPreview && enrollments.length > 1 && <nav className="member-actions" aria-label="Choose class session">{enrollments.map(row => <Link key={row.id} className={`member-button ${row.id === enrollment?.id ? "" : "secondary"}`} href={`/portal/habits?enrollment=${row.id}`}>{row.sessions?.name || "Class session"}</Link>)}</nav>}
       {enrollment && session && <ClassTracker key={`${enrollment.id}-${currentHabitWeek(session.starts_on, session.ends_on, d.today)}`} readOnly={isPreview} enrollmentId={enrollment.id} sessionName={session.name} startsOn={session.starts_on} endsOn={session.ends_on} today={d.today} weekNumber={currentHabitWeek(session.starts_on, session.ends_on, d.today)} weeks={weeks} revisions={revisionResult.data ?? []} marks={(marksResult.data ?? []) as HabitMark[]} comments={(commentResult.data ?? []) as HabitComment[]} commenter={isPreview ? "coach" : "member"} ownerId={ownerId} />}
       {adminRole && !enrollment && <section className="member-card"><h2>{isPreview ? "That member preview is unavailable." : "Preview a member’s weekly habits"}</h2><p>Open a class member in People and choose their member portal preview. Then open Weekly habits in their program.</p><Link className="member-button" href="/admin/people">Open People →</Link></section>}
-      {!isPreview && d.training && <section className="member-card"><h2>Personal training habits</h2><p>Your three habits for this week.</p><Link className="member-button" href="/portal/training/habits">Open my PT habits</Link></section>}
+      {!isPreview && d.training && <><h2>Personal training habits</h2><PersonalHabits memberId={auth.userId} commenter="member" /></>}
       {!isPreview && d.challenge && d.participant ? (
         <><h2>Free challenge habits</h2>
         <Tracker

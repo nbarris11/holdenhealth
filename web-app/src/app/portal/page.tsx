@@ -4,6 +4,6 @@ export default async function PortalPage() {
   redirect(
     (await cookies()).has("holden_admin_enrollment_preview")
       ? "/portal/session"
-      : "/portal/today",
+      : "/portal/workouts",
   );
 }

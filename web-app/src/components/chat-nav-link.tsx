@@ -2,9 +2,10 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import "./chat.css";
-export default function ChatNavLink() {
+export function useChatUnread(enabled = true) {
   const [unread, setUnread] = useState(0);
   useEffect(() => {
+    if (!enabled) return;
     let alive = true;
     const load = async () => {
       try {
@@ -30,7 +31,11 @@ export default function ChatNavLink() {
       clearInterval(timer);
       window.removeEventListener("focus", load);
     };
-  }, []);
+  }, [enabled]);
+  return unread;
+}
+export default function ChatNavLink() {
+  const unread = useChatUnread();
   return (
     <Link href="/portal/communicate" className="chat-nav-link">
       Messaging

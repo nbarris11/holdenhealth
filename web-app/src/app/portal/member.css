@@ -273,7 +273,7 @@
   box-shadow: 0 -6px 24px #24233706;
 }
 .member-bottom-nav a {
-  width: min(25%, 160px);
+  width: min(33.333%, 180px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -720,3 +720,5 @@ details[open] > summary .workout-expand { transform: rotate(45deg); }
 .announcement-body { white-space: pre-wrap; overflow-wrap: anywhere; }
 .member-announcements h2, .member-announcements h3 { overflow-wrap: anywhere; }
 .member-announcements article { border-top: 1px solid #e1e0e8; margin-top: 16px; padding-top: 12px; }
+.member-bottom-nav a { position: relative; }
+.member-nav-badge { min-width: 18px; height: 18px; padding: 0 5px; border-radius: 9px; background: var(--m-purple); color: white; font-size: 0.72rem; font-weight: 700; line-height: 18px; text-align: center; }
