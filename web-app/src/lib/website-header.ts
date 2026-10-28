@@ -79,8 +79,8 @@ export function normalizeHeader(value: unknown): WebsiteHeader {
           : f.value,
       ]),
     ),
-    join_visible: raw.join_visible !== false,
+    join_visible: raw.join_visible === true,
     call_visible: raw.call_visible !== false,
-    app_visible: raw.app_visible !== false,
+    app_visible: raw.app_visible === true,
   };
 }

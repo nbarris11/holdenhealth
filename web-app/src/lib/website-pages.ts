@@ -256,7 +256,7 @@ export const websitePageKeys = websitePages.map((page) => page.key);
 export type WebsiteCustomPage = { key: string; label: string; slug: string };
 export type WebsiteSettings = { drop_in_visible: boolean; page_order: string[]; custom_pages: WebsiteCustomPage[]; featured_session_id: string; featured_headline: string; featured_body: string; featured_button: string };
 
-const defaultNavigationKeys = ["homepage", "coaching", "training", "about", "resources", "contact"];
+const defaultNavigationKeys = ["homepage", "coaching", "training", "about", "contact"];
 
 export function customWebsitePage(custom: WebsiteCustomPage): WebsitePageConfig {
   return {

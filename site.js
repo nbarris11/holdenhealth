@@ -132,24 +132,19 @@
           details.append(summary, dropdown); return details;
         }
         var fragment = document.createDocumentFragment();
-        var coaching = pages.filter(function (p) { return ['coaching', 'training', 'personal-training'].includes(p.key); });
-        var coachingEntries = coaching.map(function (p) { return {page:p, label:p.key === 'coaching' ? (header.group_label || 'Group Classes') : p.key === 'training' ? (header.training_label || 'Online Training') : (header['personal-training_label'] || 'Personal Training')}; });
-        coachingEntries.push({page:{key:'challenge', label:'Free 14-Day Challenge', href:'https://portal.holden.health/challenge'}});
+        var coachingOrder = ['coaching', 'personal-training', 'training'];
+        var coaching = pages.filter(function (p) { return coachingOrder.includes(p.key); }).sort(function (a, b) { return coachingOrder.indexOf(a.key) - coachingOrder.indexOf(b.key); });
+        var coachingEntries = coaching.map(function (p) { return {page:p, label:p.key === 'coaching' ? (header.group_label || 'Group Fitness') : p.key === 'training' ? (header.training_label || 'Online Training') : (header['personal-training_label'] || 'Personal Training')}; });
         fragment.appendChild(group(header.coaching_label || 'Coaching', coachingEntries));
         var about = pages.find(function (p) { return p.key === 'about'; });
-        if (about) fragment.appendChild(link(about, header.about_label || 'About'));
-        var resources = pages.find(function (p) { return p.key === 'resources'; });
-        var extras = pages.filter(function (p) { return !['homepage','coaching','training','nutrition','personal-training','about','resources','contact'].includes(p.key); });
-        if (extras.length) fragment.appendChild(group(header.resources_label || 'Resources', (resources ? [{page:resources,label:header.resources_all_label || 'All resources'}] : []).concat(extras.map(function (p) { return {page:p}; }))));
-        else if (resources) fragment.appendChild(link(resources, header.resources_label || 'Resources'));
-        var app = document.createElement('a'); app.href = safeManagedLink(header.app_url) || '/index.html#the-app'; app.textContent = header.app_label || 'The App'; if (header.app_visible !== false) fragment.appendChild(app);
+        if (about) fragment.appendChild(link(about, header.about_label || 'About Me'));
         links.replaceChildren(fragment);
         var cta = document.querySelector('.nav-cta');
         if (cta) {
           cta.replaceChildren();
-          [{key:'login',label:'Log in',url:'https://portal.holden.health/login',className:'member-login'}, {key:'call',label:'Free call',url:'/book.html',className:'btn btn-ghost'}, {key:'join',label:'Join group classes',url:'https://portal.holden.health/register',className:'btn btn-primary'}].forEach(function (item) {
+          [{key:'login',label:'Log in',url:'https://portal.holden.health/login',className:'member-login'}, {key:'call',label:'Free call',url:'/book.html',className:'btn btn-ghost'}].forEach(function (item) {
             if (header[item.key + '_visible'] === false) return;
-            var a = document.createElement('a'); a.className=item.className; a.textContent=header[item.key + '_label'] || item.label; a.href=safeManagedLink(header[item.key + '_url']) || item.url; if (item.key === 'join' && ['training','personal-training'].includes(currentKey)) { a.textContent=header.consult_label || 'Free consultation'; a.href=safeManagedLink(header.consult_url) || '/book.html'; } cta.appendChild(a);
+            var a = document.createElement('a'); a.className=item.className; a.textContent=header[item.key + '_label'] || item.label; a.href=safeManagedLink(header[item.key + '_url']) || item.url; cta.appendChild(a);
           });
         }
         refreshMobileLinks();

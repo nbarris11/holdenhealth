@@ -6,11 +6,12 @@ const ts=require('typescript');
 const exportsForTest={};
 vm.runInNewContext(ts.transpileModule(fs.readFileSync('web-app/src/lib/website-header.ts','utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022}}).outputText,{exports:exportsForTest,URL});
 const {normalizeHeader,validHeaderLink}=exportsForTest;
-test('missing header settings preserve current navigation and registration',()=>{
+test('missing header settings hide the join button and The App link',()=>{
  const h=normalizeHeader(null);
  assert.equal(h.join_label,'Join group classes');
  assert.equal(h.join_url,'https://portal.holden.health/register');
- assert.equal(h.join_visible,true);
+ assert.equal(h.join_visible,false);
+ assert.equal(h.app_visible,false);
  assert.equal(h.call_visible,true);
 });
 test('published labels and visibility survive normalization',()=>{
