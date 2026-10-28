@@ -25,6 +25,7 @@ export default function ClassTracker({ enrollmentId, sessionName, startsOn, ends
   const [pending, startTransition] = useTransition();
   const editable = !readOnly && today >= start && today <= endsOn;
   const days = Array.from({ length: Math.round((Date.parse(end) - Date.parse(start)) / 86400000) + 1 }, (_, index) => addDays(start, index));
+  const earlierWeeks = weeks.filter(week => week.week_number < weekNumber - 1).reverse();
   const counts = current ? habitCounts(current, localMarks, start, today < end ? today : end) : null;
   return <>
     <section className="member-card class-habit-card">
@@ -32,12 +33,6 @@ export default function ClassTracker({ enrollmentId, sessionName, startsOn, ends
       <h2>Your weekly habits</h2>
       <p className="member-muted">{dateLabel(start)}–{dateLabel(end)}. {relationshipId ? "Choose three habits for each week. Keep them or choose new ones next week." : "Pick three habits to begin. Each new week, you can keep them or add up to three more."}</p>
       {today < startsOn && <p>Choose your habits now. Daily checkboxes open when your program begins on {dateLabel(startsOn)}.</p>}
-      {previous && <div className="class-habit-review">
-        <h3>Last week’s check-in</h3>
-        <p>{previousCounts?.fullDays ?? 0} days with every habit checked.</p>
-        <ul>{previous.habits.map((habit, index) => <li key={`${habit}-${index}`}>{habit}: {previousCounts?.perHabit[index] ?? 0} of {previousCounts?.days ?? 0} days</li>)}</ul>
-        <p className="member-muted">Use this as a starting point for this week. Progress counts even when the week wasn’t perfect.</p>
-      </div>}
       {current && !editing ? <>
         <p><strong>{counts?.fullDays ?? 0} of {counts?.days ?? 0} days</strong> with every habit checked so far this week.</p>
         <div className="class-habit-days" aria-label="Choose a day to track">
@@ -83,10 +78,16 @@ export default function ClassTracker({ enrollmentId, sessionName, startsOn, ends
         {editing && <button type="button" className="member-button secondary" onClick={() => setEditing(false)}>Cancel</button>}
       </form>}
       <p role="status" aria-live="polite">{message}</p>
+      {previous && <div className="class-habit-review">
+        <h3>Last week</h3>
+        <p>{previousCounts?.fullDays ?? 0} days with every habit checked.</p>
+        <ul>{previous.habits.map((habit, index) => <li key={`${habit}-${index}`}>{habit}: {previousCounts?.perHabit[index] ?? 0} of {previousCounts?.days ?? 0} days</li>)}</ul>
+        <p className="member-muted">Use this as a starting point for this week. Progress counts even when the week wasn’t perfect.</p>
+      </div>}
     </section>
     {commenter && ownerId && <EarlierHabitComments comments={comments} current={current} ownerId={ownerId} commenter={commenter} />}
-    {revisions.length > 0 && <section className="member-card"><h2>Previous habit versions</h2><p>These saved records show your habits and checkmarks before an edit.</p>{revisions.map(revision => <details key={revision.id}><summary>Week {weeks.find(w => w.id === revision.week_id)?.week_number} · version {revision.version}</summary><ul>{revision.habits.map((habit, index) => <li key={index}>{habit}: {revision.marks.filter(m => m.habit_index === index).length} checkmarks</li>)}</ul></details>)}</section>}
-    {weeks.length > 1 && <section className="member-card class-habit-history"><h2>Earlier weeks</h2>{weeks.filter(week => week.week_number < weekNumber - 1).reverse().map(week => {
+    {commenter === "coach" && revisions.length > 0 && <section className="member-card"><h2>Previous habit versions</h2><p>These saved records show your habits and checkmarks before an edit.</p>{revisions.map(revision => <details key={revision.id}><summary>Week {weeks.find(w => w.id === revision.week_id)?.week_number} · version {revision.version}</summary><ul>{revision.habits.map((habit, index) => <li key={index}>{habit}: {revision.marks.filter(m => m.habit_index === index).length} checkmarks</li>)}</ul></details>)}</section>}
+    {earlierWeeks.length > 0 && <section className="member-card class-habit-history"><h2>Earlier weeks</h2>{earlierWeeks.map(week => {
       const dates = weekDates(startsOn, endsOn, week.week_number)!;
       const result = habitCounts(week, localMarks, dates.start, dates.end);
       return <details key={week.id}><summary>Week {week.week_number} · {result.fullDays} full days</summary><ul>{week.habits.map((habit, index) => <li key={index}>{habit}: {result.perHabit[index]} of {result.days} days</li>)}</ul></details>;

@@ -47,3 +47,12 @@ export function commentRows(result: { data: unknown; error: { code?: string } | 
   if (result.error) throw new Error("Habit comments could not be loaded.");
   return (result.data ?? []) as HabitComment[];
 }
+
+// Email a member about Kelsey's note only for the first note in 12 hours, so a burst of
+// comments sends one email. Replies, opted-out members and test accounts get none.
+export function shouldEmailHabitNote({ authorIsMember, optedIn, isTest, previousNoteAt, now }: {
+  authorIsMember: boolean; optedIn: boolean; isTest: boolean; previousNoteAt: string | null; now: number;
+}) {
+  if (authorIsMember || !optedIn || isTest) return false;
+  return !previousNoteAt || now - Date.parse(previousNoteAt) >= 12 * 3600000;
+}

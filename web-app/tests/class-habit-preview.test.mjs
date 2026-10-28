@@ -83,3 +83,27 @@ test('saved habit checkboxes are disabled in preview and enabled for an active m
     assert.ok(checks.every(n => n.props.disabled === readOnly));
   }
 });
+
+test("members see today's checkboxes before last week's recap, and no record-keeping clutter", () => {
+  const exports = {};
+  const imports = {
+    'react/jsx-runtime': { jsx, jsxs: jsx },
+    react: { useState: value => [value, () => {}], useTransition: () => [false, () => {}] },
+    '@/lib/challenge': { dateLabel: value => value, addDays: (value, n) => new Date(Date.parse(value) + n * 86400000).toISOString().slice(0, 10) },
+    '@/lib/class-habits': { weekDates: (s, e, n) => n === 1 ? { start: '2026-10-13', end: '2026-10-18' } : { start: '2026-10-19', end: '2026-10-25' }, habitCounts: () => ({ fullDays: 0, days: 1, perHabit: [0, 0, 0] }) },
+    './actions': {}, './habit-comments': { default: 'habit-comments', EarlierHabitComments: 'earlier-habit-comments' },
+  };
+  vm.runInNewContext(ts.transpileModule(fs.readFileSync(new URL('../src/app/portal/habits/class-tracker.tsx', import.meta.url), 'utf8'), {
+    compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.ReactJSX },
+  }).outputText, { exports, require: key => imports[key] });
+  const weeks = [{ id: 'w1', week_number: 1, habits: ['Walk', 'Water', 'Sleep'] }, { id: 'w2', week_number: 2, habits: ['Walk', 'Water', 'Sleep'] }];
+  const revisions = [{ id: 'r1', week_id: 'w2', habits: ['Run', 'Water', 'Sleep'], marks: [], version: 1, created_at: '2026-10-20' }];
+  const render = commenter => nodes(exports.default({ enrollmentId: 'own', sessionName: 'Class program', startsOn: '2026-10-13', endsOn: '2026-11-21', today: '2026-10-20', weekNumber: 2, weeks, marks: [], revisions, commenter, ownerId: 'member' }));
+  const member = render('member');
+  const order = member.filter(n => (n.type === 'input' && n.props.type === 'checkbox') || n.type === 'h3' || n.type === 'h2').map(n => n.type === 'input' ? 'checkbox' : n.props.children);
+  assert.ok(order.indexOf('checkbox') < order.indexOf('Last week'), JSON.stringify(order));
+  assert.equal(order.includes('Last week’s check-in'), false);
+  assert.equal(order.includes('Previous habit versions'), false);
+  assert.equal(order.includes('Earlier weeks'), false, 'empty Earlier weeks box');
+  assert.ok(render('coach').some(n => n.type === 'h2' && n.props.children === 'Previous habit versions'));
+});

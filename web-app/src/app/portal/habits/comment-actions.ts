@@ -1,6 +1,8 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { after } from "next/server";
+import { notifyMemberOfHabitNote } from "@/lib/habit-note-notify";
 import { verifySession } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { isUuid, validDate, type FormResult } from "@/lib/challenge";
@@ -17,8 +19,9 @@ export async function addHabitComment(form: FormData): Promise<FormResult> {
   if (!body) return { error: "Write a comment up to 1,000 characters." };
   if (!isUuid(weekId) || !validDate(day) || !Number.isInteger(habitIndex) || habitIndex < 0 || habitIndex > 5)
     return { error: "That habit could not be found. Reload and try again." };
-  const { error } = await (await createClient()).from("habit_comments").insert({ week_id: weekId, day, habit_index: habitIndex, habit_text: habitText, body });
-  if (error) return { error: "Your comment could not be saved. Please try again." };
+  const { data: saved, error } = await (await createClient()).from("habit_comments").insert({ week_id: weekId, day, habit_index: habitIndex, habit_text: habitText, body }).select("id").single();
+  if (error || !saved) return { error: "Your comment could not be saved. Please try again." };
+  after(() => notifyMemberOfHabitNote(saved.id).catch(() => undefined));
   for (const path of ["/portal/habits", "/portal/training/habits", "/admin/training"]) revalidatePath(path, "layout");
   return { success: "Comment saved." };
 }

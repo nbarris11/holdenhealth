@@ -31,3 +31,12 @@ export function sundayFor(day: string) {
 }
 
 export const ARRIVAL_DIRECTIONS = "Park near the clock on the south-facing side of the Burroughs building. Enter through those doors, walk straight, then turn left down the hallway. The gym is on your left.";
+
+// The class a member should see first: their next picked class, else the next on the schedule.
+// A class still counts while it is in progress.
+export function nextClass<T extends { id: string; starts_at: string; ends_at: string }>(meetings: T[], pickedIds: string[], now: number) {
+  const upcoming = meetings.filter(m => Date.parse(m.ends_at) > now).sort((a, b) => a.starts_at.localeCompare(b.starts_at));
+  const picked = upcoming.find(m => pickedIds.includes(m.id));
+  if (picked) return { meeting: picked, picked: true };
+  return upcoming[0] ? { meeting: upcoming[0], picked: false } : null;
+}

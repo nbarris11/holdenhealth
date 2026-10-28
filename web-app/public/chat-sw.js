@@ -2,9 +2,10 @@
 self.addEventListener('push', event => {
  let data = {};
  try { data = event.data?.json() || {}; } catch {}
- const valid = /^\/(portal|admin)\/communicate\?conversation=[0-9a-f-]{36}$/.test(data.url || '');
+ const habitNote = data.url === '/portal/habits';
+ const valid = habitNote || /^\/(portal|admin)\/communicate\?conversation=[0-9a-f-]{36}$/.test(data.url || '');
  event.waitUntil(self.registration.showNotification('Holden Health', {
- body: 'You have a new message in Holden Health.',
+ body: habitNote ? 'Kelsey left you a note on your habits.' : 'You have a new message in Holden Health.',
  icon: '/apple-icon.png', tag: typeof data.tag === 'string' ? data.tag : 'holden-chat',
  data: { url: valid ? data.url : '/portal/communicate' }
  }));
