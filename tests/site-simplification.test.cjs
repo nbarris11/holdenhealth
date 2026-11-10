@@ -6,7 +6,7 @@ const pages=fs.readdirSync('.').filter(f=>f.endsWith('.html')&&!/ 2\./.test(f));
 const read=f=>fs.readFileSync(f,'utf8');
 const SENTENCE='4–6 week sessions offered throughout the year. Reach out today to find out which session is currently running!';
 
-test('the homepage has no App section or session promotions',()=>{
+test('the homepage has no App section or automatic session promotions',()=>{
  const html=read('index.html');
  assert.equal(html.includes('id="the-app"'),false);
  assert.equal(html.includes('data-featured-program'),false);
@@ -19,10 +19,10 @@ test('Group Fitness uses general wording with no prices, dates or direct sign-up
  assert.equal(/\$\d/.test(html),false,'price on Group Fitness page');
 });
 
-test('no page links to removed pages or straight into portal sign-up',()=>{
+test('pages avoid removed links and only the homepage links directly to session signup',()=>{
  for(const file of pages){
   const html=read(file);
-  for(const gone of ['href="resources.html"','href="/resources.html"','nutrition-coaching','#the-app','portal.holden.health/register','portal.holden.health/start','portal.holden.health/challenge'])
+  for(const gone of ['href="resources.html"','href="/resources.html"','nutrition-coaching','#the-app',...(file==='index.html'?[]:['portal.holden.health/register']),'portal.holden.health/start','portal.holden.health/challenge'])
    assert.equal(html.includes(gone),false,`${file} still links to ${gone}`);
  }
 });
