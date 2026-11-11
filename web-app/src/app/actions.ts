@@ -15,6 +15,7 @@ import { createClient } from "@/lib/supabase/server";
 import { createScheduledZoomMeeting } from "@/lib/zoom";
 import { programMeetingDates, type ProgramFormat } from "@/lib/program-schedule";
 import { registrationClassTimes } from "@/lib/registration-schedule";
+import { DROP_IN_PHOTO_RELEASE, DROP_IN_WAIVER, DROP_IN_WAIVER_VERSION } from "@/lib/drop-in-agreement";
 
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const ENROLLMENT_STATUSES = new Set(["prospect", "invited", "active", "completed", "withdrawn"]);
@@ -422,6 +423,7 @@ export async function createClassMeeting(formData: FormData) {
   const startsAt = detroitDateTime(requiredText(formData, "date", 10), requiredText(formData, "time", 5));
   const durationMinutes = Number(formData.get("durationMinutes"));
   const capacity = Number(formData.get("dropInCapacity"));
+  const dropInPrice = dollarsToCents(requiredText(formData, "dropInPrice", 12));
   if (!Number.isInteger(durationMinutes) || durationMinutes < 15 || durationMinutes > 240) throw new Error("Class length must be between 15 minutes and 4 hours.");
   if (!Number.isInteger(capacity) || capacity < 0 || capacity > 50) throw new Error("Drop-in capacity must be between 0 and 50.");
   const supabase = await createClient();
@@ -436,6 +438,7 @@ export async function createClassMeeting(formData: FormData) {
     is_zoom: isZoom,
     drop_in_enabled: formData.get("dropInEnabled") === "on",
     drop_in_capacity: capacity,
+    drop_in_price_cents: dropInPrice,
   }).select("id").single();
   if (error || !createdMeeting) redirect("/admin/classes?message=create-failed");
   if (isZoom) {
@@ -458,6 +461,7 @@ export async function updateClassMeeting(formData: FormData) {
   const startsAt = detroitDateTime(requiredText(formData, "date", 10), requiredText(formData, "time", 5));
   const durationMinutes = Number(formData.get("durationMinutes"));
   const capacity = Number(formData.get("dropInCapacity"));
+  const dropInPrice = dollarsToCents(requiredText(formData, "dropInPrice", 12));
   if (!Number.isInteger(durationMinutes) || durationMinutes < 15 || durationMinutes > 240) throw new Error("Class length must be between 15 minutes and 4 hours.");
   if (!Number.isInteger(capacity) || capacity < 0 || capacity > 50) throw new Error("Drop-in capacity must be between 0 and 50.");
   const supabase = await createClient();
@@ -474,6 +478,7 @@ export async function updateClassMeeting(formData: FormData) {
     cancelled: formData.get("cancelled") === "on",
     drop_in_enabled: formData.get("dropInEnabled") === "on",
     drop_in_capacity: capacity,
+    drop_in_price_cents: dropInPrice,
   }).eq("id", meetingId).select("id").maybeSingle();
   if (error || !data) redirect("/admin/classes?message=update-failed");
   if (isZoom) {
@@ -501,44 +506,66 @@ export async function updateClassMeeting(formData: FormData) {
 }
 
 export async function submitDropInBooking(formData: FormData) {
-  if (formData) redirect("/drop-in");
   if (textField(formData, "website", 200)) redirect("/drop-in?sent=1");
-  const meetingId = uuidField(formData, "meetingId");
+  const meetingIds = [...new Set(formData.getAll("meetingId").map(value => String(value)))];
+  if (!meetingIds.length || meetingIds.length > 80 || meetingIds.some(id => !UUID_PATTERN.test(id))) redirect("/drop-in?message=request-failed");
   const fullName = requiredText(formData, "fullName", 140);
   const email = requiredText(formData, "email", 254).toLowerCase();
   const phone = requiredText(formData, "phone", 40);
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) throw new Error("Enter a valid email address.");
-  const client = publicAuthClient();
-  const { data: meeting } = await client.from("class_meetings").select("id,title,starts_at").eq("id", meetingId).eq("drop_in_enabled", true).eq("cancelled", false).gt("starts_at", new Date().toISOString()).maybeSingle();
-  if (!meeting) redirect("/drop-in?message=class-unavailable");
-  const { error } = await client.from("drop_in_bookings").insert({
-    meeting_id: meetingId,
-    full_name: fullName,
-    email,
-    phone,
-    note: textField(formData, "note", 1000) || null,
+  const method = textField(formData, "paymentMethod", 10);
+  const signedName = textField(formData, "signedName", 140);
+  const photoChoice = textField(formData, "photoConsent", 3);
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || !["venmo", "cash"].includes(method) || !["yes", "no"].includes(photoChoice) || formData.get("waiverAccepted") !== "on" || signedName.length < 2) redirect("/drop-in?message=request-failed");
+  const db = createAdminClient();
+  const { data: settingsRecord } = await db.from("site_content").select("value").eq("content_key", "website:settings").maybeSingle();
+  if (!settingsRecord || (settingsRecord.value as { drop_in_visible?: boolean } | null)?.drop_in_visible !== true) redirect("/drop-in?message=class-unavailable");
+  const { data: bookingIds, error } = await db.rpc("reserve_drop_ins", {
+    p_meeting_ids: meetingIds, p_full_name: fullName, p_email: email, p_phone: phone,
+    p_payment_method: method, p_signed_name: signedName, p_waiver_accepted: true,
+    p_waiver_version: DROP_IN_WAIVER_VERSION, p_waiver_text: DROP_IN_WAIVER,
+    p_photo_release_text: DROP_IN_PHOTO_RELEASE, p_photo_consent: photoChoice === "yes",
+    p_note: textField(formData, "note", 1000) || null,
   });
-  if (error) redirect(`/drop-in?message=${error.code === "23505" ? "already-requested" : "request-failed"}`);
-  const classTime = new Intl.DateTimeFormat("en-US", { weekday: "long", month: "long", day: "numeric", hour: "numeric", minute: "2-digit", timeZone: "America/Detroit" }).format(new Date(meeting.starts_at));
-  await Promise.all([
-    sendTransactionalEmail("holdenhealth.coaching@gmail.com", `New drop-in request from ${fullName}`, {
+  if (error || !bookingIds?.length) redirect(`/drop-in?message=${error?.code === "23505" ? "already-requested" : error?.message?.includes("class_full") ? "class-full" : "request-failed"}`);
+  const { data: meetings } = await db.from("class_meetings").select("title,starts_at,drop_in_price_cents").in("id", meetingIds).order("starts_at");
+  const { data: savedBookings } = await db.from("drop_in_bookings").select("price_cents").in("id", bookingIds);
+  const total = (savedBookings ?? []).reduce((sum, booking) => sum + (booking.price_cents ?? 0), 0);
+  const totalLabel = (total / 100).toLocaleString("en-US", { style: "currency", currency: "USD" });
+  const dateLabel = new Intl.DateTimeFormat("en-US", { weekday: "long", month: "long", day: "numeric", hour: "numeric", minute: "2-digit", timeZone: "America/Detroit" });
+  const classTime = (meetings ?? []).map(meeting => `${meeting.title} — ${dateLabel.format(new Date(meeting.starts_at))}`).join("\n");
+  await Promise.allSettled([
+    sendTransactionalEmail("holdenhealth.coaching@gmail.com", `New drop-in booking from ${fullName}`, {
       firstName: "Kelsey",
-      preheader: `${fullName} requested a Holden Health drop-in class.`,
-      heading: "You have a new drop-in request.",
-      body: `${fullName} would like to attend ${meeting.title} on ${classTime}.\n\nEmail: ${email}\nPhone: ${phone}\n\nOpen the class dashboard to confirm or follow up.`,
+      preheader: `${fullName} reserved Holden Health drop-in classes.`,
+      heading: "Drop-in spots are reserved.",
+      body: `${fullName} reserved ${meetingIds.length} class(es):\n${classTime}.\n\nPayment: ${method === "venmo" ? "Venmo before class" : "Cash at class"} · ${totalLabel} pending\nPhoto permission: ${photoChoice === "yes" ? "Yes" : "No"}\nEmail: ${email}\nPhone: ${phone}\n\nOpen the class dashboard to mark payment received.`,
       ctaLabel: "Review the request",
       ctaUrl: "https://portal.holden.health/admin/classes",
     }),
-    sendTransactionalEmail(email, "Your Holden Health drop-in request is in", {
+    sendTransactionalEmail(email, "Your Holden Health drop-in spots are reserved", {
       firstName: fullName.split(/\s+/)[0],
-      preheader: `Kelsey received your request for ${meeting.title}.`,
-      heading: "We’d love to have you join us.",
-      body: `Your request for ${meeting.title} on ${classTime} is with Kelsey. She’ll follow up personally to confirm your spot and share payment details.\n\nThanks for taking the first step. We look forward to moving with you.`,
-      ctaLabel: "Questions? Talk with Kelsey",
-      ctaUrl: "https://holden.health/book.html",
+      preheader: `Your ${meetingIds.length} class reservation is confirmed.`,
+      heading: "Your spots are reserved.",
+      body: `You’re signed up for ${meetingIds.length} class(es):\n${classTime}. Your total is ${totalLabel}. ${method === "venmo" ? "Please pay @holdenhealthllc on Venmo before class and include your registration name and class dates in the note: https://venmo.com/u/holdenhealthllc" : "Please bring cash to class."}\n\nLocation and directions: https://holden.health/coaching.html#location\n\nYour payment will show as pending until Kelsey records it. If you can’t attend, contact Kelsey. Missed classes have no automatic refund or credit; Kelsey may consider an exception when contacted.`,
+      ctaLabel: method === "venmo" ? "Open Venmo" : "Contact Kelsey",
+      ctaUrl: method === "venmo" ? "https://venmo.com/u/holdenhealthllc" : "https://holden.health/contact.html",
     }),
   ]);
-  redirect("/drop-in?sent=1");
+  revalidatePath("/drop-in");
+  revalidatePath("/admin/classes");
+  redirect(`/drop-in?sent=1&payment=${method}`);
+}
+
+export async function updateDropInPaymentStatus(formData: FormData) {
+  await verifyAdmin();
+  const bookingId = uuidField(formData, "bookingId");
+  const status = textField(formData, "paymentStatus", 10);
+  if (!["pending", "paid", "refunded"].includes(status)) throw new Error("Invalid payment status.");
+  const db = await createClient();
+  const { error } = await db.from("drop_in_bookings").update({ payment_status: status }).eq("id", bookingId);
+  if (error) redirect("/admin/classes?message=booking-update-failed#bookings");
+  revalidatePath("/admin/classes");
+  redirect("/admin/classes?message=booking-updated#bookings");
 }
 
 export async function updateDropInBookingStatus(formData: FormData) {

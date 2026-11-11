@@ -12,11 +12,12 @@ test('the homepage has no App section or automatic session promotions',()=>{
  assert.equal(html.includes('data-featured-program'),false);
 });
 
-test('Group Fitness uses general wording with no prices, dates or direct sign-up',()=>{
+test('Group Fitness keeps session pricing private and links to drop-in booking',()=>{
  const html=read('coaching.html');
  assert.ok(html.includes(SENTENCE));
  for(const gone of ['data-featured-program','id="next-session"','register?session=','portal.holden.health/register','data-legacy-program-end'])assert.equal(html.includes(gone),false,gone);
- assert.equal(/\$\d/.test(html),false,'price on Group Fitness page');
+ assert.ok(html.includes('href="https://portal.holden.health/drop-in"'));
+ assert.equal(html.match(/\$\d+/g)?.every(price=>price==='$10'),true,'unexpected session price');
 });
 
 test('pages avoid removed links and only the homepage links directly to session signup',()=>{
