@@ -1,4 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
+import { verifyContactCheck } from "@/lib/contact-check";
 import { sendTransactionalEmail } from "@/lib/email";
 import { captureServerEvent, captureServerException, distinctIdForValue } from "@/lib/posthog-server";
 import { createAdminClient } from "@/lib/supabase/admin";
@@ -146,6 +147,9 @@ export async function POST(request: NextRequest) {
     if (clean(formData.get("bot-field"), 200)) return NextResponse.json({ ok: true }, { headers: corsHeaders(origin) });
     const formName = clean(formData.get("form-name"), 80);
     const email = clean(formData.get("email"), 254).toLowerCase();
+    if (formName === "contact" && !await verifyContactCheck(formData.get("cf-turnstile-response"), origin)) {
+      return NextResponse.json({ ok: false }, { status: 403, headers: corsHeaders(origin) });
+    }
     const message = messageFor(formData);
     let inquiryId: string | null = null;
     let unsubscribeToken: string | null = null;

@@ -163,6 +163,8 @@
               </select>
             </div>
             <div class="field" id="c-message"><label for="contact-message">Your message</label><textarea id="contact-message" name="message" placeholder="Hi Kelsey, I'm hoping to…"></textarea><div class="msg">Please add a short message.</div></div>
+            <div class="cf-turnstile" data-sitekey="0x4AAAAAAF-PPR_NTDnH8TLK" data-action="contact" data-size="flexible"></div>
+            <p id="contactStatus" class="form-note" role="status"></p>
             <button class="btn btn-primary" type="submit"><span data-site-content="form_cta_label">Send message</span> <span class="arr">→</span></button>
             <div class="form-note">Prefer email? Reach Kelsey directly at <a href="mailto:HoldenHealth.Coaching@gmail.com" style="color:var(--primary);font-weight:600">HoldenHealth.Coaching@gmail.com</a>.</div>
           </form>
@@ -214,6 +216,7 @@
   </div>
 </footer>
 
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 <script src="site.js?v=20261027-draft-preview"></script>
 <script>
 // ── Contact form ──
@@ -237,6 +240,13 @@
     if (!ok) return;
 
     var button = form.querySelector('button[type="submit"]');
+    var status = document.getElementById('contactStatus');
+    if (button.disabled) return;
+    if (!new FormData(form).get('cf-turnstile-response')) {
+      status.textContent = 'Please complete the spam check. If it doesn’t appear, refresh the page or email Kelsey below.';
+      return;
+    }
+    status.textContent = '';
     button.disabled = true;
     button.textContent = 'Sending…';
     fetch('https://portal.holden.health/api/forms', {
@@ -252,8 +262,8 @@
     }).catch(function () {
       button.disabled = false;
       button.textContent = 'Try sending again';
-      fm.classList.add('err');
-      fm.querySelector('.msg').textContent = 'Could not send. Please try again or email Kelsey directly.';
+      if (window.turnstile) window.turnstile.reset();
+      status.textContent = 'Your message could not be sent. Please try again after the spam check, or email Kelsey below.';
     });
   });
 
