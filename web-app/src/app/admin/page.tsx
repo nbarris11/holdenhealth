@@ -1,3 +1,4 @@
+import { AdminDropInBookings } from "@/components/admin-drop-in-bookings";
 import { verifyAdmin } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
@@ -28,20 +29,22 @@ export default async function AdminHomePage() {
   const enrollmentIds = enrollments.map((row) => row.id);
   const meetings = (meetingData ?? []) as Meeting[];
   const meetingIds = meetings.map((row) => row.id);
-  const [{ data: payments }, { data: attendance }] = await Promise.all([
+  const [{ data: payments }, { data: attendance }, { data: rosterDropIns }] = await Promise.all([
     enrollmentIds.length ? supabase.from("payment_records").select("enrollment_id,status").in("enrollment_id", enrollmentIds) : Promise.resolve({ data: [] }),
     meetingIds.length ? supabase.from("attendance_selections").select("meeting_id").in("meeting_id", meetingIds) : Promise.resolve({ data: [] }),
+    meetingIds.length ? supabase.from("drop_in_bookings").select("meeting_id").in("meeting_id", meetingIds).in("status", ["requested", "confirmed"]) : Promise.resolve({ data: [] }),
   ]);
   const paymentMap = new Map((payments ?? []).map((payment) => [payment.enrollment_id, payment.status]));
   const paymentNeeded = enrollments.filter((enrollment) => !new Set(["paid", "waived", "credited"]).has(paymentMap.get(enrollment.id) ?? "pending")).length;
   const attendanceCounts = new Map<string, number>();
   (attendance ?? []).forEach((selection) => attendanceCounts.set(selection.meeting_id, (attendanceCounts.get(selection.meeting_id) ?? 0) + 1));
+  (rosterDropIns ?? []).forEach((booking) => attendanceCounts.set(booking.meeting_id, (attendanceCounts.get(booking.meeting_id) ?? 0) + 1));
   const peopleHref = `/admin/people?program=${encodeURIComponent(session.id)}`;
   const attentionItems = [
     { count: inquiries?.length ?? 0, label: "website inquiry", plural: "website inquiries", href: "/admin/people#inquiries", action: "Reply" },
     { count: requests?.length ?? 0, label: "registration request", plural: "registration requests", href: `${peopleHref}#requests`, action: "Review" },
     { count: pendingIntakes?.length ?? 0, label: "intake ready for review", plural: "intakes ready for review", href: "/admin/people#intakes", action: "Review" },
-    { count: dropIns?.length ?? 0, label: "drop-in request", plural: "drop-in requests", href: "/admin/classes#bookings", action: "Confirm" },
+    { count: dropIns?.length ?? 0, label: "drop-in request", plural: "drop-in requests", href: "/admin/activity#drop-in-bookings", action: "Review" },
     { count: paymentNeeded, label: "payment to follow up on", plural: "payments to follow up on", href: `${peopleHref}#members`, action: "View" },
     { count: (workoutLogs ?? []).filter((log) => !log.workout_feedback).length, label: "workout ready for feedback", plural: "workouts ready for feedback", href: "/admin/training", action: "Coach" },
   ].filter((item) => item.count > 0);
@@ -52,8 +55,9 @@ export default async function AdminHomePage() {
       <div className="today-attention-heading"><span className="eyebrow">Needs your attention</span><h2>{attentionItems.length ? `${attentionItems.reduce((sum, item) => sum + item.count, 0)} things to take care of` : "You’re caught up."}</h2><p>{attentionItems.length ? "Each item below leads straight to the next step." : meetings[0] ? `Your next class is ${classTime.format(new Date(meetings[0].starts_at))}.` : "There are no upcoming classes on the calendar."}</p></div>
       {attentionItems.length ? <div className="today-task-list">{attentionItems.map((item) => <Link href={item.href} key={item.href}><span className="task-count">{item.count}</span><span><strong>{item.count === 1 ? item.label : item.plural}</strong><small>{item.action} now</small></span><b aria-hidden="true">→</b></Link>)}</div> : <span className="caught-up-mark" aria-hidden="true">✓</span>}
     </section>
+    <AdminDropInBookings />
     <div className="today-main-grid">
-      <section className="panel upcoming-card"><div className="card-heading-row"><div><span className="eyebrow">Coming up</span><h2>Your next classes</h2></div><Link className="text-link inline-link" href="/admin/classes">Full schedule →</Link></div>{meetings.length ? <div className="upcoming-list">{meetings.map((meeting) => <Link href={`/admin/classes#class-${meeting.id}`} key={meeting.id}><time>{classTime.format(new Date(meeting.starts_at))}</time><strong>{meeting.title}</strong><span>{attendanceCounts.get(meeting.id) ?? 0} planning to attend</span><b aria-hidden="true">›</b></Link>)}</div> : <div className="compact-empty"><p>No upcoming classes are scheduled.</p><Link href="/admin/classes">Add a class →</Link></div>}</section>
+      <section className="panel upcoming-card"><div className="card-heading-row"><div><span className="eyebrow">Coming up</span><h2>Your next classes</h2></div><Link className="text-link inline-link" href="/admin/classes">Full schedule →</Link></div>{meetings.length ? <div className="upcoming-list">{meetings.map((meeting) => <Link href={`/admin/classes?meeting=${meeting.id}#class-${meeting.id}`} key={meeting.id}><time>{classTime.format(new Date(meeting.starts_at))}</time><strong>{meeting.title}</strong><span>{attendanceCounts.get(meeting.id) ?? 0} planning to attend</span><b aria-hidden="true">›</b></Link>)}</div> : <div className="compact-empty"><p>No upcoming classes are scheduled.</p><Link href="/admin/classes">Add a class →</Link></div>}</section>
       <aside className="panel program-pulse"><span className="eyebrow">Current program</span><h2>{enrollments.length} of {session.capacity} spots filled</h2><div className="capacity-bar" aria-label={`${enrollments.length} of ${session.capacity} spots filled`}><span style={{ width: `${Math.min(100, (enrollments.length / session.capacity) * 100)}%` }} /></div><dl><div><dt>Active or invited</dt><dd>{enrollments.length}</dd></div><div><dt>Payment follow-up</dt><dd>{paymentNeeded}</dd></div></dl><Link className="button secondary" href={peopleHref}>Open people</Link></aside>
     </div>
     <section className="quick-action-strip" aria-label="Quick actions"><Link href={`/admin/people/add?program=${encodeURIComponent(session.id)}`}><span>＋</span><strong>Add someone</strong><small>Choose any program</small></Link><Link href="/admin/training"><span>ABC</span><strong>Build a workout</strong><small>Personal training plans</small></Link><Link href="/admin/communications"><span>↗</span><strong>Send an update</strong><small>Email your members</small></Link><Link href="/admin/classes#add-class"><span>□</span><strong>Add a class</strong><small>Update the schedule</small></Link></section>

@@ -8,10 +8,10 @@ const sessions = [
   { id: 'october', name: 'October program', starts_on: '2026-10-13', ends_on: '2026-11-21', status: 'enrolling' },
   { id: 'december', name: 'December program', starts_on: '2026-12-01', ends_on: '2026-12-19', status: 'full' },
 ];
-function setup(file) {
+function setup(file, fixtures = {}) {
   const filters = [];
   const db = { from(table) {
-    let rows = table === 'sessions' ? [...sessions] : table === 'registration_requests' ? [{ id: 'request', status: 'pending', attendance_interest: [] }] : [];
+    let rows = fixtures[table] ?? (table === 'sessions' ? [...sessions] : table === 'registration_requests' ? [{ id: 'request', status: 'pending', attendance_interest: [] }] : []);
     const builder = {
       select() { return this; }, in() { return this; }, is() { return this; }, gte() { return this; },
       eq(key, value) { filters.push({ table, key, value }); return this; },
@@ -26,6 +26,7 @@ function setup(file) {
   const imports = {
     'react/jsx-runtime': { jsx, jsxs: jsx }, 'next/link': { default: 'a' },
     '@/lib/auth': { verifyAdmin: async () => {} },
+    '@/components/admin-drop-in-bookings': { AdminDropInBookings: 'drop-in-bookings' },
     '@/lib/people': { PERSONAL_TRAINING_PROGRAM: 'personal-training' },
     '@/lib/supabase/server': { createClient: async () => db },
     '@/app/admin/login/actions': { adminSignOut() {} }, './program-select': { default: 'program-select' }, '@/app/actions': {}, './directory': { default: 'directory' }, './private-signups': { default: 'private-signups' },
@@ -89,4 +90,17 @@ test('program details edit the requested later program even when it is full', as
   assert.equal(page.find(node => node.type === 'input' && node.props.name === 'sessionId').props.value, 'december');
   assert.equal(page.find(node => node.type === 'input' && node.props.name === 'name').props.defaultValue, 'December program');
   assert.ok(page.some(node => node.props?.href === '/admin/classes?program=december'));
+});
+
+test('Today includes confirmed drop-ins in class attendance and links directly to the roster', async () => {
+  const dashboard = setup('page.tsx', {
+    class_meetings: [{id:'class-1', title:'Test class', starts_at:'2026-11-25T11:00:00Z', cancelled:false}],
+    attendance_selections: [{meeting_id:'class-1'}],
+    drop_in_bookings: [{id:'booking-1', meeting_id:'class-1', status:'confirmed'}],
+  });
+  const tree = elements(await dashboard.render());
+  const link = tree.find(node => node.props?.href === '/admin/classes?meeting=class-1#class-class-1');
+  assert.ok(link);
+  assert.ok(elements(link).some(node => node.type === 'span' && node.props.children[0] === 2));
+  assert.ok(tree.some(node => node.type === 'drop-in-bookings'));
 });

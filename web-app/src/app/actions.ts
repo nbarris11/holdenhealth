@@ -540,7 +540,7 @@ export async function submitDropInBooking(formData: FormData) {
       heading: "Drop-in spots are reserved.",
       body: `${fullName} reserved ${meetingIds.length} class(es):\n${classTime}.\n\nPayment: ${method === "venmo" ? "Venmo before class" : "Cash at class"} · ${totalLabel} pending\nPhoto permission: ${photoChoice === "yes" ? "Yes" : "No"}\nEmail: ${email}\nPhone: ${phone}\n\nOpen the class dashboard to mark payment received.`,
       ctaLabel: "Review the request",
-      ctaUrl: "https://portal.holden.health/admin/classes",
+      ctaUrl: `https://portal.holden.health/admin/classes?booking=${bookingIds[0]}#booking-${bookingIds[0]}`,
     }),
     sendTransactionalEmail(email, "Your Holden Health drop-in spots are reserved", {
       firstName: fullName.split(/\s+/)[0],
@@ -553,6 +553,8 @@ export async function submitDropInBooking(formData: FormData) {
   ]);
   revalidatePath("/drop-in");
   revalidatePath("/admin/classes");
+  revalidatePath("/admin");
+  revalidatePath("/admin/activity");
   redirect(`/drop-in?sent=1&payment=${method}`);
 }
 
@@ -562,10 +564,13 @@ export async function updateDropInPaymentStatus(formData: FormData) {
   const status = textField(formData, "paymentStatus", 10);
   if (!["pending", "paid", "refunded"].includes(status)) throw new Error("Invalid payment status.");
   const db = await createClient();
-  const { error } = await db.from("drop_in_bookings").update({ payment_status: status }).eq("id", bookingId);
-  if (error) redirect("/admin/classes?message=booking-update-failed#bookings");
+  const { data: saved, error } = await db.from("drop_in_bookings").update({ payment_status: status }).eq("id", bookingId).select("id").single();
+  if (error || !saved) redirect(`/admin/classes?booking=${bookingId}&message=booking-update-failed#booking-${bookingId}`);
   revalidatePath("/admin/classes");
-  redirect("/admin/classes?message=booking-updated#bookings");
+  revalidatePath("/admin");
+  revalidatePath("/admin/activity");
+  revalidatePath("/drop-in");
+  redirect(`/admin/classes?booking=${bookingId}&message=booking-updated#booking-${bookingId}`);
 }
 
 export async function updateDropInBookingStatus(formData: FormData) {
@@ -576,8 +581,8 @@ export async function updateDropInBookingStatus(formData: FormData) {
   const supabase = await createClient();
   const { data: booking } = await supabase.from("drop_in_bookings").select("id,meeting_id,full_name,email,zoom_link_sent_at").eq("id", bookingId).maybeSingle();
   if (!booking) redirect("/admin/classes?message=booking-update-failed");
-  const { error } = await supabase.from("drop_in_bookings").update({ status, reviewed_by: admin.userId, reviewed_at: new Date().toISOString() }).eq("id", bookingId);
-  if (error) redirect("/admin/classes?message=booking-update-failed");
+  const { data: saved, error } = await supabase.from("drop_in_bookings").update({ status, reviewed_by: admin.userId, reviewed_at: new Date().toISOString() }).eq("id", bookingId).select("id").single();
+  if (error || !saved) redirect(`/admin/classes?booking=${bookingId}&message=booking-update-failed#booking-${bookingId}`);
   let emailFailed = false;
   if (status === "confirmed" && !booking.zoom_link_sent_at) {
     const [{ data: meeting }, { data: zoomMeeting }] = await Promise.all([
@@ -598,7 +603,10 @@ export async function updateDropInBookingStatus(formData: FormData) {
     }
   }
   revalidatePath("/admin/classes");
-  redirect(`/admin/classes?message=${emailFailed ? "booking-email-failed" : "booking-updated"}#bookings`);
+  revalidatePath("/admin");
+  revalidatePath("/admin/activity");
+  revalidatePath("/drop-in");
+  redirect(`/admin/classes?booking=${bookingId}&message=${emailFailed ? "booking-email-failed" : "booking-updated"}#booking-${bookingId}`);
 }
 
 export async function createConsultationSlot(formData: FormData) {
